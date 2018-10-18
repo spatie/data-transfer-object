@@ -3,8 +3,8 @@
 namespace Spatie\ValueObject;
 
 use ReflectionClass;
-use ReflectionException;
 use ReflectionProperty;
+use ReflectionException;
 
 abstract class ValueObject
 {
@@ -153,5 +153,4 @@ abstract class ValueObject
 
         return gettype($value) === (self::$typeMapping[$type] ?? $type);
     }
-
 }
