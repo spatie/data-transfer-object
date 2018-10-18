@@ -1,0 +1,26 @@
+<?php
+
+namespace Spatie\ValueObject;
+
+use Exception;
+
+class ValueObjectException extends Exception
+{
+    public static function unknownPublicProperty(string $name, string $className): ValueObjectException
+    {
+        return new self("Public property {$name} not found on {$className}");
+    }
+
+    public static function invalidType(
+        string $propertyName,
+        string $className,
+        string $expectedType,
+        $value
+    ): ValueObjectException {
+        if ($value === null) {
+            $value = 'null';
+        }
+
+        return new self("Invalid type: expected {$className}::{$propertyName} to be of type {$expectedType}; instead got value `{$value}`.");
+    }
+}

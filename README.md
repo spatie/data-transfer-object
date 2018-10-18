@@ -1,11 +1,11 @@
 # Very short description of the package
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/:package_name.svg?style=flat-square)](https://packagist.org/packages/spatie/:package_name)
-[![Build Status](https://img.shields.io/travis/spatie/:package_name/master.svg?style=flat-square)](https://travis-ci.org/spatie/:package_name)
-[![Quality Score](https://img.shields.io/scrutinizer/g/spatie/:package_name.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/:package_name)
-[![Total Downloads](https://img.shields.io/packagist/dt/spatie/:package_name.svg?style=flat-square)](https://packagist.org/packages/spatie/:package_name)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/value-object.svg?style=flat-square)](https://packagist.org/packages/spatie/value-object)
+[![Build Status](https://img.shields.io/travis/spatie/value-object/master.svg?style=flat-square)](https://travis-ci.org/spatie/value-object)
+[![Quality Score](https://img.shields.io/scrutinizer/g/spatie/value-object.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/value-object)
+[![Total Downloads](https://img.shields.io/packagist/dt/spatie/value-object.svg?style=flat-square)](https://packagist.org/packages/spatie/value-object)
 
-**Note:** Replace ```:author_name``` ```:author_username``` ```:author_email``` ```:package_name``` ```:package_description``` with their correct values in [README.md](README.md), [CHANGELOG.md](CHANGELOG.md), [CONTRIBUTING.md](CONTRIBUTING.md), [LICENSE.md](LICENSE.md) and [composer.json](composer.json) files, then delete this line.
+**Note:** Replace ```Brent Roose``` ```brentgd``` ```brent@spatie.be``` ```value-object``` ```Value objects with batteries included``` with their correct values in [README.md](README.md), [CHANGELOG.md](CHANGELOG.md), [CONTRIBUTING.md](CONTRIBUTING.md), [LICENSE.md](LICENSE.md) and [composer.json](composer.json) files, then delete this line.
 
 This is where your description should go. Try and limit it to a paragraph or two.
 
@@ -14,14 +14,14 @@ This is where your description should go. Try and limit it to a paragraph or two
 You can install the package via composer:
 
 ```bash
-composer require spatie/:package_name
+composer require spatie/value-object
 ```
 
 ## Usage
 
 ``` php
-$skeleton = new Spatie\Skeleton();
-echo $skeleton->echoPhrase('Hello, Spatie!');
+$ValueObject = new Spatie\ValueObject();
+echo $ValueObject->echoPhrase('Hello, Spatie!');
 ```
 
 ### Testing
@@ -52,7 +52,7 @@ We publish all received postcards [on our company website](https://spatie.be/en/
 
 ## Credits
 
-- [:author_name](https://github.com/:author_username)
+- [Brent Roose](https://github.com/brentgd)
 - [All Contributors](../../contributors)
 
 ## Support us
