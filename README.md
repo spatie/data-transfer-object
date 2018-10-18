@@ -1,13 +1,11 @@
-# Very short description of the package
+**THIS PACKAGE IS IN DEVELOPMENT, DO NOT USE YET**
+
+# Value objects with batteries included
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/value-object.svg?style=flat-square)](https://packagist.org/packages/spatie/value-object)
 [![Build Status](https://img.shields.io/travis/spatie/value-object/master.svg?style=flat-square)](https://travis-ci.org/spatie/value-object)
 [![Quality Score](https://img.shields.io/scrutinizer/g/spatie/value-object.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/value-object)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/value-object.svg?style=flat-square)](https://packagist.org/packages/spatie/value-object)
-
-**Note:** Replace ```Brent Roose``` ```brentgd``` ```brent@spatie.be``` ```value-object``` ```Value objects with batteries included``` with their correct values in [README.md](README.md), [CHANGELOG.md](CHANGELOG.md), [CONTRIBUTING.md](CONTRIBUTING.md), [LICENSE.md](LICENSE.md) and [composer.json](composer.json) files, then delete this line.
-
-This is where your description should go. Try and limit it to a paragraph or two.
 
 ## Installation
 
@@ -19,10 +17,7 @@ composer require spatie/value-object
 
 ## Usage
 
-``` php
-$ValueObject = new Spatie\ValueObject();
-echo $ValueObject->echoPhrase('Hello, Spatie!');
-```
+Coming soon
 
 ### Testing
 
