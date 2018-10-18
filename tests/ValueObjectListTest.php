@@ -2,8 +2,8 @@
 
 namespace Spatie\ValueObject\Tests;
 
-use Spatie\ValueObject\Tests\TestClasses\TestValueObject;
 use Spatie\ValueObject\ValueObjectList;
+use Spatie\ValueObject\Tests\TestClasses\TestValueObject;
 
 class ValueObjectListTest extends TestCase
 {
@@ -16,8 +16,7 @@ class ValueObjectListTest extends TestCase
             new TestValueObject(['testProperty' => 3]),
         ];
 
-        $list = new class($objects) extends ValueObjectList{
-
+        $list = new class($objects) extends ValueObjectList {
         };
 
         $this->assertCount(3, $list);
