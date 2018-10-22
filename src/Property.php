@@ -6,6 +6,7 @@ use ReflectionProperty;
 
 class Property extends ReflectionProperty
 {
+    /** @var array */
     private static $typeMapping = [
         'int' => 'integer',
         'bool' => 'boolean',
@@ -92,7 +93,7 @@ class Property extends ReflectionProperty
         }
 
         foreach ($this->types as $currentType) {
-            $isValidType = $this->assertValidType($currentType, $value);
+            $isValidType = $this->assertValidEquals($currentType, $value);
 
             if ($isValidType) {
                 return true;
@@ -102,7 +103,7 @@ class Property extends ReflectionProperty
         return false;
     }
 
-    private function assertValidType(string $type, $value): bool
+    private function assertValidEquals(string $type, $value): bool
     {
         if ($type === 'mixed' && $value !== null) {
             return true;
