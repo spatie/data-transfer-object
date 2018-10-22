@@ -147,6 +147,10 @@ abstract class ValueObject
             return true;
         }
 
+        if ($type === 'mixed' && $value !== null) {
+            return true;
+        }
+
         if (class_exists($type)) {
             return $value instanceof $type;
         }

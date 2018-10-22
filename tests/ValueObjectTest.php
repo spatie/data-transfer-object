@@ -2,6 +2,7 @@
 
 namespace Spatie\ValueObject\Tests;
 
+use Spatie\ValueObject\Tests\TestClasses\DummyClass;
 use Spatie\ValueObject\ValueObject;
 use Spatie\ValueObject\ValueObjectException;
 
@@ -105,5 +106,39 @@ class ValueObjectTest extends TestCase
         };
 
         $this->assertEquals(['foo' => 1], $valueObject->except('bar')->toArray());
+    }
+
+    /** @test */
+    public function mixed_is_supported()
+    {
+        new class(['foo' => 'abc']) extends ValueObject {
+            /** @var mixed */
+            public $foo;
+        };
+
+        new class(['foo' => 1]) extends ValueObject {
+            /** @var mixed */
+            public $foo;
+        };
+
+        $this->markTestSucceeded();
+    }
+
+    /** @test */
+    public function classes_are_supported()
+    {
+        new class(['foo' => new DummyClass()]) extends ValueObject {
+            /** @var \Spatie\ValueObject\Tests\TestClasses\DummyClass */
+            public $foo;
+        };
+
+        $this->markTestSucceeded();
+
+        $this->expectException(ValueObjectException::class);
+
+        new class(['foo' => new class() {}]) extends ValueObject {
+            /** @var \Spatie\ValueObject\Tests\TestClasses\DummyClass */
+            public $foo;
+        };
     }
 }
