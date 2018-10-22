@@ -16,9 +16,67 @@ You can install the package via composer:
 composer require spatie/value-object
 ```
 
+## The goal
+
+- Passing data within your code base in a structured manner.
+- Provide type validation for this data.
+- Support static analysis for eg. auto completion.
+
 ## Usage
 
-Coming soon
+Value objects are defined like so:
+
+```php
+class DummyData extends ValueObject
+{
+    /** @var string */
+    public $name;
+    
+    /** @var \Spatie\ValueObject\Dummy */
+    public $relation;
+    
+    public $everythingAllowed;
+    
+    /** @var null|string */
+    public $nullable;
+    
+    /** @var mixed */
+    public $mixed;
+}
+```
+
+And created like so:
+
+```php
+$dummyData = new DummyData([
+    'name' => 'Spatie',
+    'relation' => new Dummy(),
+    'everythingAllowed' => 'abc'
+    'mixed' => 123,
+    // 'nullable' => 'deliberately left out',
+]);
+```
+
+In practice, you'll almost always will provide static constructors:
+
+```php
+class DummyData
+{
+    public static function fromRequest(Request $request): DummyData
+    {
+        return new self([
+            // …
+        ]);
+    }
+    
+    public static function fromJson(string $json): DummyData
+    {
+        return new self([
+            // …
+        ]);
+    }
+}
+```
 
 ### Testing
 
