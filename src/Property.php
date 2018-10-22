@@ -7,7 +7,7 @@ use ReflectionProperty;
 class Property extends ReflectionProperty
 {
     /** @var array */
-    private static $typeMapping = [
+    protected static $typeMapping = [
         'int' => 'integer',
         'bool' => 'boolean',
     ];
@@ -16,16 +16,16 @@ class Property extends ReflectionProperty
     protected $valueObject;
 
     /** @var bool */
-    private $hasTypeDeclaration = false;
+    protected $hasTypeDeclaration = false;
 
     /** @var bool */
-    private $isNullable = false;
+    protected $isNullable = false;
 
     /** @var bool */
-    private $isInitialised = false;
+    protected $isInitialised = false;
 
     /** @var array */
-    private $types = [];
+    protected $types = [];
 
     public static function fromReflection(ValueObject $valueObject, ReflectionProperty $reflectionProperty)
     {
@@ -59,7 +59,7 @@ class Property extends ReflectionProperty
         $this->valueObject->{$this->getName()} = $value;
     }
 
-    private function resolveTypeDefinition()
+    protected function resolveTypeDefinition()
     {
         $docComment = $this->getDocComment();
 
@@ -82,7 +82,7 @@ class Property extends ReflectionProperty
         $this->isNullable = strpos($varDocComment, 'null') !== false;
     }
 
-    private function isValidType($value): bool
+    protected function isValidType($value): bool
     {
         if (! $this->hasTypeDeclaration) {
             return true;
@@ -103,7 +103,7 @@ class Property extends ReflectionProperty
         return false;
     }
 
-    private function assertValidEquals(string $type, $value): bool
+    protected function assertValidEquals(string $type, $value): bool
     {
         if ($type === 'mixed' && $value !== null) {
             return true;

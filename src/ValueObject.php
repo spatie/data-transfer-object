@@ -98,7 +98,7 @@ abstract class ValueObject
      *
      * @return array|\Spatie\ValueObject\Property[]
      */
-    private function getPublicProperties(ReflectionClass $class): array
+    protected function getPublicProperties(ReflectionClass $class): array
     {
         $properties = [];
 
