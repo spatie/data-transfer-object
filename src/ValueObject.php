@@ -107,7 +107,7 @@ abstract class ValueObject
             return true;
         }
 
-        preg_match('/\@var ([\w|]+)/', $docComment, $matches);
+        preg_match('/\@var ([\w|\\\\]+)/', $docComment, $matches);
 
         if (! count($matches)) {
             return true;
