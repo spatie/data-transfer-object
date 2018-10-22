@@ -7,7 +7,6 @@ use ReflectionProperty;
 
 abstract class ValueObject
 {
-
     /** @var array */
     protected $exceptKeys = [];
 

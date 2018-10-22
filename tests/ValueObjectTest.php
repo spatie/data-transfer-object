@@ -152,4 +152,22 @@ class ValueObjectTest extends TestCase
             public $foo;
         };
     }
+
+    /** @test */
+    public function empty_type_declaration_allows_everything()
+    {
+        new class(['foo' => new DummyClass()]) extends ValueObject {
+            public $foo;
+        };
+
+        new class(['foo' => null]) extends ValueObject {
+            public $foo;
+        };
+
+        new class(['foo' => 1]) extends ValueObject {
+            public $foo;
+        };
+
+        $this->markTestSucceeded();
+    }
 }

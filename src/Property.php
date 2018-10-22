@@ -14,12 +14,16 @@ class Property extends ReflectionProperty
     /** @var \Spatie\ValueObject\ValueObject */
     protected $valueObject;
 
+    /** @var bool */
     private $hasTypeDeclaration = false;
 
+    /** @var bool */
     private $isNullable = false;
 
+    /** @var bool */
     private $isInitialised = false;
 
+    /** @var array */
     private $types = [];
 
     public static function fromReflection(ValueObject $valueObject, ReflectionProperty $reflectionProperty)
@@ -36,13 +40,53 @@ class Property extends ReflectionProperty
         $this->resolveTypeDefinition();
     }
 
-    public function hasTypeDeclaration(): bool
+    public function set($value)
     {
-        return $this->hasTypeDeclaration;
+        if (! $this->isValidType($value)) {
+            $expectedTypes = implode(', ', $this->types);
+
+            throw ValueObjectException::invalidType(
+                $this->getName(),
+                $this->getDeclaringClass()->getName(),
+                $expectedTypes,
+                $value
+            );
+        }
+
+        $this->isInitialised = true;
+
+        $this->valueObject->{$this->getName()} = $value;
     }
 
-    public function isValidType($value): bool
+    private function resolveTypeDefinition()
     {
+        $docComment = $this->getDocComment();
+
+        if (! $docComment) {
+            return;
+        }
+
+        preg_match('/\@var ([\w|\\\\]+)/', $docComment, $matches);
+
+        if (! count($matches)) {
+            return;
+        }
+
+        $this->hasTypeDeclaration = true;
+
+        $varDocComment = end($matches);
+
+        $this->types = explode('|', $varDocComment);
+
+        $this->isNullable = strpos($varDocComment, 'null') !== false;
+    }
+
+    private function isValidType($value): bool
+    {
+        if (! $this->hasTypeDeclaration) {
+            return true;
+        }
+
         $isValidType = false;
 
         if ($this->isNullable && $value === null) {
@@ -60,60 +104,8 @@ class Property extends ReflectionProperty
         return $isValidType;
     }
 
-    public function set($value)
-    {
-        $isValidType = $this->isValidType($value);
-
-        if (! $isValidType) {
-            $expectedTypes = implode(', ', $this->getAvailableTypes());
-
-            throw ValueObjectException::invalidType(
-                $this->getName(),
-                $this->getDeclaringClass()->getName(),
-                $expectedTypes,
-                $value
-            );
-        }
-
-        $this->isInitialised = true;
-
-        $this->valueObject->{$this->getName()} = $value;
-    }
-
-    public function getAvailableTypes(): array
-    {
-        return $this->types;
-    }
-
-    private function resolveTypeDefinition()
-    {
-        $docComment = $this->getDocComment();
-
-        if (! $docComment) {
-            return;
-        }
-
-        preg_match('/\@var ([\w|\\\\]+)/', $docComment, $matches);
-
-        if (! count($matches)) {
-            return true;
-        }
-
-        $this->hasTypeDeclaration = true;
-
-        $varDocComment = end($matches);
-
-        $this->types = explode('|', $varDocComment);
-
-        $this->isNullable = strpos($varDocComment, 'null') !== false;
-    }
-
     private function assertValidType(string $type, $value): bool
     {
-        if ($this->isNullable && $value === null) {
-            return true;
-        }
-
         if ($type === 'mixed' && $value !== null) {
             return true;
         }
