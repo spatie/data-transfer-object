@@ -87,8 +87,6 @@ class Property extends ReflectionProperty
             return true;
         }
 
-        $isValidType = false;
-
         if ($this->isNullable && $value === null) {
             return true;
         }
@@ -97,11 +95,11 @@ class Property extends ReflectionProperty
             $isValidType = $this->assertValidType($currentType, $value);
 
             if ($isValidType) {
-                break;
+                return true;
             }
         }
 
-        return $isValidType;
+        return false;
     }
 
     private function assertValidType(string $type, $value): bool
