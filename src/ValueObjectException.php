@@ -27,4 +27,9 @@ class ValueObjectException extends Exception
 
         return new self("Invalid type: expected {$className}::{$propertyName} to be of type {$expectedType}; instead got value `{$value}`.");
     }
+
+    public static function uninitialisedProperty(string $name): ValueObjectException
+    {
+        return new self("Non-nullable property `{$name}` has not been initialised.");
+    }
 }

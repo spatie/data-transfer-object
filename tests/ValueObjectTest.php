@@ -141,4 +141,15 @@ class ValueObjectTest extends TestCase
             public $foo;
         };
     }
+
+    /** @test */
+    public function an_exception_is_thrown_when_property_was_not_initialised()
+    {
+        $this->expectException(ValueObjectException::class);
+
+        new class([]) extends ValueObject {
+            /** @var string */
+            public $foo;
+        };
+    }
 }

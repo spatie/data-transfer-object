@@ -4,14 +4,9 @@ namespace Spatie\ValueObject;
 
 use ReflectionClass;
 use ReflectionProperty;
-use ReflectionException;
 
 abstract class ValueObject
 {
-    private static $typeMapping = [
-        'int' => 'integer',
-        'bool' => 'boolean',
-    ];
 
     /** @var array */
     protected $exceptKeys = [];
@@ -26,20 +21,20 @@ abstract class ValueObject
     {
         $class = new ReflectionClass(static::class);
 
-        foreach ($parameters as $propertyName => $value) {
-            try {
-                $property = $class->getProperty($propertyName);
-            } catch (ReflectionException $exception) {
-                $property = null;
+        $properties = $this->getPublicProperties($class);
+
+        foreach ($properties as $property) {
+            $value = $parameters[$property->getName()] ?? null;
+
+            $property->set($value);
+        }
+
+        foreach (array_keys($parameters) as $propertyName) {
+            if (isset($properties[$propertyName])) {
+                continue;
             }
 
-            if (! $property || ! $property->isPublic()) {
-                throw ValueObjectException::unknownPublicProperty($propertyName, $class->getName());
-            }
-
-            $this->validateType($value, $property);
-
-            $this->{$propertyName} = $value;
+            throw ValueObjectException::unknownPublicProperty($propertyName, $class);
         }
     }
 
@@ -99,62 +94,19 @@ abstract class ValueObject
         return Arr::except($this->all(), $this->exceptKeys);
     }
 
-    private function validateType($value, ReflectionProperty $property)
+    /**
+     * @param \ReflectionClass $class
+     *
+     * @return array|\Spatie\ValueObject\Property[]
+     */
+    private function getPublicProperties(ReflectionClass $class): array
     {
-        $docComment = $property->getDocComment();
+        $properties = [];
 
-        if (! $docComment) {
-            return true;
+        foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $reflectionProperty) {
+            $properties[$reflectionProperty->getName()] = Property::fromReflection($this, $reflectionProperty);
         }
 
-        preg_match('/\@var ([\w|\\\\]+)/', $docComment, $matches);
-
-        if (! count($matches)) {
-            return true;
-        }
-
-        $varDocComment = end($matches);
-
-        $types = explode('|', $varDocComment);
-
-        $isValidType = false;
-
-        $isNullable = strpos($varDocComment, 'null') !== false;
-
-        foreach ($types as $type) {
-            $isValidType = $this->assertValidType($type, $value, $isNullable);
-
-            if ($isValidType) {
-                break;
-            }
-        }
-
-        if (! $isValidType) {
-            $expectedTypes = implode(', ', $types);
-
-            throw ValueObjectException::invalidType(
-                $property->getName(),
-                $property->getDeclaringClass()->getName(),
-                $expectedTypes,
-                $value
-            );
-        }
-    }
-
-    private function assertValidType(string $type, $value, bool $isNullable): bool
-    {
-        if ($isNullable && $value === null) {
-            return true;
-        }
-
-        if ($type === 'mixed' && $value !== null) {
-            return true;
-        }
-
-        if (class_exists($type)) {
-            return $value instanceof $type;
-        }
-
-        return gettype($value) === (self::$typeMapping[$type] ?? $type);
+        return $properties;
     }
 }
