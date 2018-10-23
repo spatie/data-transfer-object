@@ -93,7 +93,7 @@ class Property extends ReflectionProperty
         }
 
         foreach ($this->types as $currentType) {
-            $isValidType = $this->assertValidEquals($currentType, $value);
+            $isValidType = $this->assertTypeEquals($currentType, $value);
 
             if ($isValidType) {
                 return true;
@@ -103,7 +103,7 @@ class Property extends ReflectionProperty
         return false;
     }
 
-    protected function assertValidEquals(string $type, $value): bool
+    protected function assertTypeEquals(string $type, $value): bool
     {
         if ($type === 'mixed' && $value !== null) {
             return true;
