@@ -13,9 +13,6 @@ abstract class ValueObject
     /** @var array */
     protected $onlyKeys = [];
 
-    /** @var array */
-    protected $fillable = [];
-
     public function __construct(array $parameters)
     {
         $class = new ReflectionClass(static::class);
@@ -55,11 +52,13 @@ abstract class ValueObject
      *
      * @return static
      */
-    public function only(string ...$keys)
+    public function only(string ...$keys): ValueObject
     {
-        $this->onlyKeys = array_merge($this->onlyKeys, $keys);
+        $valueObject = clone $this;
 
-        return $this;
+        $valueObject->onlyKeys = array_merge($this->onlyKeys, $keys);
+
+        return $valueObject;
     }
 
     /**
@@ -67,21 +66,13 @@ abstract class ValueObject
      *
      * @return static
      */
-    public function except(string ...$keys)
+    public function except(string ...$keys): ValueObject
     {
-        $this->exceptKeys = array_merge($this->exceptKeys, $keys);
+        $valueObject = clone $this;
 
-        return $this;
-    }
+        $valueObject->exceptKeys = array_merge($this->exceptKeys, $keys);
 
-    /**
-     * @return static
-     */
-    public function fillable()
-    {
-        $this->only(...$this->fillable);
-
-        return $this;
+        return $valueObject;
     }
 
     public function toArray(): array

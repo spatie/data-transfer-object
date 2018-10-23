@@ -63,24 +63,6 @@ class ValueObjectTest extends TestCase
     }
 
     /** @test */
-    public function it_supports_fillable_properties()
-    {
-        $valueObject = new class(['foo' => 1, 'bar' => 2]) extends ValueObject {
-            /** @var int */
-            public $foo;
-
-            /** @var int */
-            public $bar;
-
-            protected $fillable = [
-                'foo',
-            ];
-        };
-
-        $this->assertEquals(['foo' => 1], $valueObject->fillable()->toArray());
-    }
-
-    /** @test */
     public function only_returns_filtered_properties()
     {
         $valueObject = new class(['foo' => 1, 'bar' => 2]) extends ValueObject {
