@@ -2,6 +2,8 @@
 
 namespace Spatie\ValueObject;
 
+use ArrayAccess;
+
 class Arr
 {
     public static function only($array, $keys)
@@ -11,23 +13,19 @@ class Arr
 
     public static function except($array, $keys)
     {
-        static::forget($array, $keys);
-
-        return $array;
+        return static::forget($array, $keys);
     }
 
-    public static function forget(&$array, $keys)
+    public static function forget($array, $keys)
     {
-        $original = &$array;
-
         $keys = (array) $keys;
 
         if (count($keys) === 0) {
-            return;
+            return $array;
         }
 
         foreach ($keys as $key) {
-            // if the exact key exists in the top-level, remove it
+            // If the exact key exists in the top-level, remove it
             if (static::exists($array, $key)) {
                 unset($array[$key]);
 
@@ -35,9 +33,6 @@ class Arr
             }
 
             $parts = explode('.', $key);
-
-            // clean up before each pass
-            $array = &$original;
 
             while (count($parts) > 1) {
                 $part = array_shift($parts);
@@ -51,6 +46,8 @@ class Arr
 
             unset($array[array_shift($parts)]);
         }
+
+        return $array;
     }
 
     public static function exists($array, $key)
