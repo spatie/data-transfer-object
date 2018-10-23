@@ -3,7 +3,7 @@
 namespace Spatie\ValueObject\Tests;
 
 use Spatie\ValueObject\ValueObject;
-use Spatie\ValueObject\ValueObjectException;
+use Spatie\ValueObject\ValueObjectError;
 use Spatie\ValueObject\Tests\TestClasses\DummyClass;
 
 class ValueObjectTest extends TestCase
@@ -18,7 +18,7 @@ class ValueObjectTest extends TestCase
 
         $this->markTestSucceeded();
 
-        $this->expectException(ValueObjectException::class);
+        $this->expectException(ValueObjectError::class);
 
         new class(['foo' => false]) extends ValueObject {
             /** @var string */
@@ -56,7 +56,7 @@ class ValueObjectTest extends TestCase
     /** @test */
     public function unknown_properties_throw_an_error()
     {
-        $this->expectException(ValueObjectException::class);
+        $this->expectException(ValueObjectError::class);
 
         new class(['bar' => null]) extends ValueObject {
         };
@@ -116,7 +116,7 @@ class ValueObjectTest extends TestCase
 
         $this->markTestSucceeded();
 
-        $this->expectException(ValueObjectException::class);
+        $this->expectException(ValueObjectError::class);
 
         new class(['foo' => new class() {
         }]) extends ValueObject {
@@ -128,7 +128,7 @@ class ValueObjectTest extends TestCase
     /** @test */
     public function an_exception_is_thrown_when_property_was_not_initialised()
     {
-        $this->expectException(ValueObjectException::class);
+        $this->expectException(ValueObjectError::class);
 
         new class([]) extends ValueObject {
             /** @var string */

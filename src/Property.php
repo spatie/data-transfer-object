@@ -44,12 +44,10 @@ class Property extends ReflectionProperty
     public function set($value)
     {
         if (! $this->isValidType($value)) {
-            $expectedTypes = implode(', ', $this->types);
 
-            throw ValueObjectException::invalidType(
-                $this->getName(),
+            throw ValueObjectError::invalidType(
+                $this,
                 $this->getDeclaringClass()->getName(),
-                $expectedTypes,
                 $value
             );
         }
@@ -57,6 +55,16 @@ class Property extends ReflectionProperty
         $this->isInitialised = true;
 
         $this->valueObject->{$this->getName()} = $value;
+    }
+
+    public function getTypes(): array
+    {
+        return $this->types;
+    }
+
+    public function getFqn(): string
+    {
+        return "{$this->getDeclaringClass()->getName()}::{$this->getName()}";
     }
 
     protected function resolveTypeDefinition()

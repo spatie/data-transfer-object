@@ -30,7 +30,7 @@ abstract class ValueObject
                 continue;
             }
 
-            throw ValueObjectException::unknownPublicProperty($propertyName, $class);
+            throw ValueObjectError::unknownPublicProperty($propertyName, $class->getName());
         }
     }
 
