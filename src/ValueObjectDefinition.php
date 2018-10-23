@@ -29,7 +29,7 @@ class ValueObjectDefinition extends BaseReflectionClass
         while ($line = fgets($handle)) {
             $line = trim($line);
 
-            if (strpos($line, 'use') !== 0) {
+            if (strpos($line, 'use ') !== 0) {
                 continue;
             }
 
@@ -49,14 +49,14 @@ class ValueObjectDefinition extends BaseReflectionClass
         fclose($handle);
     }
 
-    public function resolveAlias(string $alias): string
-    {
-        return $this->uses[$alias];
-    }
-
     public function hasAlias(string $alias): bool
     {
         return isset($this->uses[$alias]);
+    }
+
+    public function resolveAlias(string $alias): string
+    {
+        return $this->uses[$alias];
     }
 
     /**
