@@ -91,7 +91,6 @@ $dummyData->relation;
 Because the properties are public, you'll have autocompletion out of the box.
 
 There are also some helper functions provided for working with multiple properties at once. 
-These functions are built upon Laravel's `Arr` helper.
 
 ```php
 $dummyData->all();
@@ -146,6 +145,8 @@ We publish all received postcards [on our company website](https://spatie.be/en/
 
 - [Brent Roose](https://github.com/brentgd)
 - [All Contributors](../../contributors)
+
+Our `Arr` class contains functions copied from Laravels `Arr` helper.
 
 ## Support us
 
