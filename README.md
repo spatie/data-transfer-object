@@ -78,6 +78,44 @@ class DummyData
 }
 ```
 
+### Helper functions
+
+Once a value object is constructed, you can read its properties like you'd normally do:
+
+```php
+$dummyData->name;
+
+$dummyData->relation;
+```
+
+Because the properties are public, you'll have autocompletion out of the box.
+
+There are also some helper functions provided for working with multiple properties at once. 
+These functions are built upon Laravel's `Arr` helper.
+
+```php
+$dummyData->all();
+
+$dummyData
+    ->only('name', 'relation')
+    ->toArray();
+    
+$dummyData
+    ->except('relation')
+    ->toArray();
+``` 
+
+You can also chain these methods:
+
+```php
+$dummyData
+    ->except('relation')
+    ->except('name')
+    ->toArray();
+```
+
+It's important to note that `except` and `only` are immutable, they won't change the original value object.
+
 ### Testing
 
 ``` bash
