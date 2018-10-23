@@ -107,7 +107,7 @@ class Property extends ReflectionProperty
     {
         if (is_array($value)) {
             foreach ($value as $class) {
-                if (!$this->assertTypeEquals($type, $class)) {
+                if (! $this->assertTypeEquals($type, $class)) {
                     return false;
                 }
             }

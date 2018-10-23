@@ -125,15 +125,11 @@ class ValueObjectTest extends TestCase
             public $foo;
         };
     }
-    
+
     /** @test */
     public function generic_collections_are_supported()
     {
-        new class(['foo' => [
-            new DummyClass(),
-            new DummyClass(),
-            new DummyClass(),
-        ]]) extends ValueObject {
+        new class(['foo' => [new DummyClass(), new DummyClass(), new DummyClass()]]) extends ValueObject {
             /** @var \Spatie\ValueObject\Tests\TestClasses\DummyClass[] */
             public $foo;
         };
@@ -142,11 +138,7 @@ class ValueObjectTest extends TestCase
 
         $this->expectException(ValueObjectException::class);
 
-        new class(['foo' => [
-            new DummyClass(),
-            new DummyClass(),
-            new OtherClass(),
-        ]]) extends ValueObject {
+        new class(['foo' => [new DummyClass(), new DummyClass(), new OtherClass()]]) extends ValueObject {
             /** @var \Spatie\ValueObject\Tests\TestClasses\DummyClass[] */
             public $foo;
         };
@@ -157,9 +149,7 @@ class ValueObjectTest extends TestCase
     {
         $this->expectException(ValueObjectException::class);
 
-        new class(['foo' => [
-            null,
-        ]]) extends ValueObject {
+        new class(['foo' => [null]]) extends ValueObject {
             /** @var null[] */
             public $foo;
         };
