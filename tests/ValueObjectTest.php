@@ -103,6 +103,20 @@ class ValueObjectTest extends TestCase
     }
 
     /** @test */
+    public function all_returns_all_properties()
+    {
+        $valueObject = new class(['foo' => 1, 'bar' => 2]) extends ValueObject {
+            /** @var int */
+            public $foo;
+
+            /** @var int */
+            public $bar;
+        };
+
+        $this->assertEquals(['foo' => 1, 'bar' => 2], $valueObject->all());
+    }
+
+    /** @test */
     public function mixed_is_supported()
     {
         new class(['foo' => 'abc']) extends ValueObject {

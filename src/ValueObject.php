@@ -8,6 +8,9 @@ use ReflectionProperty;
 abstract class ValueObject
 {
     /** @var array */
+    protected $allValues = [];
+
+    /** @var array */
     protected $exceptKeys = [];
 
     /** @var array */
@@ -25,6 +28,8 @@ abstract class ValueObject
             $property->set($value);
 
             unset($parameters[$property->getName()]);
+
+            $this->allValues[$property->getName()] = $property->getValue($this);
         }
 
         if (count($parameters)) {
@@ -34,15 +39,7 @@ abstract class ValueObject
 
     public function all(): array
     {
-        $class = new ReflectionClass(static::class);
-
-        $values = [];
-
-        foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
-            $values[$property->getName()] = $property->getValue($this);
-        }
-
-        return $values;
+        return $this->allValues;
     }
 
     /**
