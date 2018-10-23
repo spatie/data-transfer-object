@@ -44,12 +44,7 @@ class Property extends ReflectionProperty
     public function set($value)
     {
         if (! $this->isValidType($value)) {
-
-            throw ValueObjectError::invalidType(
-                $this,
-                $this->getDeclaringClass()->getName(),
-                $value
-            );
+            throw ValueObjectError::invalidType($this, $value);
         }
 
         $this->isInitialised = true;

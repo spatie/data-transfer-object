@@ -23,14 +23,12 @@ abstract class ValueObject
             $value = $parameters[$property->getName()] ?? null;
 
             $property->set($value);
+
+            unset($parameters[$property->getName()]);
         }
 
-        foreach (array_keys($parameters) as $propertyName) {
-            if (isset($properties[$propertyName])) {
-                continue;
-            }
-
-            throw ValueObjectError::unknownPublicProperty($propertyName, $class->getName());
+        if (count($parameters)) {
+            throw ValueObjectError::unknownProperties(array_keys($parameters), $class);
         }
     }
 

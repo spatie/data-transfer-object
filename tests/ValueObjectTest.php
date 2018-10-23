@@ -63,6 +63,18 @@ class ValueObjectTest extends TestCase
     }
 
     /** @test */
+    public function unknown_properties_show_a_comprehensive_error_message()
+    {
+        try {
+            new class(['foo' => null, 'bar' => null]) extends ValueObject {
+            };
+        } catch (ValueObjectError $error) {
+            $this->assertTrue(strpos($error, '`foo`') !== false);
+            $this->assertTrue(strpos($error, '`bar`') !== false);
+        }
+    }
+
+    /** @test */
     public function only_returns_filtered_properties()
     {
         $valueObject = new class(['foo' => 1, 'bar' => 2]) extends ValueObject {

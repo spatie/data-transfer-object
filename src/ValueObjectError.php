@@ -6,9 +6,11 @@ use TypeError;
 
 class ValueObjectError extends TypeError
 {
-    public static function unknownPublicProperty(string $name, string $className): ValueObjectError
+    public static function unknownProperties(array $properties, string $className): ValueObjectError
     {
-        return new self("Public property {$name} not found on {$className}");
+        $propertyNames = implode('`, `', $properties);
+
+        return new self("Public properties `{$propertyNames}` not found on {$className}");
     }
 
     public static function invalidType(Property $property, $value): ValueObjectError
