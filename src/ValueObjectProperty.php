@@ -6,7 +6,7 @@ namespace Spatie\DataTransferObject;
 
 use ReflectionProperty;
 
-class Property extends ReflectionProperty
+class ValueObjectProperty extends ReflectionProperty
 {
     /** @var array */
     protected static $typeMapping = [
@@ -29,16 +29,27 @@ class Property extends ReflectionProperty
     /** @var array */
     protected $types = [];
 
-    public static function fromReflection(DataTransferObject $valueObject, ReflectionProperty $reflectionProperty)
-    {
-        return new self($valueObject, $reflectionProperty);
+    /** @var \Spatie\ValueObject\ValueObjectDefinition */
+    protected $valueObjectDefinition;
+
+    public static function fromReflection(
+        ValueObject $valueObject,
+        ValueObjectDefinition $valueObjectDefinition,
+        ReflectionProperty $reflectionProperty
+    ) {
+        return new self($valueObject, $valueObjectDefinition, $reflectionProperty);
     }
 
-    public function __construct(DataTransferObject $valueObject, ReflectionProperty $reflectionProperty)
-    {
+    public function __construct(
+        DataTransferObject $valueObject,
+        ValueObjectDefinition $valueObjectDefinition,
+        ReflectionProperty $reflectionProperty
+    ) {
         parent::__construct($reflectionProperty->class, $reflectionProperty->getName());
 
         $this->valueObject = $valueObject;
+
+        $this->valueObjectDefinition = $valueObjectDefinition;
 
         $this->resolveTypeDefinition();
     }
@@ -91,13 +102,13 @@ class Property extends ReflectionProperty
             return;
         }
 
-        $this->hasTypeDeclaration = true;
-
         $varDocComment = end($matches);
 
         $this->types = explode('|', $varDocComment);
 
         $this->isNullable = strpos($varDocComment, 'null') !== false;
+
+        $this->hasTypeDeclaration = true;
     }
 
     protected function isValidType($value): bool
@@ -170,6 +181,12 @@ class Property extends ReflectionProperty
             }
         }
 
-        return true;
+        if ($this->valueObjectDefinition->hasAlias($type)) {
+            $type = $this->valueObjectDefinition->resolveAlias($type);
+
+            return $value instanceof $type;
+        }
+
+        return gettype($value) === (self::$typeMapping[$type] ?? $type);
     }
 }

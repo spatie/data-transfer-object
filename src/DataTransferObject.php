@@ -6,6 +6,7 @@ namespace Spatie\DataTransferObject;
 
 use ReflectionClass;
 use ReflectionProperty;
+use Spatie\ValueObject\ValueObjectDefinition;
 
 abstract class DataTransferObject
 {
@@ -20,9 +21,9 @@ abstract class DataTransferObject
 
     public function __construct(array $parameters)
     {
-        $class = new ReflectionClass(static::class);
+        $class = new ValueObjectDefinition($this);
 
-        $properties = $this->getPublicProperties($class);
+        $properties = $class->getValueObjectProperties();
 
         foreach ($properties as $property) {
             if (
