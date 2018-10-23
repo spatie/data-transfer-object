@@ -105,6 +105,16 @@ class Property extends ReflectionProperty
 
     protected function assertTypeEquals(string $type, $value): bool
     {
+        if (is_array($value)) {
+            foreach ($value as $class) {
+                if (!$this->assertTypeEquals($type, $class)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         if ($type === 'mixed' && $value !== null) {
             return true;
         }

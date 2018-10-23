@@ -25,6 +25,10 @@ class ValueObjectException extends Exception
             $value = get_class($value);
         }
 
+        if (is_array($value)) {
+            $value = 'array';
+        }
+
         return new self("Invalid type: expected {$className}::{$propertyName} to be of type {$expectedType}; instead got value `{$value}`.");
     }
 

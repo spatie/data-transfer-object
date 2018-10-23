@@ -5,6 +5,7 @@ namespace Spatie\ValueObject\Tests;
 use Spatie\ValueObject\ValueObject;
 use Spatie\ValueObject\ValueObjectException;
 use Spatie\ValueObject\Tests\TestClasses\DummyClass;
+use Spatie\ValueObject\Tests\TestClasses\OtherClass;
 
 class ValueObjectTest extends TestCase
 {
@@ -121,6 +122,45 @@ class ValueObjectTest extends TestCase
         new class(['foo' => new class() {
         }]) extends ValueObject {
             /** @var \Spatie\ValueObject\Tests\TestClasses\DummyClass */
+            public $foo;
+        };
+    }
+    
+    /** @test */
+    public function generic_collections_are_supported()
+    {
+        new class(['foo' => [
+            new DummyClass(),
+            new DummyClass(),
+            new DummyClass(),
+        ]]) extends ValueObject {
+            /** @var \Spatie\ValueObject\Tests\TestClasses\DummyClass[] */
+            public $foo;
+        };
+
+        $this->markTestSucceeded();
+
+        $this->expectException(ValueObjectException::class);
+
+        new class(['foo' => [
+            new DummyClass(),
+            new DummyClass(),
+            new OtherClass(),
+        ]]) extends ValueObject {
+            /** @var \Spatie\ValueObject\Tests\TestClasses\DummyClass[] */
+            public $foo;
+        };
+    }
+
+    /** @test */
+    public function an_exception_is_thrown_for_a_generic_collection_of_null()
+    {
+        $this->expectException(ValueObjectException::class);
+
+        new class(['foo' => [
+            null,
+        ]]) extends ValueObject {
+            /** @var null[] */
             public $foo;
         };
     }
