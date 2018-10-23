@@ -2,9 +2,9 @@
 
 namespace Spatie\ValueObject\Tests;
 
-use Spatie\ValueObject\Tests\TestClasses\DummyClass;
 use Spatie\ValueObject\ValueObject;
 use Spatie\ValueObject\ValueObjectException;
+use Spatie\ValueObject\Tests\TestClasses\DummyClass;
 
 class ValueObjectTest extends TestCase
 {
@@ -118,7 +118,8 @@ class ValueObjectTest extends TestCase
 
         $this->expectException(ValueObjectException::class);
 
-        new class(['foo' => new class() {}]) extends ValueObject {
+        new class(['foo' => new class() {
+        }]) extends ValueObject {
             /** @var \Spatie\ValueObject\Tests\TestClasses\DummyClass */
             public $foo;
         };
