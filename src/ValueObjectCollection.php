@@ -2,10 +2,10 @@
 
 namespace Spatie\ValueObject;
 
-use ArrayAccess;
-use Countable;
-use Illuminate\Contracts\Support\Arrayable;
 use Iterator;
+use Countable;
+use ArrayAccess;
+use Illuminate\Contracts\Support\Arrayable;
 
 abstract class ValueObjectCollection implements
     ArrayAccess,
