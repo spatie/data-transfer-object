@@ -70,7 +70,7 @@ class Property extends ReflectionProperty
             return;
         }
 
-        preg_match('/\@var ([\w|\\\\]+)/', $docComment, $matches);
+        preg_match('/\@var ((?:(?:[\w|\\\\])+(?:\[\])?)+)/', $docComment, $matches);
 
         if (! count($matches)) {
             return;
@@ -108,6 +108,10 @@ class Property extends ReflectionProperty
 
     protected function assertTypeEquals(string $type, $value): bool
     {
+        if (strpos($type, '[]') !== false) {
+            return $this->isValidGenericCollection($type, $value);
+        }
+
         if ($type === 'mixed' && $value !== null) {
             return true;
         }
@@ -117,5 +121,22 @@ class Property extends ReflectionProperty
         }
 
         return gettype($value) === (self::$typeMapping[$type] ?? $type);
+    }
+
+    protected function isValidGenericCollection(string $type, $collection): bool
+    {
+        if (! is_array($collection)) {
+            return false;
+        }
+
+        $valueType = str_replace('[]', '', $type);
+
+        foreach ($collection as $value) {
+            if (! $this->assertTypeEquals($valueType, $value)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
