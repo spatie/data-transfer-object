@@ -67,7 +67,7 @@ class Property extends ReflectionProperty
             return;
         }
 
-        preg_match('/\@var ([\w|\\\\]+)/', $docComment, $matches);
+        preg_match('/\@var ([\w|\\\\\[\]]+)/', $docComment, $matches);
 
         if (! count($matches)) {
             return;
