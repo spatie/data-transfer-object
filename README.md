@@ -1,5 +1,3 @@
-**THIS PACKAGE IS IN DEVELOPMENT, DO NOT USE YET**
-
 # Value objects with batteries included
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/value-object.svg?style=flat-square)](https://packagist.org/packages/spatie/value-object)
