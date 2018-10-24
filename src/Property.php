@@ -105,14 +105,8 @@ class Property extends ReflectionProperty
 
     protected function assertTypeEquals(string $type, $value): bool
     {
-        if (is_array($value)) {
-            foreach ($value as $class) {
-                if (! $this->assertTypeEquals($type, $class)) {
-                    return false;
-                }
-            }
-
-            return true;
+        if (strpos($type, '[]') !== false) {
+            return $this->isValidGenericCollection($type, $value);
         }
 
         if ($type === 'mixed' && $value !== null) {
@@ -124,5 +118,22 @@ class Property extends ReflectionProperty
         }
 
         return gettype($value) === (self::$typeMapping[$type] ?? $type);
+    }
+
+    protected function isValidGenericCollection(string $type, $collection): bool
+    {
+        if (! is_array($collection)) {
+            return false;
+        }
+
+        $valueType = str_replace('[]', '', $type);
+
+        foreach ($collection as $value) {
+            if (! $this->assertTypeEquals($valueType, $value)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
