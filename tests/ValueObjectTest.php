@@ -162,7 +162,7 @@ class ValueObjectTest extends TestCase
 
         $this->markTestSucceeded();
 
-        $this->expectException(ValueObjectException::class);
+        $this->expectException(ValueObjectError::class);
 
         new class(['foo' => [new OtherClass()]]) extends ValueObject {
             /** @var \Spatie\ValueObject\Tests\TestClasses\DummyClass[] */
@@ -173,7 +173,7 @@ class ValueObjectTest extends TestCase
     /** @test */
     public function an_exception_is_thrown_for_a_generic_collection_of_null()
     {
-        $this->expectException(ValueObjectException::class);
+        $this->expectException(ValueObjectError::class);
 
         new class(['foo' => [null]]) extends ValueObject {
             /** @var string[] */

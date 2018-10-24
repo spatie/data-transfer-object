@@ -23,6 +23,10 @@ class ValueObjectError extends TypeError
             $value = get_class($value);
         }
 
+        if (is_array($value)) {
+            $value = 'array';
+        }
+
         $expectedTypes = implode(', ', $property->getTypes());
 
         return new self("Invalid type: expected {$property->getFqn()} to be of type {$expectedTypes}, instead got value `{$value}`.");
