@@ -3,7 +3,7 @@
 namespace Spatie\ValueObject\Tests;
 
 use Spatie\ValueObject\ValueObject;
-use Spatie\ValueObject\ValueObjectException;
+use Spatie\ValueObject\ValueObjectError;
 use Spatie\ValueObject\Tests\TestClasses\DummyClass;
 use Spatie\ValueObject\Tests\TestClasses\OtherClass;
 
@@ -19,7 +19,7 @@ class ValueObjectTest extends TestCase
 
         $this->markTestSucceeded();
 
-        $this->expectException(ValueObjectException::class);
+        $this->expectException(ValueObjectError::class);
 
         new class(['foo' => false]) extends ValueObject {
             /** @var string */
@@ -57,10 +57,22 @@ class ValueObjectTest extends TestCase
     /** @test */
     public function unknown_properties_throw_an_error()
     {
-        $this->expectException(ValueObjectException::class);
+        $this->expectException(ValueObjectError::class);
 
         new class(['bar' => null]) extends ValueObject {
         };
+    }
+
+    /** @test */
+    public function unknown_properties_show_a_comprehensive_error_message()
+    {
+        try {
+            new class(['foo' => null, 'bar' => null]) extends ValueObject {
+            };
+        } catch (ValueObjectError $error) {
+            $this->assertTrue(strpos($error, '`foo`') !== false);
+            $this->assertTrue(strpos($error, '`bar`') !== false);
+        }
     }
 
     /** @test */
@@ -92,6 +104,20 @@ class ValueObjectTest extends TestCase
     }
 
     /** @test */
+    public function all_returns_all_properties()
+    {
+        $valueObject = new class(['foo' => 1, 'bar' => 2]) extends ValueObject {
+            /** @var int */
+            public $foo;
+
+            /** @var int */
+            public $bar;
+        };
+
+        $this->assertEquals(['foo' => 1, 'bar' => 2], $valueObject->all());
+    }
+
+    /** @test */
     public function mixed_is_supported()
     {
         new class(['foo' => 'abc']) extends ValueObject {
@@ -117,7 +143,7 @@ class ValueObjectTest extends TestCase
 
         $this->markTestSucceeded();
 
-        $this->expectException(ValueObjectException::class);
+        $this->expectException(ValueObjectError::class);
 
         new class(['foo' => new class() {
         }]) extends ValueObject {
@@ -158,7 +184,7 @@ class ValueObjectTest extends TestCase
     /** @test */
     public function an_exception_is_thrown_when_property_was_not_initialised()
     {
-        $this->expectException(ValueObjectException::class);
+        $this->expectException(ValueObjectError::class);
 
         new class([]) extends ValueObject {
             /** @var string */

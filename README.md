@@ -78,6 +78,17 @@ class DummyData
 }
 ```
 
+### PHP's type system
+
+PHP 7.4 will introduce typed class properties. 
+We're making this package as closely as possible to the typed properties implementation,
+so that when 7.4 comes this package will seamlessly work with typed properties, and not just doc blocks.
+
+### A note on immutability
+
+Value objects are meant to be only constructed once, and not changed thereafter.
+You should never write data to the properties once the value object is created.
+
 ### Helper functions
 
 Once a value object is constructed, you can read its properties like you'd normally do:

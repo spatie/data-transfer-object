@@ -8,6 +8,9 @@ use ReflectionProperty;
 abstract class ValueObject
 {
     /** @var array */
+    protected $allValues = [];
+
+    /** @var array */
     protected $exceptKeys = [];
 
     /** @var array */
@@ -23,28 +26,20 @@ abstract class ValueObject
             $value = $parameters[$property->getName()] ?? null;
 
             $property->set($value);
+
+            unset($parameters[$property->getName()]);
+
+            $this->allValues[$property->getName()] = $property->getValue($this);
         }
 
-        foreach (array_keys($parameters) as $propertyName) {
-            if (isset($properties[$propertyName])) {
-                continue;
-            }
-
-            throw ValueObjectException::unknownPublicProperty($propertyName, $class);
+        if (count($parameters)) {
+            throw ValueObjectError::unknownProperties(array_keys($parameters), $class);
         }
     }
 
     public function all(): array
     {
-        $class = new ReflectionClass(static::class);
-
-        $values = [];
-
-        foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
-            $values[$property->getName()] = $property->getValue($this);
-        }
-
-        return $values;
+        return $this->allValues;
     }
 
     /**
