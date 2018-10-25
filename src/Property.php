@@ -116,11 +116,8 @@ class Property extends ReflectionProperty
             return true;
         }
 
-        if (class_exists($type)) {
-            return $value instanceof $type;
-        }
-
-        return gettype($value) === (self::$typeMapping[$type] ?? $type);
+        return $value instanceof $type
+            || gettype($value) === (self::$typeMapping[$type] ?? $type);
     }
 
     protected function isValidGenericCollection(string $type, $collection): bool
