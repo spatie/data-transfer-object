@@ -23,7 +23,7 @@ Here's an example:
 ```php
 public function handleRequest(array $dataFromRequest)
 {
-    $dateFromRequest[/* what to do now?? */];
+    $dataFromRequest[/* what to do now?? */];
 }
 ```
 
