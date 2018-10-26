@@ -14,115 +14,184 @@ You can install the package via composer:
 composer require spatie/value-object
 ```
 
-## The goal
+## Have you ever…
 
-- Passing data within your code base in a structured manner.
-- Provide type validation for this data.
-- Support static analysis for eg. auto completion.
+… worked with an array of data, retrieved form a request, a CSV file or a JSON API; and wondered what was in it?
 
-## Usage
-
-Value objects are defined like so:
+Here's an example:
 
 ```php
-class DummyData extends ValueObject
+public function handleRequest(array $dataFromRequest)
 {
-    /** @var string */
-    public $name;
-    
-    /** @var \Spatie\ValueObject\Dummy */
-    public $relation;
-    
-    public $everythingAllowed;
-    
-    /** @var null|string */
-    public $nullable;
-    
-    /** @var mixed */
-    public $mixed;
+    $dateFromRequest[/* what to do now?? */];
 }
 ```
 
-And created like so:
+The goal of this package is to structure "unstructured data", which is normally stored in associative arrays.
+By structuring this data into an object, we gain several advantages:
+
+- Structural: we're able to type hint value objects, instead of just calling them `array`.
+- Integrity: by making all properties on our objects typeable, we're sure that their values are never something we didn't expect.
+- Clarity: because of typed properties, we can statically analyze them and have auto completion.
+
+Let's look at the example of a JSON API call:
 
 ```php
-$dummyData = new DummyData([
-    'name' => 'Spatie',
-    'relation' => new Dummy(),
-    'everythingAllowed' => 'abc'
-    'mixed' => 123,
-    // 'nullable' => 'deliberately left out',
+$post = $api->get('posts', 1); 
+
+[
+    'title' => '…',
+    'body' => '…',
+    'author_id' => '…',
+]
+```
+
+Working with this array is difficult, as we'll always have to refer to documentation to know what's exactly in it. 
+This package allows you to create value object definitions, classes, which will represent the data in a structured way.
+
+We did our best to keep the syntax and overhead as little as possible:
+
+```php
+class PostData extends ValueObject
+{
+    /** @var string */
+    public $title;
+    
+    /** @var string */
+    public $body;
+    
+    /** @var \Author */
+    public $author;
+}
+```
+
+An object of `PostData` can from now on be constructed like so:
+
+```php
+$postData = new PostData([
+    'title' => '…',
+    'body' => '…',
+    'author_id' => '…',
 ]);
 ```
 
-In practice, you'll almost always will provide static constructors:
+It's of course possible to add static constructors to `PostData`:
 
 ```php
-class DummyData
+class PostData extends ValueObject
 {
-    public static function fromRequest(Request $request): DummyData
-    {
-        return new self([
-            // …
-        ]);
-    }
+    // …
     
-    public static function fromJson(string $json): DummyData
+    public static function fromRequest(Request $request): self
     {
         return new self([
-            // …
+            'title' => $request->get('title'),
+            'body' => $request->get('body'),
+            'author' => Author::find($request->get('author_id')),
         ]);
     }
 }
 ```
 
-### PHP's type system
+By adding doc blocks to our properties, their values will be validated agains the given type; 
+and a `TypeError` will be thrown if the value doesn't comply with the given type.
 
-PHP 7.4 will introduce typed class properties. 
-We're making this package as closely as possible to the typed properties implementation,
-so that when 7.4 comes this package will seamlessly work with typed properties, and not just doc blocks.
+This are the possible ways of declaring types:
+
+```php
+class PostData extends ValueObject
+{
+    /**
+     * Built in types: 
+     *
+     * @var string 
+     */
+    public $property;
+    
+    /**
+     * Classes with their FQCN: 
+     *
+     * @var \App\Models\Author
+     */
+    public $property;
+    
+    /**
+     * Lists of types: 
+     *
+     * @var \App\Models\Author[]
+     */
+    public $property;
+    
+    /**
+     * Union types: 
+     *
+     * @var string|int
+     */
+    public $property;
+    
+    /**
+     * Nullable types: 
+     *
+     * @var string|null
+     */
+    public $property;
+    
+    /**
+     * Mixed types: 
+     *
+     * @var mixed|null
+     */
+    public $property;
+    
+    /**
+     * No type, which allows everything
+     */
+    public $property;
+}
+```
+
+When PHP 7.4 introduces typed properties, you'll be able to simply remove the doc blocks and type the properties with the new, built-in syntax.
+
 
 ### A note on immutability
 
-Value objects are meant to be only constructed once, and not changed thereafter.
-You should never write data to the properties once the value object is created.
+These value objects are meant to be only constructed once, and not changed thereafter.
+You should never write data to the properties once the value object is created, even though technically it's possible.
 
 ### Helper functions
-
-Once a value object is constructed, you can read its properties like you'd normally do:
-
-```php
-$dummyData->name;
-
-$dummyData->relation;
-```
-
-Because the properties are public, you'll have autocompletion out of the box.
 
 There are also some helper functions provided for working with multiple properties at once. 
 
 ```php
-$dummyData->all();
+$postData->all();
 
-$dummyData
-    ->only('name', 'relation')
+$postData
+    ->only('title', 'body')
     ->toArray();
     
-$dummyData
-    ->except('relation')
+$postData
+    ->except('author')
     ->toArray();
 ``` 
 
 You can also chain these methods:
 
 ```php
-$dummyData
-    ->except('relation')
-    ->except('name')
+$postData
+    ->except('title')
+    ->except('body')
     ->toArray();
 ```
 
 It's important to note that `except` and `only` are immutable, they won't change the original value object.
+
+### Exception handling
+
+Beside property type validation, you can also be certain that the value object in its whole is always valid.
+On constructing a value object, we'll validate whether all required (non-nullable) properties are set. 
+If not, a `Spatie\ValueObject\ValueObjectError` will be thrown.
+
+Likewise, if you're trying to set non-defined properties, you'll get a `ValueObjectError`.
 
 ### Testing
 
