@@ -93,7 +93,7 @@ class PostData extends ValueObject
 }
 ```
 
-By adding doc blocks to our properties, their values will be validated agains the given type; 
+By adding doc blocks to our properties, their values will be validated against the given type; 
 and a `TypeError` will be thrown if the value doesn't comply with the given type.
 
 This are the possible ways of declaring types:
