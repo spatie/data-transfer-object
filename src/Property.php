@@ -19,7 +19,7 @@ class Property extends ReflectionProperty
     protected $hasTypeDeclaration = false;
 
     /** @var bool */
-    protected $isNullable = false;
+    protected $isNullable = true;
 
     /** @var bool */
     protected $isInitialised = false;
@@ -60,6 +60,11 @@ class Property extends ReflectionProperty
     public function getFqn(): string
     {
         return "{$this->getDeclaringClass()->getName()}::{$this->getName()}";
+    }
+
+    public function isNullable(): bool
+    {
+        return $this->isNullable;
     }
 
     protected function resolveTypeDefinition()

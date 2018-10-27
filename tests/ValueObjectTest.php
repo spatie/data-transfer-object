@@ -55,6 +55,17 @@ class ValueObjectTest extends TestCase
     }
 
     /** @test */
+    public function null_is_allowed_only_if_explicitly_specified()
+    {
+        $this->expectException(ValueObjectError::class);
+
+        new class(['foo' => null]) extends ValueObject {
+            /** @var string */
+            public $foo;
+        };
+    }
+
+    /** @test */
     public function unknown_properties_throw_an_error()
     {
         $this->expectException(ValueObjectError::class);

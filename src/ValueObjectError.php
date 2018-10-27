@@ -32,7 +32,7 @@ class ValueObjectError extends TypeError
         return new self("Invalid type: expected {$property->getFqn()} to be of type {$expectedTypes}, instead got value `{$value}`.");
     }
 
-    public static function uninitializedProperty(Property $property): ValueObjectError
+    public static function uninitialized(Property $property): ValueObjectError
     {
         return new self("Non-nullable property {$property->getFqn()} has not been initialized.");
     }
