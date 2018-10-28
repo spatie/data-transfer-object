@@ -27,12 +27,12 @@ abstract class ValueObjectList implements
         return $this->list[$this->position];
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): bool
     {
         return isset($this->list[$offset]) ? $this->list[$offset] : null;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value):void
     {
         if (is_null($offset)) {
             $this->list[] = $value;
@@ -41,32 +41,32 @@ abstract class ValueObjectList implements
         }
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return array_key_exists($offset, $this->list);
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->list[$offset]);
     }
 
-    public function next()
+    public function next(): void
     {
         $this->position++;
     }
 
-    public function key()
+    public function key(): int
     {
         return $this->position;
     }
 
-    public function valid()
+    public function valid(): bool
     {
         return array_key_exists($this->position, $this->list);
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         $this->position = 0;
     }

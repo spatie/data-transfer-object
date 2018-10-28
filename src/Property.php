@@ -27,7 +27,7 @@ class Property extends ReflectionProperty
     /** @var array */
     protected $types = [];
 
-    public static function fromReflection(ValueObject $valueObject, ReflectionProperty $reflectionProperty)
+    public static function fromReflection(ValueObject $valueObject, ReflectionProperty $reflectionProperty): Property
     {
         return new self($valueObject, $reflectionProperty);
     }
@@ -41,7 +41,7 @@ class Property extends ReflectionProperty
         $this->resolveTypeDefinition();
     }
 
-    public function set($value)
+    public function set($value): void
     {
         if (! $this->isValidType($value)) {
             throw ValueObjectError::invalidType($this, $value);
@@ -62,7 +62,7 @@ class Property extends ReflectionProperty
         return "{$this->getDeclaringClass()->getName()}::{$this->getName()}";
     }
 
-    protected function resolveTypeDefinition()
+    protected function resolveTypeDefinition(): void
     {
         $docComment = $this->getDocComment();
 

@@ -24,17 +24,17 @@ abstract class ValueObjectCollection implements
         $this->collection = $collection;
     }
 
-    public function current()
+    public function current(): array
     {
         return $this->collection[$this->position];
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): bool
     {
         return isset($this->collection[$offset]) ? $this->collection[$offset] : null;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): array
     {
         if (is_null($offset)) {
             $this->collection[] = $value;
@@ -43,32 +43,32 @@ abstract class ValueObjectCollection implements
         }
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return array_key_exists($offset, $this->collection);
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->collection[$offset]);
     }
 
-    public function next()
+    public function next(): void
     {
         $this->position++;
     }
 
-    public function key()
+    public function key(): int
     {
         return $this->position;
     }
 
-    public function valid()
+    public function valid(): bool
     {
         return array_key_exists($this->position, $this->collection);
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         $this->position = 0;
     }
