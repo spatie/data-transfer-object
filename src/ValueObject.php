@@ -32,7 +32,7 @@ abstract class ValueObject
             $this->allValues[$property->getName()] = $property->getValue($this);
         }
 
-        if (count($parameters)) {
+        if (\count($parameters)) {
             throw ValueObjectError::unknownProperties(array_keys($parameters), $class);
         }
     }
@@ -72,7 +72,7 @@ abstract class ValueObject
 
     public function toArray(): array
     {
-        if (count($this->onlyKeys)) {
+        if (\count($this->onlyKeys)) {
             return Arr::only($this->all(), $this->onlyKeys);
         }
 

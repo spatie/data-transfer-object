@@ -80,6 +80,6 @@ abstract class ValueObjectCollection implements
 
     public function count(): int
     {
-        return count($this->collection);
+        return \count($this->collection);
     }
 }

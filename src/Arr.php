@@ -20,7 +20,7 @@ class Arr
     {
         $keys = (array) $keys;
 
-        if (count($keys) === 0) {
+        if (\count($keys) === 0) {
             return $array;
         }
 
@@ -34,7 +34,7 @@ class Arr
 
             $parts = explode('.', $key);
 
-            while (count($parts) > 1) {
+            while (\count($parts) > 1) {
                 $part = array_shift($parts);
 
                 if (isset($array[$part]) && is_array($array[$part])) {

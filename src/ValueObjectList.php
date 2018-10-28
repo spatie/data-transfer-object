@@ -34,7 +34,7 @@ abstract class ValueObjectList implements
 
     public function offsetSet($offset, $value)
     {
-        if (is_null($offset)) {
+        if (\is_null($offset)) {
             $this->list[] = $value;
         } else {
             $this->list[$offset] = $value;
@@ -78,6 +78,6 @@ abstract class ValueObjectList implements
 
     public function count(): int
     {
-        return count($this->list);
+        return \count($this->list);
     }
 }

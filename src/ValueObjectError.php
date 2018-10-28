@@ -19,11 +19,11 @@ class ValueObjectError extends TypeError
             $value = 'null';
         }
 
-        if (is_object($value)) {
+        if (\is_object($value)) {
             $value = get_class($value);
         }
 
-        if (is_array($value)) {
+        if (\is_array($value)) {
             $value = 'array';
         }
 

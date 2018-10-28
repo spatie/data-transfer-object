@@ -72,7 +72,7 @@ class Property extends ReflectionProperty
 
         preg_match('/\@var ((?:(?:[\w|\\\\])+(?:\[\])?)+)/', $docComment, $matches);
 
-        if (! count($matches)) {
+        if (! \count($matches)) {
             return;
         }
 
@@ -117,12 +117,12 @@ class Property extends ReflectionProperty
         }
 
         return $value instanceof $type
-            || gettype($value) === (self::$typeMapping[$type] ?? $type);
+            || \gettype($value) === (self::$typeMapping[$type] ?? $type);
     }
 
     protected function isValidGenericCollection(string $type, $collection): bool
     {
-        if (! is_array($collection)) {
+        if (! \is_array($collection)) {
             return false;
         }
 
