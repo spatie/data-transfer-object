@@ -29,7 +29,7 @@ abstract class ValueObjectList implements
 
     public function offsetGet($offset)
     {
-        return isset($this->list[$offset]) ? $this->list[$offset] : null;
+        return $this->list[$offset] ?? null;
     }
 
     public function offsetSet($offset, $value)

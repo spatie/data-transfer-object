@@ -31,7 +31,7 @@ abstract class ValueObjectCollection implements
 
     public function offsetGet($offset)
     {
-        return isset($this->collection[$offset]) ? $this->collection[$offset] : null;
+        return $this->collection[$offset] ?? null;
     }
 
     public function offsetSet($offset, $value)
