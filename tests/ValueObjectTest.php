@@ -214,6 +214,11 @@ class ValueObjectTest extends TestCase
             public $foo;
         };
 
+        new class(['foo' => null]) extends ValueObject {
+            /** This is a variable without type declaration */
+            public $foo;
+        };
+
         new class(['foo' => 1]) extends ValueObject {
             public $foo;
         };

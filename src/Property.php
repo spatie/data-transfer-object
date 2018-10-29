@@ -19,7 +19,7 @@ class Property extends ReflectionProperty
     protected $hasTypeDeclaration = false;
 
     /** @var bool */
-    protected $isNullable = true;
+    protected $isNullable = false;
 
     /** @var bool */
     protected $isInitialised = false;
@@ -72,12 +72,16 @@ class Property extends ReflectionProperty
         $docComment = $this->getDocComment();
 
         if (! $docComment) {
+            $this->isNullable = true;
+
             return;
         }
 
         preg_match('/\@var ((?:(?:[\w|\\\\])+(?:\[\])?)+)/', $docComment, $matches);
 
         if (! count($matches)) {
+            $this->isNullable = true;
+
             return;
         }
 
