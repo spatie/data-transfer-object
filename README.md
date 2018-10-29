@@ -16,7 +16,7 @@ composer require spatie/value-object
 
 ## Have you ever…
 
-… worked with an array of data, retrieved form a request, a CSV file or a JSON API; and wondered what was in it?
+… worked with an array of data, retrieved from a request, a CSV file or a JSON API; and wondered what was in it?
 
 Here's an example:
 
@@ -46,7 +46,7 @@ $post = $api->get('posts', 1);
 ]
 ```
 
-Working with this array is difficult, as we'll always have to refer to documentation to know what's exactly in it. 
+Working with this array is difficult, as we'll always have to refer to the documentation to know what's exactly in it. 
 This package allows you to create value object definitions, classes, which will represent the data in a structured way.
 
 We did our best to keep the syntax and overhead as little as possible:
@@ -75,7 +75,7 @@ $postData = new PostData([
 ]);
 ```
 
-It's of course possible to add static constructors to `PostData`:
+It's, of course, possible to add static constructors to `PostData`:
 
 ```php
 class PostData extends ValueObject
@@ -96,7 +96,7 @@ class PostData extends ValueObject
 By adding doc blocks to our properties, their values will be validated against the given type; 
 and a `TypeError` will be thrown if the value doesn't comply with the given type.
 
-This are the possible ways of declaring types:
+Here are the possible ways of declaring types:
 
 ```php
 class PostData extends ValueObject
