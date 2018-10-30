@@ -23,6 +23,13 @@ abstract class ValueObject
         $properties = $this->getPublicProperties($class);
 
         foreach ($properties as $property) {
+            if (
+                ! isset($parameters[$property->getName()])
+                && ! $property->isNullable()
+            ) {
+                throw ValueObjectError::uninitialized($property);
+            }
+
             $value = $parameters[$property->getName()] ?? null;
 
             $property->set($value);

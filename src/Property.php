@@ -62,17 +62,26 @@ class Property extends ReflectionProperty
         return "{$this->getDeclaringClass()->getName()}::{$this->getName()}";
     }
 
+    public function isNullable(): bool
+    {
+        return $this->isNullable;
+    }
+
     protected function resolveTypeDefinition()
     {
         $docComment = $this->getDocComment();
 
         if (! $docComment) {
+            $this->isNullable = true;
+
             return;
         }
 
         preg_match('/\@var ((?:(?:[\w|\\\\])+(?:\[\])?)+)/', $docComment, $matches);
 
         if (! count($matches)) {
+            $this->isNullable = true;
+
             return;
         }
 
