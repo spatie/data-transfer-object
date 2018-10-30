@@ -2,10 +2,10 @@
 
 namespace Spatie\ValueObject\Tests;
 
-use Spatie\ValueObject\ValueObjectList;
+use Spatie\ValueObject\ValueObjectCollection;
 use Spatie\ValueObject\Tests\TestClasses\TestValueObject;
 
-class ValueObjectListTest extends TestCase
+class ValueObjectCollectionTest extends TestCase
 {
     /** @test */
     public function it_can_hold_value_objects_of_a_certain_type()
@@ -16,7 +16,7 @@ class ValueObjectListTest extends TestCase
             new TestValueObject(['testProperty' => 3]),
         ];
 
-        $list = new class($objects) extends ValueObjectList {
+        $list = new class($objects) extends ValueObjectCollection {
         };
 
         $this->assertCount(3, $list);

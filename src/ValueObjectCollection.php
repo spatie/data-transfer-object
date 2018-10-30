@@ -5,13 +5,11 @@ namespace Spatie\ValueObject;
 use Iterator;
 use Countable;
 use ArrayAccess;
-use Illuminate\Contracts\Support\Arrayable;
 
 abstract class ValueObjectCollection implements
     ArrayAccess,
     Iterator,
-    Countable,
-    Arrayable
+    Countable
 {
     /** @var array */
     protected $collection;
