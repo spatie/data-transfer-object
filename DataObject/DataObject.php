@@ -1,11 +1,11 @@
 <?php
 
-namespace Spatie\ValueObject;
+namespace Spatie\DataObject;
 
 use ReflectionClass;
 use ReflectionProperty;
 
-abstract class ValueObject
+abstract class DataObject
 {
     /** @var array */
     protected $allValues = [];
@@ -27,7 +27,7 @@ abstract class ValueObject
                 ! isset($parameters[$property->getName()])
                 && ! $property->isNullable()
             ) {
-                throw ValueObjectError::uninitialized($property);
+                throw DataObjectError::uninitialized($property);
             }
 
             $value = $parameters[$property->getName()] ?? null;
@@ -40,7 +40,7 @@ abstract class ValueObject
         }
 
         if (count($parameters)) {
-            throw ValueObjectError::unknownProperties(array_keys($parameters), $class);
+            throw DataObjectError::unknownProperties(array_keys($parameters), $class);
         }
     }
 
@@ -54,7 +54,7 @@ abstract class ValueObject
      *
      * @return static
      */
-    public function only(string ...$keys): ValueObject
+    public function only(string ...$keys): DataObject
     {
         $valueObject = clone $this;
 
@@ -68,7 +68,7 @@ abstract class ValueObject
      *
      * @return static
      */
-    public function except(string ...$keys): ValueObject
+    public function except(string ...$keys): DataObject
     {
         $valueObject = clone $this;
 
@@ -89,7 +89,7 @@ abstract class ValueObject
     /**
      * @param \ReflectionClass $class
      *
-     * @return array|\Spatie\ValueObject\Property[]
+     * @return array|\Spatie\DataObject\Property[]
      */
     protected function getPublicProperties(ReflectionClass $class): array
     {

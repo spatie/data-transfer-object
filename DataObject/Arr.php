@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\ValueObject;
+namespace Spatie\DataObject;
 
 use ArrayAccess;
 

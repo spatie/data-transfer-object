@@ -1,27 +1,27 @@
 <?php
 
-namespace Spatie\ValueObject\Tests;
+namespace Spatie\DataObject\Tests;
 
-use Spatie\ValueObject\ValueObject;
-use Spatie\ValueObject\ValueObjectError;
-use Spatie\ValueObject\Tests\TestClasses\DummyClass;
-use Spatie\ValueObject\Tests\TestClasses\OtherClass;
+use Spatie\DataObject\DataObject;
+use Spatie\DataObject\DataObjectError;
+use Spatie\DataObject\Tests\TestClasses\DummyClass;
+use Spatie\DataObject\Tests\TestClasses\OtherClass;
 
-class ValueObjectTest extends TestCase
+class DataObjectTest extends TestCase
 {
     /** @test */
     public function only_the_type_hinted_type_may_be_passed()
     {
-        new class(['foo' => 'value']) extends ValueObject {
+        new class(['foo' => 'value']) extends DataObject {
             /** @var string */
             public $foo;
         };
 
         $this->markTestSucceeded();
 
-        $this->expectException(ValueObjectError::class);
+        $this->expectException(DataObjectError::class);
 
-        new class(['foo' => false]) extends ValueObject {
+        new class(['foo' => false]) extends DataObject {
             /** @var string */
             public $foo;
         };
@@ -30,12 +30,12 @@ class ValueObjectTest extends TestCase
     /** @test */
     public function union_types_are_supported()
     {
-        new class(['foo' => 'value']) extends ValueObject {
+        new class(['foo' => 'value']) extends DataObject {
             /** @var string|bool */
             public $foo;
         };
 
-        new class(['foo' => false]) extends ValueObject {
+        new class(['foo' => false]) extends DataObject {
             /** @var string|bool */
             public $foo;
         };
@@ -46,7 +46,7 @@ class ValueObjectTest extends TestCase
     /** @test */
     public function nullable_types_are_supported()
     {
-        new class(['foo' => null]) extends ValueObject {
+        new class(['foo' => null]) extends DataObject {
             /** @var string|null */
             public $foo;
         };
@@ -57,9 +57,9 @@ class ValueObjectTest extends TestCase
     /** @test */
     public function null_is_allowed_only_if_explicitly_specified()
     {
-        $this->expectException(ValueObjectError::class);
+        $this->expectException(DataObjectError::class);
 
-        new class(['foo' => null]) extends ValueObject {
+        new class(['foo' => null]) extends DataObject {
             /** @var string */
             public $foo;
         };
@@ -68,9 +68,9 @@ class ValueObjectTest extends TestCase
     /** @test */
     public function unknown_properties_throw_an_error()
     {
-        $this->expectException(ValueObjectError::class);
+        $this->expectException(DataObjectError::class);
 
-        new class(['bar' => null]) extends ValueObject {
+        new class(['bar' => null]) extends DataObject {
         };
     }
 
@@ -78,9 +78,9 @@ class ValueObjectTest extends TestCase
     public function unknown_properties_show_a_comprehensive_error_message()
     {
         try {
-            new class(['foo' => null, 'bar' => null]) extends ValueObject {
+            new class(['foo' => null, 'bar' => null]) extends DataObject {
             };
-        } catch (ValueObjectError $error) {
+        } catch (DataObjectError $error) {
             $this->assertTrue(strpos($error, '`foo`') !== false);
             $this->assertTrue(strpos($error, '`bar`') !== false);
         }
@@ -89,7 +89,7 @@ class ValueObjectTest extends TestCase
     /** @test */
     public function only_returns_filtered_properties()
     {
-        $valueObject = new class(['foo' => 1, 'bar' => 2]) extends ValueObject {
+        $valueObject = new class(['foo' => 1, 'bar' => 2]) extends DataObject {
             /** @var int */
             public $foo;
 
@@ -103,7 +103,7 @@ class ValueObjectTest extends TestCase
     /** @test */
     public function except_returns_filtered_properties()
     {
-        $valueObject = new class(['foo' => 1, 'bar' => 2]) extends ValueObject {
+        $valueObject = new class(['foo' => 1, 'bar' => 2]) extends DataObject {
             /** @var int */
             public $foo;
 
@@ -117,7 +117,7 @@ class ValueObjectTest extends TestCase
     /** @test */
     public function all_returns_all_properties()
     {
-        $valueObject = new class(['foo' => 1, 'bar' => 2]) extends ValueObject {
+        $valueObject = new class(['foo' => 1, 'bar' => 2]) extends DataObject {
             /** @var int */
             public $foo;
 
@@ -131,12 +131,12 @@ class ValueObjectTest extends TestCase
     /** @test */
     public function mixed_is_supported()
     {
-        new class(['foo' => 'abc']) extends ValueObject {
+        new class(['foo' => 'abc']) extends DataObject {
             /** @var mixed */
             public $foo;
         };
 
-        new class(['foo' => 1]) extends ValueObject {
+        new class(['foo' => 1]) extends DataObject {
             /** @var mixed */
             public $foo;
         };
@@ -147,18 +147,18 @@ class ValueObjectTest extends TestCase
     /** @test */
     public function classes_are_supported()
     {
-        new class(['foo' => new DummyClass()]) extends ValueObject {
-            /** @var \Spatie\ValueObject\Tests\TestClasses\DummyClass */
+        new class(['foo' => new DummyClass()]) extends DataObject {
+            /** @var \Spatie\DataObject\Tests\TestClasses\DummyClass */
             public $foo;
         };
 
         $this->markTestSucceeded();
 
-        $this->expectException(ValueObjectError::class);
+        $this->expectException(DataObjectError::class);
 
         new class(['foo' => new class() {
-        }]) extends ValueObject {
-            /** @var \Spatie\ValueObject\Tests\TestClasses\DummyClass */
+        }]) extends DataObject {
+            /** @var \Spatie\DataObject\Tests\TestClasses\DummyClass */
             public $foo;
         };
     }
@@ -166,17 +166,17 @@ class ValueObjectTest extends TestCase
     /** @test */
     public function generic_collections_are_supported()
     {
-        new class(['foo' => [new DummyClass()]]) extends ValueObject {
-            /** @var \Spatie\ValueObject\Tests\TestClasses\DummyClass[] */
+        new class(['foo' => [new DummyClass()]]) extends DataObject {
+            /** @var \Spatie\DataObject\Tests\TestClasses\DummyClass[] */
             public $foo;
         };
 
         $this->markTestSucceeded();
 
-        $this->expectException(ValueObjectError::class);
+        $this->expectException(DataObjectError::class);
 
-        new class(['foo' => [new OtherClass()]]) extends ValueObject {
-            /** @var \Spatie\ValueObject\Tests\TestClasses\DummyClass[] */
+        new class(['foo' => [new OtherClass()]]) extends DataObject {
+            /** @var \Spatie\DataObject\Tests\TestClasses\DummyClass[] */
             public $foo;
         };
     }
@@ -184,9 +184,9 @@ class ValueObjectTest extends TestCase
     /** @test */
     public function an_exception_is_thrown_for_a_generic_collection_of_null()
     {
-        $this->expectException(ValueObjectError::class);
+        $this->expectException(DataObjectError::class);
 
-        new class(['foo' => [null]]) extends ValueObject {
+        new class(['foo' => [null]]) extends DataObject {
             /** @var string[] */
             public $foo;
         };
@@ -195,9 +195,9 @@ class ValueObjectTest extends TestCase
     /** @test */
     public function an_exception_is_thrown_when_property_was_not_initialised()
     {
-        $this->expectException(ValueObjectError::class);
+        $this->expectException(DataObjectError::class);
 
-        new class([]) extends ValueObject {
+        new class([]) extends DataObject {
             /** @var string */
             public $foo;
         };
@@ -206,20 +206,20 @@ class ValueObjectTest extends TestCase
     /** @test */
     public function empty_type_declaration_allows_everything()
     {
-        new class(['foo' => new DummyClass()]) extends ValueObject {
+        new class(['foo' => new DummyClass()]) extends DataObject {
             public $foo;
         };
 
-        new class(['foo' => null]) extends ValueObject {
+        new class(['foo' => null]) extends DataObject {
             public $foo;
         };
 
-        new class(['foo' => null]) extends ValueObject {
+        new class(['foo' => null]) extends DataObject {
             /** This is a variable without type declaration */
             public $foo;
         };
 
-        new class(['foo' => 1]) extends ValueObject {
+        new class(['foo' => 1]) extends DataObject {
             public $foo;
         };
 

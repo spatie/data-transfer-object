@@ -1,12 +1,12 @@
 <?php
 
-namespace Spatie\ValueObject;
+namespace Spatie\DataObject;
 
 use Iterator;
 use Countable;
 use ArrayAccess;
 
-abstract class ValueObjectCollection implements
+abstract class DataObjectCollection implements
     ArrayAccess,
     Iterator,
     Countable

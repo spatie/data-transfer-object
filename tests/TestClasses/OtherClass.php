@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\ValueObject\Tests\TestClasses;
+namespace Spatie\DataObject\Tests\TestClasses;
 
 class OtherClass
 {
