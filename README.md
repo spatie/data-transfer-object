@@ -1,17 +1,17 @@
-# Data objects with batteries included
+# Data transfer objects with batteries included
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/data-object.svg?style=flat-square)](https://packagist.org/packages/spatie/data-object)
-[![Build Status](https://img.shields.io/travis/spatie/data-object/master.svg?style=flat-square)](https://travis-ci.org/spatie/data-object)
-[![Quality Score](https://img.shields.io/scrutinizer/g/spatie/data-object.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/data-object)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/data-transfer-object.svg?style=flat-square)](https://packagist.org/packages/spatie/data-transfer-object)
+[![Build Status](https://img.shields.io/travis/spatie/data-transfer-object/master.svg?style=flat-square)](https://travis-ci.org/spatie/data-transfer-object)
+[![Quality Score](https://img.shields.io/scrutinizer/g/spatie/data-transfer-object.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/data-transfer-object)
 [![StyleCI](https://github.styleci.io/repos/153632216/shield?branch=master)](https://github.styleci.io/repos/153632216)
-[![Total Downloads](https://img.shields.io/packagist/dt/spatie/data-object.svg?style=flat-square)](https://packagist.org/packages/spatie/data-object)
+[![Total Downloads](https://img.shields.io/packagist/dt/spatie/data-transfer-object.svg?style=flat-square)](https://packagist.org/packages/spatie/data-transfer-object)
 
 ## Installation
 
 You can install the package via composer:
 
 ```bash
-composer require spatie/data-object
+composer require spatie/data-transfer-object
 ```
 
 ## Have you ever…
@@ -30,7 +30,7 @@ public function handleRequest(array $dataFromRequest)
 The goal of this package is to structure "unstructured data", which is normally stored in associative arrays.
 By structuring this data into an object, we gain several advantages:
 
-- Structural: we're able to type hint data objects, instead of just calling them `array`.
+- Structural: we're able to type hint data transfer objects, instead of just calling them `array`.
 - Integrity: by making all properties on our objects typeable, we're sure that their values are never something we didn't expect.
 - Clarity: because of typed properties, we can statically analyze them and have auto completion.
 
@@ -47,12 +47,12 @@ $post = $api->get('posts', 1);
 ```
 
 Working with this array is difficult, as we'll always have to refer to the documentation to know what's exactly in it. 
-This package allows you to create data object definitions, classes, which will represent the data in a structured way.
+This package allows you to create data transfer object definitions, classes, which will represent the data in a structured way.
 
 We did our best to keep the syntax and overhead as little as possible:
 
 ```php
-class PostData extends DataObject
+class PostData extends DataTransferObject
 {
     /** @var string */
     public $title;
@@ -78,7 +78,7 @@ $postData = new PostData([
 It's, of course, possible to add static constructors to `PostData`:
 
 ```php
-class PostData extends DataObject
+class PostData extends DataTransferObject
 {
     // …
     
@@ -99,7 +99,7 @@ and a `TypeError` will be thrown if the value doesn't comply with the given type
 Here are the possible ways of declaring types:
 
 ```php
-class PostData extends DataObject
+class PostData extends DataTransferObject
 {
     /**
      * Built in types: 
@@ -155,8 +155,8 @@ When PHP 7.4 introduces typed properties, you'll be able to simply remove the do
 
 ### A note on immutability
 
-These data objects are meant to be only constructed once, and not changed thereafter.
-You should never write data to the properties once the data object is created, even though technically it's possible.
+These data transfer objects are meant to be only constructed once, and not changed thereafter.
+You should never write data to the properties once the data transfer object is created, even though technically it's possible.
 
 ### Helper functions
 
@@ -183,15 +183,15 @@ $postData
     ->toArray();
 ```
 
-It's important to note that `except` and `only` are immutable, they won't change the original data object.
+It's important to note that `except` and `only` are immutable, they won't change the original data transfer object.
 
 ### Exception handling
 
-Beside property type validation, you can also be certain that the data object in its whole is always valid.
-On constructing a data object, we'll validate whether all required (non-nullable) properties are set. 
-If not, a `Spatie\DataObject\DataObjectError` will be thrown.
+Beside property type validation, you can also be certain that the data transfer object in its whole is always valid.
+On constructing a data transfer object, we'll validate whether all required (non-nullable) properties are set. 
+If not, a `Spatie\DataTransferObject\DataTransferObjectError` will be thrown.
 
-Likewise, if you're trying to set non-defined properties, you'll get a `DataObjectError`.
+Likewise, if you're trying to set non-defined properties, you'll get a `DataTransferObjectError`.
 
 ### Testing
 

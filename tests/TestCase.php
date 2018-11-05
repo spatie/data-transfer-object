@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\DataObject\Tests;
+namespace Spatie\DataTransferObject\Tests;
 
 use PHPUnit\Framework\TestCase as BaseTestCase;
 

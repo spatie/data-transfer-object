@@ -1,12 +1,12 @@
 <?php
 
-namespace Spatie\DataObject;
+namespace Spatie\DataTransferObject;
 
 use Iterator;
 use Countable;
 use ArrayAccess;
 
-abstract class DataObjectCollection implements
+abstract class DataTransferObjectCollection implements
     ArrayAccess,
     Iterator,
     Countable

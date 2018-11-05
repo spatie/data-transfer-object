@@ -1,10 +1,10 @@
 # Changelog
 
-All notable changes to `value-object` will be documented in this file
+All notable changes to `data-transfer-object` will be documented in this file
 
-## 1.3.1 - 2018-11-05
+## 1.4.0 - 2018-11-05
 
-- Rename to data-object
+- Rename to data-transfer-object
 
 ## 1.2.0 - 2018-10-30
 

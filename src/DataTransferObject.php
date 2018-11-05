@@ -1,11 +1,11 @@
 <?php
 
-namespace Spatie\DataObject;
+namespace Spatie\DataTransferObject;
 
 use ReflectionClass;
 use ReflectionProperty;
 
-abstract class DataObject
+abstract class DataTransferObject
 {
     /** @var array */
     protected $allValues = [];
@@ -27,7 +27,7 @@ abstract class DataObject
                 ! isset($parameters[$property->getName()])
                 && ! $property->isNullable()
             ) {
-                throw DataObjectError::uninitialized($property);
+                throw DataTransferObjectError::uninitialized($property);
             }
 
             $value = $parameters[$property->getName()] ?? null;
@@ -40,7 +40,7 @@ abstract class DataObject
         }
 
         if (count($parameters)) {
-            throw DataObjectError::unknownProperties(array_keys($parameters), $class);
+            throw DataTransferObjectError::unknownProperties(array_keys($parameters), $class);
         }
     }
 
@@ -54,7 +54,7 @@ abstract class DataObject
      *
      * @return static
      */
-    public function only(string ...$keys): DataObject
+    public function only(string ...$keys): DataTransferObject
     {
         $valueObject = clone $this;
 
@@ -68,7 +68,7 @@ abstract class DataObject
      *
      * @return static
      */
-    public function except(string ...$keys): DataObject
+    public function except(string ...$keys): DataTransferObject
     {
         $valueObject = clone $this;
 
@@ -89,7 +89,7 @@ abstract class DataObject
     /**
      * @param \ReflectionClass $class
      *
-     * @return array|\Spatie\DataObject\Property[]
+     * @return array|\Spatie\DataTransferObject\Property[]
      */
     protected function getPublicProperties(ReflectionClass $class): array
     {

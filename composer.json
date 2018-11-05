@@ -1,11 +1,11 @@
 {
-    "name": "spatie/data-object",
-    "description": "Data objects with batteries included",
+    "name": "spatie/data-transfer-object",
+    "description": "Data transfer objects with batteries included",
     "keywords": [
         "spatie",
-        "data-object"
+        "data-transfer-object"
     ],
-    "homepage": "https://github.com/spatie/data-object",
+    "homepage": "https://github.com/spatie/data-transfer-object",
     "license": "MIT",
     "authors": [
         {
@@ -24,12 +24,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Spatie\\DataObject\\": "src"
+            "Spatie\\DataTransferObject\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Spatie\\DataObject\\Tests\\": "tests"
+            "Spatie\\DataTransferObject\\Tests\\": "tests"
         }
     },
     "scripts": {

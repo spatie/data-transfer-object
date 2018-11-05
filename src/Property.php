@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\DataObject;
+namespace Spatie\DataTransferObject;
 
 use ReflectionProperty;
 
@@ -12,7 +12,7 @@ class Property extends ReflectionProperty
         'bool' => 'boolean',
     ];
 
-    /** @var \Spatie\DataObject\DataObject */
+    /** @var \Spatie\DataTransferObject\DataTransferObject */
     protected $valueObject;
 
     /** @var bool */
@@ -27,12 +27,12 @@ class Property extends ReflectionProperty
     /** @var array */
     protected $types = [];
 
-    public static function fromReflection(DataObject $valueObject, ReflectionProperty $reflectionProperty)
+    public static function fromReflection(DataTransferObject $valueObject, ReflectionProperty $reflectionProperty)
     {
         return new self($valueObject, $reflectionProperty);
     }
 
-    public function __construct(DataObject $valueObject, ReflectionProperty $reflectionProperty)
+    public function __construct(DataTransferObject $valueObject, ReflectionProperty $reflectionProperty)
     {
         parent::__construct($reflectionProperty->class, $reflectionProperty->getName());
 
@@ -44,7 +44,7 @@ class Property extends ReflectionProperty
     public function set($value)
     {
         if (! $this->isValidType($value)) {
-            throw DataObjectError::invalidType($this, $value);
+            throw DataTransferObjectError::invalidType($this, $value);
         }
 
         $this->isInitialised = true;

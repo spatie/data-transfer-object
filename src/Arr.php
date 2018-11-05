@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\DataObject;
+namespace Spatie\DataTransferObject;
 
 use ArrayAccess;
 
