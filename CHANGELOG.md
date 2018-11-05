@@ -2,6 +2,10 @@
 
 All notable changes to `value-object` will be documented in this file
 
+## 1.3.0 - 2018-11-05
+
+- Rename to data-object
+
 ## 1.2.0 - 2018-10-30
 
 - Add uninitialized errors.
