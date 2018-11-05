@@ -2,7 +2,7 @@
 
 All notable changes to `value-object` will be documented in this file
 
-## 1.3.0 - 2018-11-05
+## 1.3.1 - 2018-11-05
 
 - Rename to data-object
 
