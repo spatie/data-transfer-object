@@ -1,11 +1,11 @@
 {
-    "name": "spatie/value-object",
-    "description": "Value objects with batteries included",
+    "name": "spatie/data-object",
+    "description": "Data objects with batteries included",
     "keywords": [
         "spatie",
         "value-object"
     ],
-    "homepage": "https://github.com/spatie/value-object",
+    "homepage": "https://github.com/spatie/data-object",
     "license": "MIT",
     "authors": [
         {
@@ -24,12 +24,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Spatie\\ValueObject\\": "src"
+            "Spatie\\DataObject\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Spatie\\ValueObject\\Tests\\": "tests"
+            "Spatie\\DataObject\\Tests\\": "tests"
         }
     },
     "scripts": {
