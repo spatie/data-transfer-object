@@ -174,7 +174,7 @@ and use the collections like so.
 
 ```php
 foreach ($postCollection as $postData) {
-    $postDate-> // … your IDE will provide autocompletion.
+    $postData-> // … your IDE will provide autocompletion.
 }
 
 $postCollection[0]-> // … and also here.
