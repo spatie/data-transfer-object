@@ -152,6 +152,52 @@ class PostData extends DataTransferObject
 
 When PHP 7.4 introduces typed properties, you'll be able to simply remove the doc blocks and type the properties with the new, built-in syntax.
 
+### Working with collections
+
+If you're working with collections of DTOs, you also probably want autocompletion and proper type validation. 
+This package adds a simple collection implementation, which you can extend from.
+
+```php
+use \Spatie\DataTransferObject\DataTransferObjectCollection;
+
+class PostCollection extends DataTransferObjectCollection
+{
+    public function current(): PostData
+    {
+        return parent::current();
+    }
+}
+```
+
+By overriding the `current` method, you'll be able to get autocompletion in your IDE, 
+and use the collections like so.
+
+```php
+foreach ($postCollection as $postData) {
+    $postDate-> // … your IDE will provide autocompletion.
+}
+
+$postCollection[0]-> // … and also here.
+```
+
+Of course you're free to implement your own static constructors:
+
+```php
+class PostCollection extends DataTransferObjectCollection
+{
+    public static function create(array $data): PostCollection
+    {
+        $collection = [];
+
+        foreach ($data as $item)
+        {
+            $collection[] = PostData::create($item);
+        }
+
+        return new self($collection);
+    }
+}
+```
 
 ### A note on immutability
 
