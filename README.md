@@ -30,9 +30,9 @@ public function handleRequest(array $dataFromRequest)
 The goal of this package is to structure "unstructured data", which is normally stored in associative arrays.
 By structuring this data into an object, we gain several advantages:
 
-- Structural: we're able to type hint data transfer objects, instead of just calling them `array`.
-- Integrity: by making all properties on our objects typeable, we're sure that their values are never something we didn't expect.
-- Clarity: because of typed properties, we can statically analyze them and have auto completion.
+- We're able to type hint data transfer objects, instead of just calling them `array`.
+- By making all properties on our objects typeable, we're sure that their values are never something we didn't expect.
+- Because of typed properties, we can statically analyze them and have auto completion.
 
 Let's look at the example of a JSON API call:
 
