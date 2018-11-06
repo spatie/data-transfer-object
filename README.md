@@ -75,6 +75,14 @@ $postData = new PostData([
 ]);
 ```
 
+Now you can use this data in a structured way:
+
+```php
+$postData->title;
+$postData->body;
+$postData->author_id;
+```
+
 It's, of course, possible to add static constructors to `PostData`:
 
 ```php
