@@ -154,7 +154,7 @@ When PHP 7.4 introduces typed properties, you'll be able to simply remove the do
 
 ### Working with collections
 
-If you're working with collections of DTOs, you also probably want autocompletion and proper type validation. 
+If you're working with collections of DTOs, you probably want auto completion and proper type validation on your collections too.
 This package adds a simple collection implementation, which you can extend from.
 
 ```php
@@ -169,7 +169,7 @@ class PostCollection extends DataTransferObjectCollection
 }
 ```
 
-By overriding the `current` method, you'll be able to get autocompletion in your IDE, 
+By overriding the `current` method, you'll get auto completion in your IDE, 
 and use the collections like so.
 
 ```php
