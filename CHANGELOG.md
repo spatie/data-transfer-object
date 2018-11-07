@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 1.5.1 - 2018-11-07
+
+- Add strict type declarations
+
 ## 1.5.0 - 2018-11-07
 
 - Add auto casting of nested DTOs
