@@ -211,7 +211,7 @@ class PostCollection extends DataTransferObjectCollection
 
 If you've got nested DTO fields, data passed to the parent DTO will automatically be casted.
 
-````php
+```php
 class PostData extends DataTransferObject
 {
     /** @var \AuthorData */
