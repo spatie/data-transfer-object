@@ -43,6 +43,10 @@ class Property extends ReflectionProperty
 
     public function set($value)
     {
+        if (is_array($value)) {
+            $value = $this->cast($value);
+        }
+
         if (! $this->isValidType($value)) {
             throw DataTransferObjectError::invalidType($this, $value);
         }
@@ -113,6 +117,27 @@ class Property extends ReflectionProperty
         }
 
         return false;
+    }
+
+    protected function cast($value)
+    {
+        $castTo = null;
+
+        foreach ($this->types as $type) {
+            if (! is_subclass_of($type, DataTransferObject::class)) {
+                continue;
+            }
+
+            $castTo = $type;
+
+            break;
+        }
+
+        if (! $castTo) {
+            return $value;
+        }
+
+        return new $castTo($value);
     }
 
     protected function assertTypeEquals(string $type, $value): bool
