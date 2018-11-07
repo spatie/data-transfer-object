@@ -207,6 +207,28 @@ class PostCollection extends DataTransferObjectCollection
 }
 ```
 
+### Automatic casting of nested DTOs
+
+If you've got nested DTO fields, data passed to the parent DTO will automatically be casted.
+
+````php
+class PostData extends DataTransferObject
+{
+    /** @var \AuthorData */
+    public $author;
+}
+```
+
+`PostData` can now be constructed like so:
+
+```php
+$postData = new PostData([
+    'author' => [
+        'name' => 'Foo',
+    ],
+]);
+```
+
 ### A note on immutability
 
 These data transfer objects are meant to be only constructed once, and not changed thereafter.
