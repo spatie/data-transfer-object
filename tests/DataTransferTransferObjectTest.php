@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\DataTransferObject;
@@ -83,8 +85,8 @@ class DataTransferObjectTest extends TestCase
             new class(['foo' => null, 'bar' => null]) extends DataTransferObject {
             };
         } catch (DataTransferObjectError $error) {
-            $this->assertTrue(strpos($error, '`foo`') !== false);
-            $this->assertTrue(strpos($error, '`bar`') !== false);
+            $this->assertTrue(strpos($error->getMessage(), '`foo`') !== false);
+            $this->assertTrue(strpos($error->getMessage(), '`bar`') !== false);
         }
     }
 

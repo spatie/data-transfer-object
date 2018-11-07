@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spatie\DataTransferObject;
 
 use ReflectionClass;
@@ -40,7 +42,7 @@ abstract class DataTransferObject
         }
 
         if (count($parameters)) {
-            throw DataTransferObjectError::unknownProperties(array_keys($parameters), $class);
+            throw DataTransferObjectError::unknownProperties(array_keys($parameters), $class->getName());
         }
     }
 
