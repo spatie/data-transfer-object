@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Spatie\DataTransferObject;
 
-use ReflectionClass as BaseReflectionClass;
 use ReflectionProperty;
+use ReflectionClass as BaseReflectionClass;
 
 class DataTransferObjectDefinition extends BaseReflectionClass
 {
