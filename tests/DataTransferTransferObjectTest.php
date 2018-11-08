@@ -10,6 +10,7 @@ use Spatie\DataTransferObject\Tests\TestClasses\DummyClass;
 use Spatie\DataTransferObject\Tests\TestClasses\OtherClass;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedChild;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParent;
+use Spatie\DataTransferObject\Tests\TestClasses\ShorthandTypeDoc;
 
 class DataTransferObjectTest extends TestCase
 {
@@ -93,7 +94,7 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function only_returns_filtered_properties()
     {
-        $valueObject = new class(['foo' => 1, 'bar' => 2]) extends DataTransferObject {
+        $dataTransferObject = new class(['foo' => 1, 'bar' => 2]) extends DataTransferObject {
             /** @var int */
             public $foo;
 
@@ -101,13 +102,13 @@ class DataTransferObjectTest extends TestCase
             public $bar;
         };
 
-        $this->assertEquals(['foo' => 1], $valueObject->only('foo')->toArray());
+        $this->assertEquals(['foo' => 1], $dataTransferObject->only('foo')->toArray());
     }
 
     /** @test */
     public function except_returns_filtered_properties()
     {
-        $valueObject = new class(['foo' => 1, 'bar' => 2]) extends DataTransferObject {
+        $dataTransferObject = new class(['foo' => 1, 'bar' => 2]) extends DataTransferObject {
             /** @var int */
             public $foo;
 
@@ -115,13 +116,13 @@ class DataTransferObjectTest extends TestCase
             public $bar;
         };
 
-        $this->assertEquals(['foo' => 1], $valueObject->except('bar')->toArray());
+        $this->assertEquals(['foo' => 1], $dataTransferObject->except('bar')->toArray());
     }
 
     /** @test */
     public function all_returns_all_properties()
     {
-        $valueObject = new class(['foo' => 1, 'bar' => 2]) extends DataTransferObject {
+        $dataTransferObject = new class(['foo' => 1, 'bar' => 2]) extends DataTransferObject {
             /** @var int */
             public $foo;
 
@@ -129,7 +130,7 @@ class DataTransferObjectTest extends TestCase
             public $bar;
         };
 
-        $this->assertEquals(['foo' => 1, 'bar' => 2], $valueObject->all());
+        $this->assertEquals(['foo' => 1, 'bar' => 2], $dataTransferObject->all());
     }
 
     /** @test */
@@ -247,5 +248,15 @@ class DataTransferObjectTest extends TestCase
         $this->assertInstanceOf(NestedChild::class, $object->child);
         $this->assertEquals('parent', $object->name);
         $this->assertEquals('child', $object->child->name);
+    }
+
+    /** @test */
+    public function shorthand_aliases_are_supported()
+    {
+        new ShorthandTypeDoc([
+            'var' => new DummyClass()
+        ]);
+
+        $this->markTestSucceeded();
     }
 }

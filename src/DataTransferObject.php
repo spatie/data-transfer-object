@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace Spatie\DataTransferObject;
 
-use ReflectionClass;
-use ReflectionProperty;
-use Spatie\ValueObject\ValueObjectDefinition;
-
 abstract class DataTransferObject
 {
     /** @var array */
@@ -21,9 +17,9 @@ abstract class DataTransferObject
 
     public function __construct(array $parameters)
     {
-        $class = new ValueObjectDefinition($this);
+        $class = new DataTransferObjectDefinition($this);
 
-        $properties = $class->getValueObjectProperties();
+        $properties = $class->getDataTransferObjectProperties();
 
         foreach ($properties as $property) {
             if (
@@ -59,11 +55,11 @@ abstract class DataTransferObject
      */
     public function only(string ...$keys): DataTransferObject
     {
-        $valueObject = clone $this;
+        $dataTransferObject = clone $this;
 
-        $valueObject->onlyKeys = array_merge($this->onlyKeys, $keys);
+        $dataTransferObject->onlyKeys = array_merge($this->onlyKeys, $keys);
 
-        return $valueObject;
+        return $dataTransferObject;
     }
 
     /**
@@ -73,11 +69,11 @@ abstract class DataTransferObject
      */
     public function except(string ...$keys): DataTransferObject
     {
-        $valueObject = clone $this;
+        $dataTransferObject = clone $this;
 
-        $valueObject->exceptKeys = array_merge($this->exceptKeys, $keys);
+        $dataTransferObject->exceptKeys = array_merge($this->exceptKeys, $keys);
 
-        return $valueObject;
+        return $dataTransferObject;
     }
 
     public function toArray(): array
@@ -87,21 +83,5 @@ abstract class DataTransferObject
         }
 
         return Arr::except($this->all(), $this->exceptKeys);
-    }
-
-    /**
-     * @param \ReflectionClass $class
-     *
-     * @return array|\Spatie\DataTransferObject\Property[]
-     */
-    protected function getPublicProperties(ReflectionClass $class): array
-    {
-        $properties = [];
-
-        foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $reflectionProperty) {
-            $properties[$reflectionProperty->getName()] = Property::fromReflection($this, $reflectionProperty);
-        }
-
-        return $properties;
     }
 }

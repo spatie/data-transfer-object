@@ -15,7 +15,7 @@ class DataTransferObjectError extends TypeError
         return new self("Public properties `{$propertyNames}` not found on {$className}");
     }
 
-    public static function invalidType(Property $property, $value): DataTransferObjectError
+    public static function invalidType(DataTransferObjectProperty $property, $value): DataTransferObjectError
     {
         if ($value === null) {
             $value = 'null';
@@ -34,7 +34,7 @@ class DataTransferObjectError extends TypeError
         return new self("Invalid type: expected {$property->getFqn()} to be of type {$expectedTypes}, instead got value `{$value}`.");
     }
 
-    public static function uninitialized(Property $property): DataTransferObjectError
+    public static function uninitialized(DataTransferObjectProperty $property): DataTransferObjectError
     {
         return new self("Non-nullable property {$property->getFqn()} has not been initialized.");
     }

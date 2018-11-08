@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Spatie\DataTransferObject;
 
 use ReflectionProperty;
+use Spatie\DataTransferObject\DataTransferObjectDefinition;
 
-class ValueObjectProperty extends ReflectionProperty
+class DataTransferObjectProperty extends ReflectionProperty
 {
     /** @var array */
     protected static $typeMapping = [
@@ -15,7 +16,7 @@ class ValueObjectProperty extends ReflectionProperty
     ];
 
     /** @var \Spatie\DataTransferObject\DataTransferObject */
-    protected $valueObject;
+    protected $dataTransferObject;
 
     /** @var bool */
     protected $hasTypeDeclaration = false;
@@ -29,27 +30,27 @@ class ValueObjectProperty extends ReflectionProperty
     /** @var array */
     protected $types = [];
 
-    /** @var \Spatie\ValueObject\ValueObjectDefinition */
-    protected $valueObjectDefinition;
+    /** @var \Spatie\DataTransferObject\DataTransferObjectDefinition */
+    protected $dataTransferObjectDefinition;
 
     public static function fromReflection(
-        ValueObject $valueObject,
-        ValueObjectDefinition $valueObjectDefinition,
+        DataTransferObject $dataTransferObject,
+        DataTransferObjectDefinition $dataTransferObjectDefinition,
         ReflectionProperty $reflectionProperty
     ) {
-        return new self($valueObject, $valueObjectDefinition, $reflectionProperty);
+        return new self($dataTransferObject, $dataTransferObjectDefinition, $reflectionProperty);
     }
 
     public function __construct(
-        DataTransferObject $valueObject,
-        ValueObjectDefinition $valueObjectDefinition,
+        DataTransferObject $dataTransferObject,
+        DataTransferObjectDefinition $dataTransferObjectDefinition,
         ReflectionProperty $reflectionProperty
     ) {
         parent::__construct($reflectionProperty->class, $reflectionProperty->getName());
 
-        $this->valueObject = $valueObject;
+        $this->dataTransferObject = $dataTransferObject;
 
-        $this->valueObjectDefinition = $valueObjectDefinition;
+        $this->dataTransferObjectDefinition = $dataTransferObjectDefinition;
 
         $this->resolveTypeDefinition();
     }
@@ -66,7 +67,7 @@ class ValueObjectProperty extends ReflectionProperty
 
         $this->isInitialised = true;
 
-        $this->valueObject->{$this->getName()} = $value;
+        $this->dataTransferObject->{$this->getName()} = $value;
     }
 
     public function getTypes(): array
@@ -163,6 +164,12 @@ class ValueObjectProperty extends ReflectionProperty
             return true;
         }
 
+        if ($this->dataTransferObjectDefinition->hasAlias($type)) {
+            $type = $this->dataTransferObjectDefinition->resolveAlias($type);
+
+            return $value instanceof $type;
+        }
+
         return $value instanceof $type
             || gettype($value) === (self::$typeMapping[$type] ?? $type);
     }
@@ -181,12 +188,6 @@ class ValueObjectProperty extends ReflectionProperty
             }
         }
 
-        if ($this->valueObjectDefinition->hasAlias($type)) {
-            $type = $this->valueObjectDefinition->resolveAlias($type);
-
-            return $value instanceof $type;
-        }
-
-        return gettype($value) === (self::$typeMapping[$type] ?? $type);
+        return true;
     }
 }

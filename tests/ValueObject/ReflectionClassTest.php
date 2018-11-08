@@ -1,20 +1,20 @@
 <?php
 
-namespace Spatie\ValueObject\Tests\ValueObject;
+namespace Spatie\DataTransferObject\Tests\DataTransferObject;
 
-use Spatie\ValueObject\ValueObject;
-use Spatie\ValueObject\ValueObjectDefinition;
-use Spatie\ValueObject\Tests\TestCase;
-use Spatie\ValueObject\Tests\TestClasses\DummyClass;
+use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\DataTransferObject\DataTransferObjectDefinition;
+use Spatie\DataTransferObject\Tests\TestCase;
+use Spatie\DataTransferObject\Tests\TestClasses\DummyClass;
 
 class ReflectionClassTest extends TestCase
 {
     /** @test */
     public function it_parses_use_statements()
     {
-        $valueObject = new class ([]) extends ValueObject {};
+        $dataTransferObject = new class ([]) extends DataTransferObject {};
 
-        $class = new ValueObjectDefinition($valueObject);
+        $class = new DataTransferObjectDefinition($dataTransferObject);
 
         $this->assertEquals(DummyClass::class, $class->resolveAlias('DummyClass'));
     }

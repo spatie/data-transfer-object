@@ -1,11 +1,11 @@
 <?php
 
-namespace Spatie\ValueObject\Tests\TestClasses;
+namespace Spatie\DataTransferObject\Tests\TestClasses;
 
-use Spatie\ValueObject\Tests\TestClasses\DummyClass;
-use Spatie\ValueObject\ValueObject;
+use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\DataTransferObject\Tests\TestClasses\DummyClass;
 
-class ShorthandTypeDoc extends ValueObject
+class ShorthandTypeDoc extends DataTransferObject
 {
     /** @var DummyClass */
     public $var;

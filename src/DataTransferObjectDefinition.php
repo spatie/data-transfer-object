@@ -1,23 +1,25 @@
 <?php
 
-namespace Spatie\ValueObject;
+declare(strict_types=1);
+
+namespace Spatie\DataTransferObject;
 
 use ReflectionClass as BaseReflectionClass;
 use ReflectionProperty;
 
-class ValueObjectDefinition extends BaseReflectionClass
+class DataTransferObjectDefinition extends BaseReflectionClass
 {
     /** @var array */
     protected $uses = [];
 
-    /** @var \Spatie\ValueObject\ValueObject */
-    protected $valueObject;
+    /** @var \Spatie\DataTransferObject\DataTransferObject */
+    protected $dataTransferObject;
 
-    public function __construct(ValueObject $valueObject)
+    public function __construct(DataTransferObject $dataTransferObject)
     {
-        parent::__construct($valueObject);
+        parent::__construct($dataTransferObject);
 
-        $this->valueObject = $valueObject;
+        $this->dataTransferObject = $dataTransferObject;
 
         $this->resolveUseStatements();
     }
@@ -60,15 +62,15 @@ class ValueObjectDefinition extends BaseReflectionClass
     }
 
     /**
-     * @return \Spatie\ValueObject\ValueObjectProperty[]
+     * @return \Spatie\DataTransferObject\DataTransferObjectProperty[]
      */
-    public function getValueObjectProperties(): array
+    public function getDataTransferObjectProperties(): array
     {
         $properties = [];
 
         foreach (parent::getProperties(ReflectionProperty::IS_PUBLIC) as $reflectionProperty) {
-            $properties[$reflectionProperty->getName()] = ValueObjectProperty::fromReflection(
-                $this->valueObject,
+            $properties[$reflectionProperty->getName()] = DataTransferObjectProperty::fromReflection(
+                $this->dataTransferObject,
                 $this,
                 $reflectionProperty
             );
