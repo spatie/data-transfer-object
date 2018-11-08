@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Spatie\DataTransferObject;
 
 use ReflectionProperty;
-use Spatie\DataTransferObject\DataTransferObjectDefinition;
 
 class DataTransferObjectProperty extends ReflectionProperty
 {

@@ -254,7 +254,7 @@ class DataTransferObjectTest extends TestCase
     public function shorthand_aliases_are_supported()
     {
         new ShorthandTypeDoc([
-            'var' => new DummyClass()
+            'var' => new DummyClass(),
         ]);
 
         $this->markTestSucceeded();
