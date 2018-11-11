@@ -82,10 +82,40 @@ abstract class DataTransferObject
     public function toArray(): array
     {
         if (count($this->onlyKeys)) {
-            return Arr::only($this->all(), $this->onlyKeys);
+            $array = Arr::only($this->all(), $this->onlyKeys);
+        } else {
+            $array = Arr::except($this->all(), $this->exceptKeys);
         }
 
-        return Arr::except($this->all(), $this->exceptKeys);
+        foreach ($array as $key => $property) {
+            $array[$key] = $this->convertForArray($property);
+        }
+
+        return $array;
+    }
+
+    /**
+     * @param mixed $property
+     * 
+     * @return mixed
+     */
+    protected function convertForArray($property)
+    {
+        if ($property instanceof DataTransferObject) {
+            return $property->toArray();
+        }
+
+        if (is_object($property) && method_exists($property, 'toArray')) {
+            return $property->toArray();
+        }
+        
+        if (is_array($property)) {
+            foreach ($property as $key => $nested) {
+                $property[$key] = $this->convertForArray($nested);
+            }
+        }
+
+        return $property;
     }
 
     /**
