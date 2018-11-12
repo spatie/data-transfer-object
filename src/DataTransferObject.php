@@ -21,10 +21,10 @@ abstract class DataTransferObject
     public function __construct(array $parameters)
     {
         // see http://php.net/manual/en/ini.core.php#ini.zend.assertions
-        assert($this->isValid($parameters));
+        assert($this->isValidWith($parameters));
     }
 
-    private function isValid(array $parameters): bool
+    private function isValidWith(array $parameters): bool
     {
         $class = new ReflectionClass(static::class);
 
