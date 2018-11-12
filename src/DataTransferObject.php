@@ -20,6 +20,12 @@ abstract class DataTransferObject
 
     public function __construct(array $parameters)
     {
+        // see http://php.net/manual/en/ini.core.php#ini.zend.assertions
+        assert($this->isValid($parameters));
+    }
+
+    private function isValid(array $parameters): bool
+    {
         $class = new ReflectionClass(static::class);
 
         $properties = $this->getPublicProperties($class);
@@ -44,6 +50,8 @@ abstract class DataTransferObject
         if (count($parameters)) {
             throw DataTransferObjectError::unknownProperties(array_keys($parameters), $class->getName());
         }
+
+        return true;
     }
 
     public function all(): array
