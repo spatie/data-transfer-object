@@ -105,10 +105,6 @@ abstract class DataTransferObject
             return $property->toArray();
         }
 
-        if (is_object($property) && method_exists($property, 'toArray')) {
-            return $property->toArray();
-        }
-
         if (is_array($property)) {
             foreach ($property as $key => $nested) {
                 $property[$key] = $this->convertForArray($nested);

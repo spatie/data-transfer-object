@@ -269,19 +269,5 @@ class DataTransferObjectTest extends TestCase
         };
 
         $this->assertEquals(['name' => 'child'], $valueObject->toArray()['childs'][0]);
-
-        $object = new class() {
-            public function toArray()
-            {
-                return ['name' => 'custom'];
-            }
-        };
-
-        $valueObject = new class(['custom' => $object]) extends DataTransferObject {
-            /** @var mixed */
-            public $custom;
-        };
-
-        $this->assertEquals(['name' => 'custom'], $valueObject->toArray()['custom']);
     }
 }

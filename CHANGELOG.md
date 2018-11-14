@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 1.6.2 - 2018-11-14
+
+- Remove too much magic in nested array casting
+
 ## 1.6.1 - 2018-11-14
 
 - Support nested `toArray` in collections.
