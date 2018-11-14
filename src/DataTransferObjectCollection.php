@@ -75,7 +75,17 @@ abstract class DataTransferObjectCollection implements
 
     public function toArray(): array
     {
-        return $this->collection;
+        $collection = $this->collection;
+
+        foreach ($collection as $key => $item) {
+            if (!$item instanceof DataTransferObject) {
+                continue;
+            }
+
+            $collection[$key] = $item->toArray();
+        }
+
+        return $collection;
     }
 
     public function count(): int
