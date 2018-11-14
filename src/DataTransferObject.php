@@ -87,31 +87,31 @@ abstract class DataTransferObject
             $array = Arr::except($this->all(), $this->exceptKeys);
         }
 
-        foreach ($array as $key => $property) {
-            $array[$key] = $this->convertForArray($property);
-        }
+        $array = $this->parseArray($array);
 
         return $array;
     }
 
-    /**
-     * @param mixed $property
-     *
-     * @return mixed
-     */
-    protected function convertForArray($property)
+    protected function parseArray(array $array): array
     {
-        if ($property instanceof DataTransferObject) {
-            return $property->toArray();
-        }
+        foreach ($array as $key => $value) {
+            if (
+                $value instanceof DataTransferObject
+                || $value instanceof DataTransferObjectCollection
+            ) {
+                $array[$key] = $value->toArray();
 
-        if (is_array($property)) {
-            foreach ($property as $key => $nested) {
-                $property[$key] = $this->convertForArray($nested);
+                continue;
             }
+
+            if (! is_array($value)) {
+                continue;
+            }
+
+            $array[$key] = $this->parseArray($value);
         }
 
-        return $property;
+        return $array;
     }
 
     /**

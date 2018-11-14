@@ -2,6 +2,11 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 1.6.3 - 2018-11-14
+
+- Support nested collections in collections
+- Cleanup code
+
 ## 1.6.2 - 2018-11-14
 
 - Remove too much magic in nested array casting

@@ -6,7 +6,8 @@ namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\DataTransferObjectCollection;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParent;
-use Spatie\DataTransferObject\Tests\TestClasses\NestedCollection;
+use Spatie\DataTransferObject\Tests\TestClasses\NestedChildCollection;
+use Spatie\DataTransferObject\Tests\TestClasses\NestedParentCollection;
 use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
 
 class DataTransferObjectCollectionTest extends TestCase
@@ -29,7 +30,7 @@ class DataTransferObjectCollectionTest extends TestCase
     /** @test */
     public function to_array_also_recursively_casts_dtos_to_array()
     {
-        $collection = new NestedCollection();
+        $collection = new NestedChildCollection();
 
         $data = [
             'name' => 'parent',
@@ -46,6 +47,20 @@ class DataTransferObjectCollectionTest extends TestCase
 
         $this->assertEquals([
             0 => $data,
+        ], $array);
+    }
+
+    /** @test */
+    public function to_array_also_recuresively_casts_dto_collections_to_array()
+    {
+        $collection = new NestedParentCollection();
+
+        $collection[] = new NestedChildCollection();
+
+        $array = $collection->toArray();
+
+        $this->assertEquals([
+            0 => [],
         ], $array);
     }
 }

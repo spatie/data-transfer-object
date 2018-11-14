@@ -4,9 +4,9 @@ namespace Spatie\DataTransferObject\Tests\TestClasses;
 
 use Spatie\DataTransferObject\DataTransferObjectCollection;
 
-class NestedCollection extends DataTransferObjectCollection
+class NestedParentCollection extends DataTransferObjectCollection
 {
-    public function current(): NestedParent
+    public function current(): NestedChildCollection
     {
         return parent::current();
     }
