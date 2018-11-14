@@ -248,4 +248,40 @@ class DataTransferObjectTest extends TestCase
         $this->assertEquals('parent', $object->name);
         $this->assertEquals('child', $object->child->name);
     }
+
+    /** @test */
+    public function nested_dtos_are_recursive_cast_from_object_to_array_when_to_array()
+    {
+        $data = [
+            'name' => 'parent',
+            'child' => [
+                'name' => 'child',
+            ],
+        ];
+
+        $object = new NestedParent($data);
+
+        $this->assertEquals(['name' => 'child'], $object->toArray()['child']);
+
+        $valueObject = new class(['childs' => [new NestedChild(['name' => 'child'])]]) extends DataTransferObject {
+            /** @var Spatie\DataTransferObject\Tests\TestClasses\NestedChild[] */
+            public $childs;
+        };
+
+        $this->assertEquals(['name' => 'child'], $valueObject->toArray()['childs'][0]);
+
+        $object = new class() {
+            public function toArray()
+            {
+                return ['name' => 'custom'];
+            }
+        };
+
+        $valueObject = new class(['custom' => $object]) extends DataTransferObject {
+            /** @var mixed */
+            public $custom;
+        };
+
+        $this->assertEquals(['name' => 'custom'], $valueObject->toArray()['custom']);
+    }
 }
