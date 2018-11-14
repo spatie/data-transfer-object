@@ -78,7 +78,7 @@ abstract class DataTransferObjectCollection implements
         $collection = $this->collection;
 
         foreach ($collection as $key => $item) {
-            if (!$item instanceof DataTransferObject) {
+            if (! $item instanceof DataTransferObject) {
                 continue;
             }
 

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\DataTransferObjectCollection;
-use Spatie\DataTransferObject\Tests\TestClasses\NestedCollection;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParent;
+use Spatie\DataTransferObject\Tests\TestClasses\NestedCollection;
 use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
 
 class DataTransferObjectCollectionTest extends TestCase
@@ -20,8 +20,7 @@ class DataTransferObjectCollectionTest extends TestCase
             new TestDataTransferObject(['testProperty' => 3]),
         ];
 
-        $list = new class($objects) extends DataTransferObjectCollection
-        {
+        $list = new class($objects) extends DataTransferObjectCollection {
         };
 
         $this->assertCount(3, $list);
