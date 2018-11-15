@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 1.6.4 - 2018-11-15
+
+- Don't use `allValues` anymore.
+
 ## 1.6.3 - 2018-11-14
 
 - Support nested collections in collections

@@ -10,9 +10,6 @@ use ReflectionProperty;
 abstract class DataTransferObject
 {
     /** @var array */
-    protected $allValues = [];
-
-    /** @var array */
     protected $exceptKeys = [];
 
     /** @var array */
@@ -37,8 +34,6 @@ abstract class DataTransferObject
             $property->set($value);
 
             unset($parameters[$property->getName()]);
-
-            $this->allValues[$property->getName()] = $property->getValue($this);
         }
 
         if (count($parameters)) {
@@ -48,7 +43,17 @@ abstract class DataTransferObject
 
     public function all(): array
     {
-        return $this->allValues;
+        $data = [];
+
+        $class= new ReflectionClass(static::class);
+
+        $properties = $class->getProperties(ReflectionProperty::IS_PUBLIC);
+
+        foreach ($properties as $reflectionProperty) {
+            $data[$reflectionProperty->getName()] = $reflectionProperty->getValue($this);
+        }
+
+        return $data;
     }
 
     /**
