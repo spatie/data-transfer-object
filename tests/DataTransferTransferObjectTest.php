@@ -85,8 +85,8 @@ class DataTransferObjectTest extends TestCase
             new class(['foo' => null, 'bar' => null]) extends DataTransferObject {
             };
         } catch (DataTransferObjectError $error) {
-            $this->assertTrue(strpos($error->getMessage(), '`foo`') !== false);
-            $this->assertTrue(strpos($error->getMessage(), '`bar`') !== false);
+            $this->assertContains('`foo`', $error->getMessage());
+            $this->assertContains('`bar`', $error->getMessage());
         }
     }
 
