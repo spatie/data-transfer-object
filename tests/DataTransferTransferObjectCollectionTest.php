@@ -51,7 +51,7 @@ class DataTransferObjectCollectionTest extends TestCase
     }
 
     /** @test */
-    public function to_array_also_recuresively_casts_dto_collections_to_array()
+    public function to_array_also_recursively_casts_dto_collections_to_array()
     {
         $collection = new NestedParentCollection();
 

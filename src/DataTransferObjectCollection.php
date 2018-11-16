@@ -43,7 +43,7 @@ abstract class DataTransferObjectCollection implements
         }
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return array_key_exists($offset, $this->collection);
     }
@@ -58,12 +58,12 @@ abstract class DataTransferObjectCollection implements
         $this->position++;
     }
 
-    public function key()
+    public function key(): int
     {
         return $this->position;
     }
 
-    public function valid()
+    public function valid(): bool
     {
         return array_key_exists($this->position, $this->collection);
     }

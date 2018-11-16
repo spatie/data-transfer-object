@@ -8,17 +8,17 @@ use ArrayAccess;
 
 class Arr
 {
-    public static function only($array, $keys)
+    public static function only($array, $keys): array
     {
         return array_intersect_key($array, array_flip((array) $keys));
     }
 
-    public static function except($array, $keys)
+    public static function except($array, $keys): array
     {
         return static::forget($array, $keys);
     }
 
-    public static function forget($array, $keys)
+    public static function forget($array, $keys): array
     {
         $keys = (array) $keys;
 
@@ -52,7 +52,7 @@ class Arr
         return $array;
     }
 
-    public static function exists($array, $key)
+    public static function exists($array, $key): bool
     {
         if ($array instanceof ArrayAccess) {
             return $array->offsetExists($key);
