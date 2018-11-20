@@ -59,6 +59,20 @@ class DataTransferObjectTest extends TestCase
     }
 
     /** @test */
+    public function default_values_are_supported()
+    {
+        $valueObject = new class(['bar' => true]) extends DataTransferObject {
+            /** @var string */
+            public $foo = 'abc';
+
+            /** @var bool */
+            public $bar;
+        };
+
+        $this->assertEquals(['foo' => 'abc', 'bar' => true], $valueObject->all());
+    }
+
+    /** @test */
     public function null_is_allowed_only_if_explicitly_specified()
     {
         $this->expectException(DataTransferObjectError::class);
