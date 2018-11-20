@@ -46,7 +46,7 @@ abstract class DataTransferObject
     {
         $data = [];
 
-        $class= new ReflectionClass(static::class);
+        $class = new ReflectionClass(static::class);
 
         $properties = $class->getProperties(ReflectionProperty::IS_PUBLIC);
 
