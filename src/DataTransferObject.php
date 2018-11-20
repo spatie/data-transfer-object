@@ -24,12 +24,13 @@ abstract class DataTransferObject
         foreach ($properties as $property) {
             if (
                 ! isset($parameters[$property->getName()])
+                && ! $property->isDefault()
                 && ! $property->isNullable()
             ) {
                 throw DataTransferObjectError::uninitialized($property);
             }
 
-            $value = $parameters[$property->getName()] ?? null;
+            $value = $parameters[$property->getName()] ?? $property->getValue($this);
 
             $property->set($value);
 
