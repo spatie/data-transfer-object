@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 1.6.5 - 2018-11-20
+
+- Fix uninitialised error with default value.
+
 ## 1.6.4 - 2018-11-15
 
 - Don't use `allValues` anymore.
