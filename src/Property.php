@@ -12,6 +12,7 @@ class Property extends ReflectionProperty
     protected static $typeMapping = [
         'int' => 'integer',
         'bool' => 'boolean',
+        'float' => 'double',
     ];
 
     /** @var \Spatie\DataTransferObject\DataTransferObject */
