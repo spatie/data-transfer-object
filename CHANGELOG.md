@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 1.6.6 - 2018-12-04
+
+- Properly support `float`.
+
 ## 1.6.5 - 2018-11-20
 
 - Fix uninitialised error with default value.
