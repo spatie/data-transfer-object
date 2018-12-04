@@ -163,6 +163,17 @@ class DataTransferObjectTest extends TestCase
     }
 
     /** @test */
+    public function float_is_supported()
+    {
+        new class(['foo' => 5.1]) extends DataTransferObject {
+            /** @var float */
+            public $foo;
+        };
+
+        $this->markTestSucceeded();
+    }
+
+    /** @test */
     public function classes_are_supported()
     {
         new class(['foo' => new DummyClass()]) extends DataTransferObject {
