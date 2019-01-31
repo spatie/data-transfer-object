@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 1.7.0 - 2019-01-31
+
+- Nested array DTO casting supported.
+
 ## 1.6.6 - 2018-12-04
 
 - Properly support `float`.

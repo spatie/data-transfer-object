@@ -229,6 +229,35 @@ $postData = new PostData([
 ]);
 ```
 
+### Automatic casting of nested array DTOs
+
+Similarly to above, nested array DTOs will automatically be casted.
+
+```php
+class TagData extends DataTransferObject
+{
+    /** @var string */
+   public $name;
+}
+
+class PostData extends DataTransferObject
+{
+    /** @var \TagData[] */
+   public $tags;
+}
+```
+
+`PostData` will automatically construct tags like such:
+
+```php
+$postData = new PostData([
+    'tags' => [
+        ['name' => 'foo'],
+        ['name' => 'bar']
+    ]
+]);
+```
+
 ### A note on immutability
 
 These data transfer objects are meant to be only constructed once, and not changed thereafter.

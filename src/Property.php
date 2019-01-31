@@ -47,7 +47,7 @@ class Property extends ReflectionProperty
     public function set($value)
     {
         if (is_array($value)) {
-            $value = $this->cast($value);
+            $value = Arr::isAssoc($value) ? $this->cast($value) : $this->castArray($value);
         }
 
         if (! $this->isValidType($value)) {
@@ -141,6 +141,41 @@ class Property extends ReflectionProperty
         }
 
         return new $castTo($value);
+    }
+
+    protected function castArray(array $values)
+    {
+        foreach ($values as $value) {
+            if (! is_array($value)) {
+                return $this->cast($values);
+            }
+        }
+
+        $castTo = null;
+        $flatTypes = str_replace('[]', '', $this->types);
+
+        foreach ($flatTypes as $type) {
+            if (! is_subclass_of($type, DataTransferObject::class)) {
+                continue;
+            }
+
+            $castTo = $type;
+
+            break;
+        }
+
+        if (! $castTo) {
+            return $values;
+        }
+
+        $casts = array_map(
+            function ($value) use ($castTo) {
+                return new $castTo($value);
+            },
+            $values
+        );
+
+        return ! empty($casts) ? $casts : null;
     }
 
     protected function assertTypeEquals(string $type, $value): bool
