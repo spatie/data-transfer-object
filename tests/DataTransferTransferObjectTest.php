@@ -340,12 +340,11 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function nested_array_dtos_cannot_cast_with_null()
     {
-        $object = new NestedParentOfMany([
+        $this->expectException(DataTransferObjectError::class);
+
+        new NestedParentOfMany([
             'name' => 'parent',
         ]);
-
-        $this->assertNotEquals(null, $object->children);
-        $this->assertEmpty($object->children);
     }
 
     /** @test */
