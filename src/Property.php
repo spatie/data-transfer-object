@@ -30,6 +30,9 @@ class Property extends ReflectionProperty
     /** @var array */
     protected $types = [];
 
+    /** @var array */
+    protected $arrayTypes = [];
+
     public static function fromReflection(DataTransferObject $valueObject, ReflectionProperty $reflectionProperty)
     {
         return new self($valueObject, $reflectionProperty);
@@ -47,7 +50,7 @@ class Property extends ReflectionProperty
     public function set($value)
     {
         if (is_array($value)) {
-            $value = Arr::isAssoc($value) ? $this->cast($value) : $this->castArray($value);
+            $value = $this->shouldBeCastToCollection($value) ? $this->castCollection($value) : $this->cast($value);
         }
 
         if (! $this->isValidType($value)) {
@@ -97,6 +100,7 @@ class Property extends ReflectionProperty
         $varDocComment = end($matches);
 
         $this->types = explode('|', $varDocComment);
+        $this->arrayTypes = str_replace('[]', '', $this->types);
 
         $this->isNullable = strpos($varDocComment, 'null') !== false;
     }
@@ -143,18 +147,11 @@ class Property extends ReflectionProperty
         return new $castTo($value);
     }
 
-    protected function castArray(array $values)
+    protected function castCollection(array $values)
     {
-        foreach ($values as $value) {
-            if (! is_array($value)) {
-                return $this->cast($values);
-            }
-        }
-
         $castTo = null;
-        $flatTypes = str_replace('[]', '', $this->types);
 
-        foreach ($flatTypes as $type) {
+        foreach ($this->arrayTypes as $type) {
             if (! is_subclass_of($type, DataTransferObject::class)) {
                 continue;
             }
@@ -168,14 +165,24 @@ class Property extends ReflectionProperty
             return $values;
         }
 
-        $casts = array_map(
-            function ($value) use ($castTo) {
-                return new $castTo($value);
-            },
-            $values
-        );
+        $casts = [];
 
-        return ! empty($casts) ? $casts : null;
+        foreach ($values as $value) {
+            $casts[] = new $castTo($value);
+        }
+
+        return $casts;
+    }
+
+    protected function shouldBeCastToCollection(array $values): bool
+    {
+        foreach ($values as $value) {
+            if (! is_array($value)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     protected function assertTypeEquals(string $type, $value): bool

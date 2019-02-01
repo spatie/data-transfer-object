@@ -340,11 +340,22 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function nested_array_dtos_cannot_cast_with_null()
     {
-        $this->expectException(DataTransferObjectError::class);
-
-        new NestedParentOfMany([
+        $object = new NestedParentOfMany([
             'name' => 'parent',
-            'children' => null,
         ]);
+
+        $this->assertNotEquals(null, $object->children);
+        $this->assertEmpty($object->children);
+    }
+
+    /** @test */
+    public function nested_array_dtos_can_be_nullable()
+    {
+        $object = new class(['children' => null]) extends DataTransferObject {
+            /** @var Spatie\DataTransferObject\Tests\TestClasses\NestedChild[]|null */
+            public $children;
+        };
+
+        $this->assertNull($object->children);
     }
 }

@@ -60,11 +60,4 @@ class Arr
 
         return array_key_exists($key, $array);
     }
-
-    public static function isAssoc(array $arr): bool
-    {
-        $stringKeys = array_filter(array_keys($arr), 'is_string');
-
-        return count($stringKeys) > 0;
-    }
 }
