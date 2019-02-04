@@ -2,7 +2,7 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
-## 1.7.0 - 2019-01-31
+## 1.7.0 - 2019-02-04
 
 - Nested array DTO casting supported.
 
