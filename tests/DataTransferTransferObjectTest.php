@@ -10,6 +10,7 @@ use Spatie\DataTransferObject\Tests\TestClasses\DummyClass;
 use Spatie\DataTransferObject\Tests\TestClasses\OtherClass;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedChild;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParent;
+use Spatie\DataTransferObject\Tests\TestClasses\NestedParentOfMany;
 
 class DataTransferObjectTest extends TestCase
 {
@@ -294,5 +295,66 @@ class DataTransferObjectTest extends TestCase
         };
 
         $this->assertEquals(['name' => 'child'], $valueObject->toArray()['childs'][0]);
+    }
+
+    /** @test */
+    public function nested_array_dtos_are_automatically_cast_to_arrays_of_dtos()
+    {
+        $data = [
+            'name' => 'parent',
+            'children' => [
+                ['name' => 'child'],
+            ],
+        ];
+
+        $object = new NestedParentOfMany($data);
+
+        $this->assertNotEmpty($object->children);
+        $this->assertInstanceOf(NestedChild::class, $object->children[0]);
+        $this->assertEquals('parent', $object->name);
+        $this->assertEquals('child', $object->children[0]->name);
+    }
+
+    /** @test */
+    public function nested_array_dtos_are_recursive_cast_to_arrays_of_dtos()
+    {
+        $data = [
+            'children' => [
+                [
+                    'name' => 'child',
+                    'children' => [
+                        ['name' => 'grandchild'],
+                    ],
+                ],
+            ],
+        ];
+
+        $object = new class($data) extends DataTransferObject {
+            /** @var \Spatie\DataTransferObject\Tests\TestClasses\NestedParentOfMany[] */
+            public $children;
+        };
+
+        $this->assertEquals(['name' => 'grandchild'], $object->toArray()['children'][0]['children'][0]);
+    }
+
+    /** @test */
+    public function nested_array_dtos_cannot_cast_with_null()
+    {
+        $this->expectException(DataTransferObjectError::class);
+
+        new NestedParentOfMany([
+            'name' => 'parent',
+        ]);
+    }
+
+    /** @test */
+    public function nested_array_dtos_can_be_nullable()
+    {
+        $object = new class(['children' => null]) extends DataTransferObject {
+            /** @var Spatie\DataTransferObject\Tests\TestClasses\NestedChild[]|null */
+            public $children;
+        };
+
+        $this->assertNull($object->children);
     }
 }

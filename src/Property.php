@@ -30,6 +30,9 @@ class Property extends ReflectionProperty
     /** @var array */
     protected $types = [];
 
+    /** @var array */
+    protected $arrayTypes = [];
+
     public static function fromReflection(DataTransferObject $valueObject, ReflectionProperty $reflectionProperty)
     {
         return new self($valueObject, $reflectionProperty);
@@ -47,7 +50,7 @@ class Property extends ReflectionProperty
     public function set($value)
     {
         if (is_array($value)) {
-            $value = $this->cast($value);
+            $value = $this->shouldBeCastToCollection($value) ? $this->castCollection($value) : $this->cast($value);
         }
 
         if (! $this->isValidType($value)) {
@@ -97,6 +100,7 @@ class Property extends ReflectionProperty
         $varDocComment = end($matches);
 
         $this->types = explode('|', $varDocComment);
+        $this->arrayTypes = str_replace('[]', '', $this->types);
 
         $this->isNullable = strpos($varDocComment, 'null') !== false;
     }
@@ -141,6 +145,48 @@ class Property extends ReflectionProperty
         }
 
         return new $castTo($value);
+    }
+
+    protected function castCollection(array $values)
+    {
+        $castTo = null;
+
+        foreach ($this->arrayTypes as $type) {
+            if (! is_subclass_of($type, DataTransferObject::class)) {
+                continue;
+            }
+
+            $castTo = $type;
+
+            break;
+        }
+
+        if (! $castTo) {
+            return $values;
+        }
+
+        $casts = [];
+
+        foreach ($values as $value) {
+            $casts[] = new $castTo($value);
+        }
+
+        return $casts;
+    }
+
+    protected function shouldBeCastToCollection(array $values): bool
+    {
+        foreach ($values as $key => $value) {
+            if (is_string($key)) {
+                return false;
+            }
+
+            if (! is_array($value)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     protected function assertTypeEquals(string $type, $value): bool
