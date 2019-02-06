@@ -326,7 +326,7 @@ We publish all received postcards [on our company website](https://spatie.be/en/
 
 ## Credits
 
-- [Brent Roose](https://github.com/brentgd)
+- [Brent Roose](https://github.com/brendt)
 - [All Contributors](../../contributors)
 
 Our `Arr` class contains functions copied from Laravels `Arr` helper.
