@@ -7,6 +7,7 @@ namespace Spatie\DataTransferObject\Tests;
 use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\DataTransferObjectError;
 use Spatie\DataTransferObject\Tests\TestClasses\DummyClass;
+use Spatie\DataTransferObject\Tests\TestClasses\EmptyChild;
 use Spatie\DataTransferObject\Tests\TestClasses\OtherClass;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedChild;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParent;
@@ -356,5 +357,16 @@ class DataTransferObjectTest extends TestCase
         };
 
         $this->assertNull($object->children);
+    }
+
+    /** @test */
+    public function empty_dto_objects_can_be_cast_using_arrays()
+    {
+        $object = new class(['child' => []]) extends DataTransferObject {
+            /** @var \Spatie\DataTransferObject\Tests\TestClasses\EmptyChild */
+            public $child;
+        };
+
+        $this->assertInstanceOf(EmptyChild::class, $object->child);
     }
 }

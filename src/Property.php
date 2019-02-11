@@ -176,6 +176,10 @@ class Property extends ReflectionProperty
 
     protected function shouldBeCastToCollection(array $values): bool
     {
+        if (empty($values)) {
+            return false;
+        }
+
         foreach ($values as $key => $value) {
             if (is_string($key)) {
                 return false;
