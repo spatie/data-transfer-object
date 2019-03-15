@@ -257,6 +257,7 @@ $postData = new PostData([
     ]
 ]);
 ```
+**Attention**: For nested type casting to work your Docblock definition needs to be a Fully Qualified Class Name (`\App\DTOs\TagData[]` instead of `TagData[]` and an use statement at the top)
 
 ### A note on immutability
 
