@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 1.8.0 - 2019-03-??
+
+- Support immutability
+
 ## 1.7.1 - 2019-02-11
 
 - Fixes #47, allowing empty dto's to be cast to using an empty array.
