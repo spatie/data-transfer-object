@@ -38,4 +38,9 @@ class DataTransferObjectError extends TypeError
     {
         return new self("Non-nullable property {$property->getFqn()} has not been initialized.");
     }
+
+    public static function immutable(string $property): DataTransferObjectError
+    {
+        return new self("Cannot change the value of property {$property} on an immutable data transfer object");
+    }
 }
