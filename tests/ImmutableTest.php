@@ -11,7 +11,7 @@ class ImmutableTest extends TestCase
     public function immutable_values_cannot_be_overwritten()
     {
         $dto = TestDataTransferObject::immutable([
-            'testProperty' => 1
+            'testProperty' => 1,
         ]);
 
         $this->assertEquals(1, $dto->testProperty);
@@ -25,7 +25,7 @@ class ImmutableTest extends TestCase
     public function method_calls_are_proxied()
     {
         $dto = TestDataTransferObject::immutable([
-            'testProperty' => 1
+            'testProperty' => 1,
         ]);
 
         $this->assertEquals(['testProperty' => 1], $dto->toArray());
