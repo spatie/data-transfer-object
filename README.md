@@ -259,10 +259,20 @@ $postData = new PostData([
 ```
 **Attention**: For nested type casting to work your Docblock definition needs to be a Fully Qualified Class Name (`\App\DTOs\TagData[]` instead of `TagData[]` and an use statement at the top)
 
-### A note on immutability
+### Immutability
 
-These data transfer objects are meant to be only constructed once, and not changed thereafter.
-You should never write data to the properties once the data transfer object is created, even though technically it's possible.
+If you want your data object to be never changeable (this is a good idea in some cases), you can make them immutable:
+
+```php
+$postData = PostData::immutable([
+    'tags' => [
+        ['name' => 'foo'],
+        ['name' => 'bar']
+    ]
+]);
+```
+
+Trying to change a property of `$postData` after it's constructed, will result in a `DataTransferObjectError`.
 
 ### Helper functions
 
