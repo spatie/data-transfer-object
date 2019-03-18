@@ -2,7 +2,7 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
-## 1.8.0 - 2019-03-??
+## 1.8.0 - 2019-03-18
 
 - Support immutability
 
