@@ -15,6 +15,9 @@ abstract class DataTransferObject
     /** @var array */
     protected $onlyKeys = [];
 
+    /** @var Property[] | array */
+    protected $properties = [];
+
     /**
      * @param array $parameters
      *
@@ -32,20 +35,35 @@ abstract class DataTransferObject
         $properties = $this->getPublicProperties($class);
 
         foreach ($properties as $property) {
+            $property->setDefault($property->getValue($this));
+            $method = $property->getName();
+
+            if (method_exists($this, $method)) {
+                $factory = new Attribute($property);
+                $property = $this->$method($factory)->getProperty();
+            }
+            $default = $property->getDefault();
             if (
-                ! isset($parameters[$property->getName()])
-                && ! $property->isDefault()
-                && ! $property->isNullable()
+                !isset($parameters[$property->getName()])
+                && !isset($default)
+                && !$property->isNullable()
+                && $property->isRequired()
             ) {
                 throw DataTransferObjectError::uninitialized($property);
             }
 
-            $value = $parameters[$property->getName()] ?? $property->getValue($this);
+            if (array_key_exists($property->getName(), $parameters)) {
+                $property->set($parameters[$property->getName()]);
+            } else {
+                $property->setUninitialized();
+            }
 
-            $property->set($value);
+            $this->properties[$property->getName()] = $property;
 
             unset($parameters[$property->getName()]);
+            unset($this->{$property->getName()});
         }
+
 
         if (count($parameters)) {
             throw DataTransferObjectError::unknownProperties(array_keys($parameters), $class->getName());
@@ -65,6 +83,18 @@ abstract class DataTransferObject
         }
 
         return $data;
+    }
+
+    public function __set($name, $value)
+    {
+        throw DataTransferObjectError::immutable($name);
+    }
+
+    public function __get($name)
+    {
+        $properties = $this->properties[$name];
+        $value = $properties->getActualValue();
+        return $value;
     }
 
     /**
@@ -120,7 +150,7 @@ abstract class DataTransferObject
                 continue;
             }
 
-            if (! is_array($value)) {
+            if (!is_array($value)) {
                 continue;
             }
 
@@ -144,5 +174,11 @@ abstract class DataTransferObject
         }
 
         return $properties;
+    }
+
+    protected function propertyIsOptional($property)
+    {
+        $isOptionalMethod = $property->getName() . "IsOptional";
+        return method_exists($this, $isOptionalMethod) && is_bool($this->$isOptionalMethod()) ? $this->$isOptionalMethod() : false;
     }
 }

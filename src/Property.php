@@ -25,6 +25,9 @@ class Property extends ReflectionProperty
     protected $isNullable = false;
 
     /** @var bool */
+    protected $isRequired = true;
+
+    /** @var bool */
     protected $isInitialised = false;
 
     /** @var array */
@@ -32,6 +35,15 @@ class Property extends ReflectionProperty
 
     /** @var array */
     protected $arrayTypes = [];
+
+    /** @var string */
+    protected $rules;
+
+    /** @var mixed */
+    protected $default;
+
+    /** @var mixed */
+    protected $actualValue;
 
     public static function fromReflection(DataTransferObject $valueObject, ReflectionProperty $reflectionProperty)
     {
@@ -53,13 +65,20 @@ class Property extends ReflectionProperty
             $value = $this->shouldBeCastToCollection($value) ? $this->castCollection($value) : $this->cast($value);
         }
 
-        if (! $this->isValidType($value)) {
+        if (!$this->isValidType($value)) {
             throw DataTransferObjectError::invalidType($this, $value);
         }
 
         $this->isInitialised = true;
 
-        $this->valueObject->{$this->getName()} = $value;
+        $this->actualValue = $value;
+    }
+
+    public function setUninitialized()
+    {
+        $this->isInitialised = false;
+
+        $this->actualValue = null;
     }
 
     public function getTypes(): array
@@ -77,11 +96,37 @@ class Property extends ReflectionProperty
         return $this->isNullable;
     }
 
+    /**
+     * @return bool
+     */
+    public function isRequired(): bool
+    {
+        return $this->isRequired;
+    }
+
+    public function setRequired(bool $bool): void
+    {
+        $this->isRequired = $bool;
+    }
+
+    public function setNullable(bool $bool): void
+    {
+        $this->isNullable = $bool;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOptional(): bool
+    {
+        return !$this->isRequired;
+    }
+
     protected function resolveTypeDefinition()
     {
         $docComment = $this->getDocComment();
 
-        if (! $docComment) {
+        if (!$docComment) {
             $this->isNullable = true;
 
             return;
@@ -89,7 +134,7 @@ class Property extends ReflectionProperty
 
         preg_match('/\@var ((?:(?:[\w|\\\\])+(?:\[\])?)+)/', $docComment, $matches);
 
-        if (! count($matches)) {
+        if (!count($matches)) {
             $this->isNullable = true;
 
             return;
@@ -107,7 +152,7 @@ class Property extends ReflectionProperty
 
     protected function isValidType($value): bool
     {
-        if (! $this->hasTypeDeclaration) {
+        if (!$this->hasTypeDeclaration) {
             return true;
         }
 
@@ -131,7 +176,7 @@ class Property extends ReflectionProperty
         $castTo = null;
 
         foreach ($this->types as $type) {
-            if (! is_subclass_of($type, DataTransferObject::class)) {
+            if (!is_subclass_of($type, DataTransferObject::class)) {
                 continue;
             }
 
@@ -140,7 +185,7 @@ class Property extends ReflectionProperty
             break;
         }
 
-        if (! $castTo) {
+        if (!$castTo) {
             return $value;
         }
 
@@ -152,7 +197,7 @@ class Property extends ReflectionProperty
         $castTo = null;
 
         foreach ($this->arrayTypes as $type) {
-            if (! is_subclass_of($type, DataTransferObject::class)) {
+            if (!is_subclass_of($type, DataTransferObject::class)) {
                 continue;
             }
 
@@ -161,7 +206,7 @@ class Property extends ReflectionProperty
             break;
         }
 
-        if (! $castTo) {
+        if (!$castTo) {
             return $values;
         }
 
@@ -185,7 +230,7 @@ class Property extends ReflectionProperty
                 return false;
             }
 
-            if (! is_array($value)) {
+            if (!is_array($value)) {
                 return false;
             }
         }
@@ -209,18 +254,64 @@ class Property extends ReflectionProperty
 
     protected function isValidGenericCollection(string $type, $collection): bool
     {
-        if (! is_array($collection)) {
+        if (!is_array($collection)) {
             return false;
         }
 
         $valueType = str_replace('[]', '', $type);
 
         foreach ($collection as $value) {
-            if (! $this->assertTypeEquals($valueType, $value)) {
+            if (!$this->assertTypeEquals($valueType, $value)) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRules(): string
+    {
+        return $this->rules;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDefault()
+    {
+        return $this->default;
+    }
+
+    /**
+     * @param mixed $default
+     */
+    public function setDefault($default): void
+    {
+        $this->default = $default;
+    }
+
+    /**
+     * @param string $rules
+     */
+    public function addRule(string $rules): void
+    {
+        if (!isset($this->rules)) {
+            $this->rules = $rules;
+        } else {
+            $this->rules = $this->rules . '|' . $rules;
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getActualValue()
+    {
+        if (!$this->isNullable && $this->actualValue == null)
+            return $this->getDefault();
+        return $this->actualValue;
     }
 }
