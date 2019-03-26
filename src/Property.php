@@ -68,7 +68,7 @@ class Property
             $value = $this->shouldBeCastToCollection($value) ? $this->castCollection($value) : $this->cast($value);
         }
 
-        if (!$this->isValidType($value)) {
+        if (! $this->isValidType($value)) {
             throw DataTransferObjectError::invalidType($this, $value);
         }
 
@@ -120,14 +120,14 @@ class Property
      */
     public function isOptional(): bool
     {
-        return !$this->isRequired;
+        return ! $this->isRequired;
     }
 
     protected function resolveTypeDefinition()
     {
         $docComment = $this->reflection->getDocComment();
 
-        if (!$docComment) {
+        if (! $docComment) {
             $this->isNullable = true;
 
             return;
@@ -135,7 +135,7 @@ class Property
 
         preg_match('/\@var ((?:(?:[\w|\\\\])+(?:\[\])?)+)/', $docComment, $matches);
 
-        if (!count($matches)) {
+        if (! count($matches)) {
             $this->isNullable = true;
 
             return;
@@ -153,7 +153,7 @@ class Property
 
     protected function isValidType($value): bool
     {
-        if (!$this->hasTypeDeclaration) {
+        if (! $this->hasTypeDeclaration) {
             return true;
         }
 
@@ -177,7 +177,7 @@ class Property
         $castTo = null;
 
         foreach ($this->types as $type) {
-            if (!is_subclass_of($type, DataTransferObject::class)) {
+            if (! is_subclass_of($type, DataTransferObject::class)) {
                 continue;
             }
 
@@ -186,7 +186,7 @@ class Property
             break;
         }
 
-        if (!$castTo) {
+        if (! $castTo) {
             return $value;
         }
 
@@ -198,7 +198,7 @@ class Property
         $castTo = null;
 
         foreach ($this->arrayTypes as $type) {
-            if (!is_subclass_of($type, DataTransferObject::class)) {
+            if (! is_subclass_of($type, DataTransferObject::class)) {
                 continue;
             }
 
@@ -207,7 +207,7 @@ class Property
             break;
         }
 
-        if (!$castTo) {
+        if (! $castTo) {
             return $values;
         }
 
@@ -231,7 +231,7 @@ class Property
                 return false;
             }
 
-            if (!is_array($value)) {
+            if (! is_array($value)) {
                 return false;
             }
         }
@@ -255,14 +255,14 @@ class Property
 
     protected function isValidGenericCollection(string $type, $collection): bool
     {
-        if (!is_array($collection)) {
+        if (! is_array($collection)) {
             return false;
         }
 
         $valueType = str_replace('[]', '', $type);
 
         foreach ($collection as $value) {
-            if (!$this->assertTypeEquals($valueType, $value)) {
+            if (! $this->assertTypeEquals($valueType, $value)) {
                 return false;
             }
         }
@@ -299,10 +299,10 @@ class Property
      */
     public function addRule(string $rules): void
     {
-        if (!isset($this->rules)) {
+        if (! isset($this->rules)) {
             $this->rules = $rules;
         } else {
-            $this->rules = $this->rules . '|' . $rules;
+            $this->rules = $this->rules.'|'.$rules;
         }
     }
 
@@ -311,8 +311,10 @@ class Property
      */
     public function getActualValue()
     {
-        if (!$this->isNullable && $this->actualValue == null)
+        if (! $this->isNullable && $this->actualValue == null) {
             return $this->getDefault();
+        }
+
         return $this->actualValue;
     }
 

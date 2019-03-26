@@ -8,8 +8,7 @@ use ReflectionClass;
 use ReflectionProperty;
 
 /**
- * Class DataTransferObject
- * @package Spatie\DataTransferObject
+ * Class DataTransferObject.
  */
 abstract class DataTransferObject
 {
@@ -71,10 +70,10 @@ abstract class DataTransferObject
             }
 
             /* Check if property passes the basic conditions */
-            if (!array_key_exists($property->getName(), $parameters)
+            if (! array_key_exists($property->getName(), $parameters)
                 && $property->isRequired()
                 && is_null($property->getDefault())
-                && !$property->isNullable()
+                && ! $property->isNullable()
             ) {
                 throw DataTransferObjectError::uninitialized($property);
             }
@@ -106,14 +105,10 @@ abstract class DataTransferObject
         $this->validate();
     }
 
-    /**
-     *
-     */
     protected function validate()
     {
         //IMPLEMENT VALIDATION FUNCTIONALITY CHECK THE RULES & CONSTRAINTS
     }
-
 
     /**
      * @return array
@@ -131,19 +126,20 @@ abstract class DataTransferObject
 
     /**
      * Immutable behavior
-     * Throw error if a user tries to set a property
+     * Throw error if a user tries to set a property.
      * @param $name
      * @param $value
      * @Throws DataTransferObjectError
      */
     public function __set($name, $value)
     {
-        if ($this->immutable)
+        if ($this->immutable) {
             throw DataTransferObjectError::immutable($name);
+        }
     }
 
     /**
-     * Proxy through to the properties array
+     * Proxy through to the properties array.
      * @param $name
      * @return mixed
      */
@@ -212,7 +208,7 @@ abstract class DataTransferObject
                 continue;
             }
 
-            if (!is_array($value)) {
+            if (! is_array($value)) {
                 continue;
             }
 
@@ -237,5 +233,4 @@ abstract class DataTransferObject
 
         return $properties;
     }
-
 }
