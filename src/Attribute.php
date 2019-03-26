@@ -11,6 +11,10 @@ namespace Spatie\DataTransferObject;
 
 use Closure;
 
+/**
+ * Class Attribute
+ * @package Spatie\DataTransferObject
+ */
 class Attribute
 {
     /**
@@ -28,7 +32,7 @@ class Attribute
     }
 
     /**
-     *
+     * @return Attribute
      */
     public function required(): self
     {
@@ -37,7 +41,7 @@ class Attribute
     }
 
     /**
-     *
+     * @return Attribute
      */
     public function optional(): self
     {
@@ -46,7 +50,8 @@ class Attribute
     }
 
     /**
-     *
+     * @param $rules
+     * @return Attribute
      */
     public function rule($rules): self
     {
@@ -54,12 +59,19 @@ class Attribute
         return $this;
     }
 
+    /**
+     * @return Attribute
+     */
     public function nullable(): self
     {
         $this->property->setNullable(false);
         return $this;
     }
 
+    /**
+     * @param $value
+     * @return Attribute
+     */
     public function default($value): self
     {
         $this->property->setDefault($value);
@@ -67,7 +79,8 @@ class Attribute
     }
 
     /**
-     *
+     * @param Closure $callback
+     * @return Attribute
      */
     public function constraint(Closure $callback): self
     {
@@ -75,10 +88,12 @@ class Attribute
         return $this;
     }
 
+    /**
+     * @return Property
+     */
     public function getProperty(): Property
     {
         return $this->property;
     }
-
 
 }
