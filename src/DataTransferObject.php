@@ -28,7 +28,7 @@ abstract class DataTransferObject
         return new ImmutableDataTransferObject(new static($parameters));
     }
 
-    public function __construct(array $parameters)
+    final public function __construct(array $parameters)
     {
         $class = new ReflectionClass(static::class);
 
@@ -92,9 +92,7 @@ abstract class DataTransferObject
 
     public function __get($name)
     {
-        $properties = $this->properties[$name];
-        $value = $properties->getActualValue();
-        return $value;
+        return $this->properties[$name]->getActualValue();
     }
 
     /**
