@@ -6,7 +6,7 @@ namespace Spatie\DataTransferObject;
 
 use ReflectionProperty;
 
-class Property extends ReflectionProperty
+class Property
 {
     /** @var array */
     protected static $typeMapping = [
@@ -45,6 +45,9 @@ class Property extends ReflectionProperty
     /** @var mixed */
     protected $actualValue;
 
+    /** @var ReflectionProperty */
+    protected $reflection;
+
     public static function fromReflection(DataTransferObject $valueObject, ReflectionProperty $reflectionProperty)
     {
         return new self($valueObject, $reflectionProperty);
@@ -52,7 +55,7 @@ class Property extends ReflectionProperty
 
     public function __construct(DataTransferObject $valueObject, ReflectionProperty $reflectionProperty)
     {
-        parent::__construct($reflectionProperty->class, $reflectionProperty->getName());
+        $this->reflection = $reflectionProperty;
 
         $this->valueObject = $valueObject;
 
@@ -77,8 +80,6 @@ class Property extends ReflectionProperty
     public function setUninitialized()
     {
         $this->isInitialised = false;
-
-        $this->actualValue = null;
     }
 
     public function getTypes(): array
@@ -88,7 +89,7 @@ class Property extends ReflectionProperty
 
     public function getFqn(): string
     {
-        return "{$this->getDeclaringClass()->getName()}::{$this->getName()}";
+        return "{$this->reflection->getDeclaringClass()->getName()}::{$this->reflection->getName()}";
     }
 
     public function isNullable(): bool
@@ -124,7 +125,7 @@ class Property extends ReflectionProperty
 
     protected function resolveTypeDefinition()
     {
-        $docComment = $this->getDocComment();
+        $docComment = $this->reflection->getDocComment();
 
         if (!$docComment) {
             $this->isNullable = true;
@@ -313,5 +314,10 @@ class Property extends ReflectionProperty
         if (!$this->isNullable && $this->actualValue == null)
             return $this->getDefault();
         return $this->actualValue;
+    }
+
+    public function __call($name, $arguments)
+    {
+        return call_user_func_array([$this->reflection, $name], $arguments);
     }
 }
