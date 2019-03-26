@@ -3,17 +3,15 @@
  * Created by PhpStorm.
  * User: arthur
  * Date: 25.03.19
- * Time: 20:15
+ * Time: 20:15.
  */
 
 namespace Spatie\DataTransferObject;
 
-
 use Closure;
 
 /**
- * Class Attribute
- * @package Spatie\DataTransferObject
+ * Class Attribute.
  */
 class Attribute
 {
@@ -37,6 +35,7 @@ class Attribute
     public function required(): self
     {
         $this->property->setRequired(true);
+
         return $this;
     }
 
@@ -46,6 +45,7 @@ class Attribute
     public function optional(): self
     {
         $this->property->setRequired(false);
+
         return $this;
     }
 
@@ -56,6 +56,7 @@ class Attribute
     public function rule($rules): self
     {
         $this->property->addRule($rules);
+
         return $this;
     }
 
@@ -65,6 +66,7 @@ class Attribute
     public function nullable(): self
     {
         $this->property->setNullable(false);
+
         return $this;
     }
 
@@ -75,6 +77,7 @@ class Attribute
     public function default($value): self
     {
         $this->property->setDefault($value);
+
         return $this;
     }
 
@@ -85,6 +88,7 @@ class Attribute
     public function constraint(Closure $callback): self
     {
         $this->property->addConstraint($callback);
+
         return $this;
     }
 
@@ -95,5 +99,4 @@ class Attribute
     {
         return $this->property;
     }
-
 }
