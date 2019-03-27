@@ -71,6 +71,11 @@ class Property
         $this->isInitialised = false;
     }
 
+    public function isInitialized()
+    {
+        return $this->isInitialised;
+    }
+
     public function getTypes(): array
     {
         return $this->types;
@@ -125,7 +130,7 @@ class Property
             return true;
         }
 
-        if ($this->isNullable && $value === null) {
+        if ($this->isNullable() && $value === null) {
             return true;
         }
 
@@ -250,7 +255,7 @@ class Property
 
     public function getValue()
     {
-        if (! $this->isNullable && $this->value == null) {
+        if (! $this->isNullable() && $this->value == null) {
             return $this->getDefault();
         }
 
@@ -265,10 +270,5 @@ class Property
     public function getName()
     {
         return $this->reflection->getName();
-    }
-
-    public function __call($name, $arguments)
-    {
-        return call_user_func_array([$this->reflection, $name], $arguments);
     }
 }
