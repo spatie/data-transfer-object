@@ -13,7 +13,7 @@ class Property
         'int' => 'integer',
         'bool' => 'boolean',
         'float' => 'double',
-        'immutable' => immutable::class
+        'immutable' => immutable::class,
     ];
 
     /** @var bool */
