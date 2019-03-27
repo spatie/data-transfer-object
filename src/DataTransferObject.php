@@ -121,7 +121,6 @@ abstract class DataTransferObject implements DtoContract
     /**
      * Set the value if it's present in the array.
      * @param Property $property
-     * @param array $parameters
      */
     protected function setPropertyDefaultValue($property): void
     {
@@ -131,7 +130,6 @@ abstract class DataTransferObject implements DtoContract
     /**
      * Allows to mutate the property before it gets processed.
      * @param Property $property
-     * @param array $parameters
      * @return Property
      */
     protected function mutateProperty($property)
@@ -143,6 +141,7 @@ abstract class DataTransferObject implements DtoContract
      * Check if there are additional parameters left.
      * Throw error if there are.
      * Additional properties are not allowed in a dto.
+     * @param array $parameters
      * @throws DataTransferObjectError
      */
     protected function processRemainingProperties(array $parameters)
