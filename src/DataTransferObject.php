@@ -24,18 +24,15 @@ abstract class DataTransferObject implements DtoContract
     /** @var bool */
     protected $immutable;
 
-
     public static function mutable(array $parameters): DtoContract
     {
         return new static($parameters, false);
     }
 
-
     public static function immutable(array $parameters): DtoContract
     {
         return new static($parameters, true);
     }
-
 
     public function __construct(array $parameters, bool $immutable = true)
     {
@@ -44,7 +41,7 @@ abstract class DataTransferObject implements DtoContract
     }
 
     /**
-     * Boot the dto and process all parameters
+     * Boot the dto and process all parameters.
      * @param array $parameters
      * @throws \ReflectionException | DataTransferObjectError
      */
@@ -52,7 +49,7 @@ abstract class DataTransferObject implements DtoContract
     {
         foreach ($this->getPublicProperties() as $property) {
 
-            /**
+            /*
              * Do not change the order of the following methods.
              * External packages rely on this order.
              */
@@ -75,12 +72,11 @@ abstract class DataTransferObject implements DtoContract
             unset($this->{$property->getName()});
         }
 
-
         $this->processRemainingProperties($parameters);
     }
 
     /**
-     * Get all public properties from the current object through reflection
+     * Get all public properties from the current object through reflection.
      * @return Property[]
      * @throws \ReflectionException
      */
@@ -96,22 +92,22 @@ abstract class DataTransferObject implements DtoContract
     }
 
     /**
-     * Check if property passes the basic conditions
+     * Check if property passes the basic conditions.
      * @param Property $property
      * @param array $parameters
      */
     protected function validateProperty($property, array $parameters): void
     {
-        if (!array_key_exists($property->getName(), $parameters)
+        if (! array_key_exists($property->getName(), $parameters)
             && is_null($property->getDefault())
-            && !$property->isNullable()
+            && ! $property->isNullable()
         ) {
             throw DataTransferObjectError::uninitialized($property);
         }
     }
 
     /**
-     * Set the value if it's present in the array
+     * Set the value if it's present in the array.
      * @param Property $property
      * @param array $parameters
      */
@@ -123,7 +119,7 @@ abstract class DataTransferObject implements DtoContract
     }
 
     /**
-     * Set the value if it's present in the array
+     * Set the value if it's present in the array.
      * @param Property $property
      * @param array $parameters
      */
@@ -133,7 +129,7 @@ abstract class DataTransferObject implements DtoContract
     }
 
     /**
-     * Allows to mutate the property before it gets processed
+     * Allows to mutate the property before it gets processed.
      * @param Property $property
      * @param array $parameters
      * @return Property
@@ -142,7 +138,6 @@ abstract class DataTransferObject implements DtoContract
     {
         return $property;
     }
-
 
     /**
      * Check if there are additional parameters left.
@@ -232,7 +227,7 @@ abstract class DataTransferObject implements DtoContract
                 continue;
             }
 
-            if (!is_array($value)) {
+            if (! is_array($value)) {
                 continue;
             }
 

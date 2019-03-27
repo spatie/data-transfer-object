@@ -11,7 +11,6 @@ use Spatie\DataTransferObject\Tests\TestClasses\EmptyChild;
 use Spatie\DataTransferObject\Tests\TestClasses\OtherClass;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedChild;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParent;
-use Spatie\DataTransferObject\Tests\TestClasses\ValidateableDto;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParentOfMany;
 
 class DataTransferObjectTest extends TestCase
