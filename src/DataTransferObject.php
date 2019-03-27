@@ -24,12 +24,12 @@ abstract class DataTransferObject implements DtoContract
     /** @var bool */
     protected $immutable;
 
-    public static function mutable(array $parameters): DtoContract
+    public static function mutable(array $parameters): self
     {
         return new static($parameters, false);
     }
 
-    public static function immutable(array $parameters): DtoContract
+    public static function immutable(array $parameters): self
     {
         return new static($parameters, true);
     }
@@ -83,6 +83,7 @@ abstract class DataTransferObject implements DtoContract
     protected function getPublicProperties(): array
     {
         $class = new ReflectionClass(static::class);
+
         $properties = [];
         foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $reflectionProperty) {
             $properties[$reflectionProperty->getName()] = Property::fromReflection($reflectionProperty);
@@ -98,9 +99,9 @@ abstract class DataTransferObject implements DtoContract
      */
     protected function validateProperty($property, array $parameters): void
     {
-        if (! array_key_exists($property->getName(), $parameters)
+        if (!array_key_exists($property->getName(), $parameters)
             && is_null($property->getDefault())
-            && ! $property->isNullable()
+            && !$property->isNullable()
         ) {
             throw DataTransferObjectError::uninitialized($property);
         }
@@ -163,6 +164,13 @@ abstract class DataTransferObject implements DtoContract
         if ($this->immutable) {
             throw DataTransferObjectError::immutable($name);
         }
+        if (!isset($this->properties[$name])) {
+            throw DataTransferObjectError::propertyNotFound($name, get_class($this));
+        }
+
+        if($this->properties[$name]->isImmutable()){
+            throw DataTransferObjectError::immutableProperty($name);
+        }
         $this->$name = $value;
     }
 
@@ -224,7 +232,7 @@ abstract class DataTransferObject implements DtoContract
                 continue;
             }
 
-            if (! is_array($value)) {
+            if (!is_array($value)) {
                 continue;
             }
 

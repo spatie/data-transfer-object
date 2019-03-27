@@ -3,6 +3,8 @@
 namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\DataTransferObjectError;
+use Spatie\DataTransferObject\TestClass;
+use Spatie\DataTransferObject\Tests\TestClasses\ImmutablePropertyDataTransferObject;
 use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
 
 class ImmutableTest extends TestCase
@@ -57,5 +59,19 @@ class ImmutableTest extends TestCase
         $this->expectException(DataTransferObjectError::class);
 
         $dto->testProperty = 2;
+    }
+
+    /** @test */
+    public function property_is_immutable()
+    {
+        $dto = ImmutablePropertyDataTransferObject::mutable([
+            'testProperty' => "astring",
+        ]);
+
+        $this->assertEquals("astring", $dto->testProperty);
+
+        $this->expectException(DataTransferObjectError::class);
+
+        $dto->testProperty = 'otherstring';
     }
 }

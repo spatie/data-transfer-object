@@ -13,6 +13,7 @@ class Property
         'int' => 'integer',
         'bool' => 'boolean',
         'float' => 'double',
+        'immutable' => immutable::class
     ];
 
     /** @var bool */
@@ -23,6 +24,9 @@ class Property
 
     /** @var bool */
     protected $isInitialised = false;
+
+    /** @var bool */
+    protected $isImmutable = false;
 
     /** @var array */
     protected $types = [];
@@ -96,6 +100,16 @@ class Property
         $this->isNullable = $bool;
     }
 
+    public function isImmutable(): bool
+    {
+        return $this->isImmutable;
+    }
+
+    public function setIsImmutable(bool $isImmutable): void
+    {
+        $this->isImmutable = $isImmutable;
+    }
+
     protected function resolveTypeDefinition()
     {
         $docComment = $this->reflection->getDocComment();
@@ -122,6 +136,12 @@ class Property
         $this->arrayTypes = str_replace('[]', '', $this->types);
 
         $this->setNullable(strpos($varDocComment, 'null') !== false);
+
+        if (in_array('immutable', $this->types) || in_array('Immutable', $this->types)) {
+            $this->setIsImmutable(true);
+            unset($this->types['immutable']);
+            unset($this->types['Immutable']);
+        }
     }
 
     protected function isValidType($value): bool
