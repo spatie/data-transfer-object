@@ -7,7 +7,6 @@ use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
 
 class ImmutableTest extends TestCase
 {
-
     /** @test */
     public function immutable_values_cannot_be_overwritten()
     {
@@ -21,7 +20,6 @@ class ImmutableTest extends TestCase
 
         $dto->testProperty = 2;
     }
-
 
     /** @test */
     public function mutable_values_can_be_overwritten()
@@ -60,5 +58,4 @@ class ImmutableTest extends TestCase
 
         $dto->testProperty = 2;
     }
-
 }
