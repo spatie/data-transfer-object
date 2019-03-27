@@ -370,10 +370,4 @@ class DataTransferObjectTest extends TestCase
 
         $this->assertInstanceOf(EmptyChild::class, $object->child);
     }
-
-    public function testOptionalParameter()
-    {
-        $dto = new ValidateableDto(['number' => 5]);
-        $this->assertArrayHasKey('name', $dto->toArray());
-    }
 }

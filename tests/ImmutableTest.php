@@ -7,6 +7,7 @@ use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
 
 class ImmutableTest extends TestCase
 {
+
     /** @test */
     public function immutable_values_cannot_be_overwritten()
     {
@@ -21,6 +22,21 @@ class ImmutableTest extends TestCase
         $dto->testProperty = 2;
     }
 
+
+    /** @test */
+    public function mutable_values_can_be_overwritten()
+    {
+        $dto = TestDataTransferObject::mutable([
+            'testProperty' => 1,
+        ]);
+
+        $this->assertEquals(1, $dto->testProperty);
+
+        $dto->testProperty = 2;
+
+        $this->assertEquals(2, $dto->testProperty);
+    }
+
     /** @test */
     public function method_calls_are_proxied()
     {
@@ -30,4 +46,19 @@ class ImmutableTest extends TestCase
 
         $this->assertEquals(['testProperty' => 1], $dto->toArray());
     }
+
+    /** @test */
+    public function immutable_is_default()
+    {
+        $dto = new TestDataTransferObject([
+            'testProperty' => 1,
+        ]);
+
+        $this->assertEquals(1, $dto->testProperty);
+
+        $this->expectException(DataTransferObjectError::class);
+
+        $dto->testProperty = 2;
+    }
+
 }

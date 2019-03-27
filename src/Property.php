@@ -15,17 +15,11 @@ class Property
         'float' => 'double',
     ];
 
-    /** @var \Spatie\DataTransferObject\DataTransferObject */
-    protected $valueObject;
-
     /** @var bool */
     protected $hasTypeDeclaration = false;
 
     /** @var bool */
     protected $isNullable = false;
-
-    /** @var bool */
-    protected $isRequired = true;
 
     /** @var bool */
     protected $isInitialised = false;
@@ -36,28 +30,23 @@ class Property
     /** @var array */
     protected $arrayTypes = [];
 
-    /** @var string */
-    protected $rules;
-
     /** @var mixed */
     protected $default;
 
     /** @var mixed */
-    protected $actualValue;
+    protected $value;
 
     /** @var ReflectionProperty */
     protected $reflection;
 
-    public static function fromReflection(DataTransferObject $valueObject, ReflectionProperty $reflectionProperty)
+    public static function fromReflection(ReflectionProperty $reflectionProperty): self
     {
-        return new self($valueObject, $reflectionProperty);
+        return new static($reflectionProperty);
     }
 
-    public function __construct(DataTransferObject $valueObject, ReflectionProperty $reflectionProperty)
+    public function __construct(ReflectionProperty $reflectionProperty)
     {
         $this->reflection = $reflectionProperty;
-
-        $this->valueObject = $valueObject;
 
         $this->resolveTypeDefinition();
     }
@@ -68,13 +57,13 @@ class Property
             $value = $this->shouldBeCastToCollection($value) ? $this->castCollection($value) : $this->cast($value);
         }
 
-        if (! $this->isValidType($value)) {
+        if (!$this->isValidType($value)) {
             throw DataTransferObjectError::invalidType($this, $value);
         }
 
         $this->isInitialised = true;
 
-        $this->actualValue = $value;
+        $this->value = $value;
     }
 
     public function setUninitialized()
@@ -97,46 +86,25 @@ class Property
         return $this->isNullable;
     }
 
-    /**
-     * @return bool
-     */
-    public function isRequired(): bool
-    {
-        return $this->isRequired;
-    }
-
-    public function setRequired(bool $bool): void
-    {
-        $this->isRequired = $bool;
-    }
-
     public function setNullable(bool $bool): void
     {
         $this->isNullable = $bool;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isOptional(): bool
-    {
-        return ! $this->isRequired;
     }
 
     protected function resolveTypeDefinition()
     {
         $docComment = $this->reflection->getDocComment();
 
-        if (! $docComment) {
-            $this->isNullable = true;
+        if (!$docComment) {
+            $this->setNullable(true);
 
             return;
         }
 
         preg_match('/\@var ((?:(?:[\w|\\\\])+(?:\[\])?)+)/', $docComment, $matches);
 
-        if (! count($matches)) {
-            $this->isNullable = true;
+        if (!count($matches)) {
+            $this->setNullable(true);
 
             return;
         }
@@ -148,12 +116,12 @@ class Property
         $this->types = explode('|', $varDocComment);
         $this->arrayTypes = str_replace('[]', '', $this->types);
 
-        $this->isNullable = strpos($varDocComment, 'null') !== false;
+        $this->setNullable(strpos($varDocComment, 'null') !== false);
     }
 
     protected function isValidType($value): bool
     {
-        if (! $this->hasTypeDeclaration) {
+        if (!$this->hasTypeDeclaration) {
             return true;
         }
 
@@ -177,7 +145,7 @@ class Property
         $castTo = null;
 
         foreach ($this->types as $type) {
-            if (! is_subclass_of($type, DataTransferObject::class)) {
+            if (!is_subclass_of($type, DataTransferObject::class)) {
                 continue;
             }
 
@@ -186,7 +154,7 @@ class Property
             break;
         }
 
-        if (! $castTo) {
+        if (!$castTo) {
             return $value;
         }
 
@@ -198,7 +166,7 @@ class Property
         $castTo = null;
 
         foreach ($this->arrayTypes as $type) {
-            if (! is_subclass_of($type, DataTransferObject::class)) {
+            if (!is_subclass_of($type, DataTransferObject::class)) {
                 continue;
             }
 
@@ -207,7 +175,7 @@ class Property
             break;
         }
 
-        if (! $castTo) {
+        if (!$castTo) {
             return $values;
         }
 
@@ -231,7 +199,7 @@ class Property
                 return false;
             }
 
-            if (! is_array($value)) {
+            if (!is_array($value)) {
                 return false;
             }
         }
@@ -255,14 +223,14 @@ class Property
 
     protected function isValidGenericCollection(string $type, $collection): bool
     {
-        if (! is_array($collection)) {
+        if (!is_array($collection)) {
             return false;
         }
 
         $valueType = str_replace('[]', '', $type);
 
         foreach ($collection as $value) {
-            if (! $this->assertTypeEquals($valueType, $value)) {
+            if (!$this->assertTypeEquals($valueType, $value)) {
                 return false;
             }
         }
@@ -270,52 +238,33 @@ class Property
         return true;
     }
 
-    /**
-     * @return string
-     */
-    public function getRules(): string
-    {
-        return $this->rules;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getDefault()
     {
         return $this->default;
     }
 
-    /**
-     * @param mixed $default
-     */
     public function setDefault($default): void
     {
         $this->default = $default;
     }
 
-    /**
-     * @param string $rules
-     */
-    public function addRule(string $rules): void
+    public function getValue()
     {
-        if (! isset($this->rules)) {
-            $this->rules = $rules;
-        } else {
-            $this->rules = $this->rules.'|'.$rules;
-        }
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getActualValue()
-    {
-        if (! $this->isNullable && $this->actualValue == null) {
+        if (!$this->isNullable && $this->value == null) {
             return $this->getDefault();
         }
 
-        return $this->actualValue;
+        return $this->value;
+    }
+
+    public function getValueFromReflection($object)
+    {
+        return $this->reflection->getValue($object);
+    }
+
+    public function getName()
+    {
+        return $this->reflection->getName();
     }
 
     public function __call($name, $arguments)

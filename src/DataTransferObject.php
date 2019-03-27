@@ -10,7 +10,7 @@ use ReflectionProperty;
 /**
  * Class DataTransferObject.
  */
-abstract class DataTransferObject
+abstract class DataTransferObject implements DtoContract
 {
     /** @var array */
     protected $exceptKeys = [];
@@ -24,104 +24,137 @@ abstract class DataTransferObject
     /** @var bool */
     protected $immutable;
 
-    /**
-     * @param array $parameters
-     *
-     * @return \Spatie\DataTransferObject\ImmutableDataTransferObject|static
-     */
-    public static function mutable(array $parameters): self
+
+    public static function mutable(array $parameters): DtoContract
     {
         return new static($parameters, false);
     }
 
-    /**
-     * @param array $parameters
-     *
-     * @return \Spatie\DataTransferObject\ImmutableDataTransferObject|static
-     */
-    public static function immutable(array $parameters): self
+
+    public static function immutable(array $parameters): DtoContract
     {
         return new static($parameters, true);
     }
 
-    /**
-     * DataTransferObject constructor.
-     * @param array $parameters
-     */
-    final public function __construct(array $parameters, $immutable = true)
+
+    public function __construct(array $parameters, bool $immutable = true)
     {
         $this->immutable = $immutable;
         $this->boot($parameters);
     }
 
     /**
+     * Boot the dto and process all parameters
      * @param array $parameters
+     * @throws \ReflectionException | DataTransferObjectError
      */
     protected function boot(array $parameters): void
     {
         foreach ($this->getPublicProperties() as $property) {
 
-            /* Setting the default value of the property */
-            $property->setDefault($property->getValue($this));
+            /**
+             * Do not change the order of the following methods.
+             * External packages rely on this order.
+             */
 
-            /* If a attribute method is set on the dto process it */
-            if (method_exists($this, $method = $property->getName())) {
-                $property = $this->$method(new Attribute($property))->getProperty();
-            }
+            $this->setPropertyDefaultValue($property);
 
-            /* Check if property passes the basic conditions */
-            if (! array_key_exists($property->getName(), $parameters)
-                && $property->isRequired()
-                && is_null($property->getDefault())
-                && ! $property->isNullable()
-            ) {
-                throw DataTransferObjectError::uninitialized($property);
-            }
+            $property = $this->mutateProperty($property);
 
-            /* set the value if it's present in the array and mark it as uninitialized otherwise */
-            if (array_key_exists($property->getName(), $parameters)) {
-                $property->set($parameters[$property->getName()]);
-            } else {
-                $property->setUninitialized();
-            }
+            $this->validateProperty($property, $parameters);
+
+            $this->setPropertyValue($property, $parameters);
 
             /* add the property to an associative array with the name as key */
             $this->properties[$property->getName()] = $property;
 
             /* remove the property from the parameters array  */
             unset($parameters[$property->getName()]);
-            /* remove the property from the dto  */
+
+            /* remove the property from the value object  */
             unset($this->{$property->getName()});
         }
 
-        /* Check if there are additional parameters left.
-         * Throw error if there are.
-         * Additional properties are not allowed in a dto.
-         */
-        if (count($parameters)) {
-            throw DataTransferObjectError::unknownProperties(array_keys($parameters), static::class);
-        }
 
-        $this->validate();
-    }
-
-    protected function validate()
-    {
-        //IMPLEMENT VALIDATION FUNCTIONALITY CHECK THE RULES & CONSTRAINTS
+        $this->processRemainingProperties($parameters);
     }
 
     /**
-     * @return array
+     * Get all public properties from the current object through reflection
+     * @return Property[]
+     * @throws \ReflectionException
      */
-    public function all(): array
+    protected function getPublicProperties(): array
     {
-        $data = [];
-
-        foreach ($this->properties as $property) {
-            $data[$property->getName()] = $property->getActualValue();
+        $class = new ReflectionClass(static::class);
+        $properties = [];
+        foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $reflectionProperty) {
+            $properties[$reflectionProperty->getName()] = Property::fromReflection($reflectionProperty);
         }
 
-        return $data;
+        return $properties;
+    }
+
+    /**
+     * Check if property passes the basic conditions
+     * @param Property $property
+     * @param array $parameters
+     */
+    protected function validateProperty($property, array $parameters): void
+    {
+        if (!array_key_exists($property->getName(), $parameters)
+            && is_null($property->getDefault())
+            && !$property->isNullable()
+        ) {
+            throw DataTransferObjectError::uninitialized($property);
+        }
+    }
+
+    /**
+     * Set the value if it's present in the array
+     * @param Property $property
+     * @param array $parameters
+     */
+    protected function setPropertyValue($property, array $parameters): void
+    {
+        if (array_key_exists($property->getName(), $parameters)) {
+            $property->set($parameters[$property->getName()]);
+        }
+    }
+
+    /**
+     * Set the value if it's present in the array
+     * @param Property $property
+     * @param array $parameters
+     */
+    protected function setPropertyDefaultValue($property): void
+    {
+        $property->setDefault($property->getValueFromReflection($this));
+    }
+
+    /**
+     * Allows to mutate the property before it gets processed
+     * @param Property $property
+     * @param array $parameters
+     * @return Property
+     */
+    protected function mutateProperty($property)
+    {
+        return $property;
+    }
+
+
+    /**
+     * Check if there are additional parameters left.
+     * Throw error if there are.
+     * Additional properties are not allowed in a dto.
+     * @throws DataTransferObjectError
+     */
+    protected function processRemainingProperties(array $parameters)
+    {
+        if (count($parameters)) {
+            throw DataTransferObjectError::unknownProperties(array_keys($parameters), static::class);
+        }
     }
 
     /**
@@ -136,6 +169,7 @@ abstract class DataTransferObject
         if ($this->immutable) {
             throw DataTransferObjectError::immutable($name);
         }
+        $this->$name = $value;
     }
 
     /**
@@ -145,40 +179,34 @@ abstract class DataTransferObject
      */
     public function __get($name)
     {
-        return $this->properties[$name]->getActualValue();
+        return $this->properties[$name]->getValue();
     }
 
-    /**
-     * @param string ...$keys
-     *
-     * @return static
-     */
-    public function only(string ...$keys): DataTransferObject
+    public function all(): array
     {
-        $valueObject = clone $this;
+        $data = [];
 
-        $valueObject->onlyKeys = array_merge($this->onlyKeys, $keys);
+        foreach ($this->properties as $property) {
+            $data[$property->getName()] = $property->getValue();
+        }
 
-        return $valueObject;
+        return $data;
     }
 
-    /**
-     * @param string ...$keys
-     *
-     * @return static
-     */
-    public function except(string ...$keys): DataTransferObject
+    public function only(string ...$keys): DtoContract
     {
-        $valueObject = clone $this;
+        $this->onlyKeys = array_merge($this->onlyKeys, $keys);
 
-        $valueObject->exceptKeys = array_merge($this->exceptKeys, $keys);
-
-        return $valueObject;
+        return $this;
     }
 
-    /**
-     * @return array
-     */
+    public function except(string ...$keys): DtoContract
+    {
+        $this->exceptKeys = array_merge($this->exceptKeys, $keys);
+
+        return $this;
+    }
+
     public function toArray(): array
     {
         if (count($this->onlyKeys)) {
@@ -192,10 +220,6 @@ abstract class DataTransferObject
         return $array;
     }
 
-    /**
-     * @param array $array
-     * @return array
-     */
     protected function parseArray(array $array): array
     {
         foreach ($array as $key => $value) {
@@ -208,7 +232,7 @@ abstract class DataTransferObject
                 continue;
             }
 
-            if (! is_array($value)) {
+            if (!is_array($value)) {
                 continue;
             }
 
@@ -216,21 +240,5 @@ abstract class DataTransferObject
         }
 
         return $array;
-    }
-
-    /**
-     * @param \ReflectionClass $class
-     *
-     * @return array|\Spatie\DataTransferObject\Property[]
-     */
-    protected function getPublicProperties(): array
-    {
-        $class = new ReflectionClass(static::class);
-        $properties = [];
-        foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $reflectionProperty) {
-            $properties[$reflectionProperty->getName()] = Property::fromReflection($this, $reflectionProperty);
-        }
-
-        return $properties;
     }
 }
