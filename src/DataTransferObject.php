@@ -209,9 +209,7 @@ abstract class DataTransferObject implements DtoContract
             $array = Arr::except($this->all(), $this->exceptKeys);
         }
 
-        $array = $this->parseArray($array);
-
-        return $array;
+        return $this->parseArray($array);
     }
 
     protected function parseArray(array $array): array
