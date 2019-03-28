@@ -12,7 +12,7 @@ use Spatie\DataTransferObject\Exceptions\InvalidTypeDtoException;
 class Property implements PropertyContract
 {
     /** @var array */
-    protected static $typeMapping = [
+    private const TYPE_MAPPING = [
         'int' => 'integer',
         'bool' => 'boolean',
         'float' => 'double',
@@ -191,7 +191,7 @@ class Property implements PropertyContract
         }
 
         return $value instanceof $type
-            || gettype($value) === (self::$typeMapping[$type] ?? $type);
+            || gettype($value) === (self::TYPE_MAPPING[$type] ?? $type);
     }
 
     protected function isValidGenericCollection(string $type, $collection): bool
