@@ -13,6 +13,4 @@ interface DtoContract
     public function toArray(): array;
 
     public function immutable() :DtoContract;
-
-    public function mutable() :DtoContract;
 }
