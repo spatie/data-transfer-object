@@ -209,8 +209,14 @@ abstract class DataTransferObject implements DtoContract
      */
     public function immutable(): DtoContract
     {
-        $this->setImmutable();
+        if (!$this->isImmutable())
+            $this->setImmutable();
         return $this;
+    }
+
+    public function isImmutable(): bool
+    {
+        return $this->immutable;
     }
 
     public function all(): array
