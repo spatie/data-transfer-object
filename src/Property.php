@@ -59,7 +59,7 @@ class Property implements PropertyContract
     {
         $docComment = $this->reflection->getDocComment();
 
-        if (! $docComment) {
+        if (!isset($docComment)) {
             $this->setNullable(true);
 
             return;
