@@ -187,16 +187,6 @@ abstract class DataTransferObject implements DtoContract
     /**
      * @return static
      */
-    public function mutable(): DtoContract
-    {
-        $this->immutable = false;
-
-        return $this;
-    }
-
-    /**
-     * @return static
-     */
     public function immutable(): DtoContract
     {
         $this->immutable = true;
