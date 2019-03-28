@@ -5,17 +5,16 @@ declare(strict_types=1);
 namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\DataTransferObject;
-use Spatie\DataTransferObject\DataTransferObjectError;
-use Spatie\DataTransferObject\Exceptions\InvalidTypeDtoException;
-use Spatie\DataTransferObject\Exceptions\PropertyNotFoundDtoException;
-use Spatie\DataTransferObject\Exceptions\UninitialisedPropertyDtoException;
-use Spatie\DataTransferObject\Exceptions\UnknownPropertiesDtoException;
 use Spatie\DataTransferObject\Tests\TestClasses\DummyClass;
 use Spatie\DataTransferObject\Tests\TestClasses\EmptyChild;
 use Spatie\DataTransferObject\Tests\TestClasses\OtherClass;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedChild;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParent;
+use Spatie\DataTransferObject\Exceptions\InvalidTypeDtoException;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParentOfMany;
+use Spatie\DataTransferObject\Exceptions\PropertyNotFoundDtoException;
+use Spatie\DataTransferObject\Exceptions\UnknownPropertiesDtoException;
+use Spatie\DataTransferObject\Exceptions\UninitialisedPropertyDtoException;
 
 class DataTransferObjectTest extends TestCase
 {
@@ -97,7 +96,7 @@ class DataTransferObjectTest extends TestCase
 
         $this->expectException(PropertyNotFoundDtoException::class);
 
-        $dto->property = "blabla";
+        $dto->property = 'blabla';
     }
 
     /** @test */

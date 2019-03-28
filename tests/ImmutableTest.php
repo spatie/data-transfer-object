@@ -2,11 +2,10 @@
 
 namespace Spatie\DataTransferObject\Tests;
 
-use Spatie\DataTransferObject\DataTransferObjectError;
-use Spatie\DataTransferObject\Exceptions\ImmutableDtoException;
-use Spatie\DataTransferObject\Exceptions\ImmutablePropertyDtoException;
 use Spatie\DataTransferObject\Tests\TestClasses\ImmutableDto;
+use Spatie\DataTransferObject\Exceptions\ImmutableDtoException;
 use Spatie\DataTransferObject\Tests\TestClasses\ImmutablePropertyDto;
+use Spatie\DataTransferObject\Exceptions\ImmutablePropertyDtoException;
 use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
 
 class ImmutableTest extends TestCase

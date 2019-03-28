@@ -2,8 +2,8 @@
 
 namespace Spatie\DataTransferObject\Exceptions;
 
-use Spatie\DataTransferObject\Contracts\PropertyContract;
 use TypeError;
+use Spatie\DataTransferObject\Contracts\PropertyContract;
 
 class UninitialisedPropertyDtoException extends TypeError
 {
