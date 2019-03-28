@@ -65,8 +65,9 @@ abstract class DataTransferObject implements DtoContract
 
     protected function resolveImmutable()
     {
-        if ($this instanceof immutable)
+        if ($this instanceof immutable) {
             $this->immutable = true;
+        }
     }
 
     /**
@@ -93,9 +94,9 @@ abstract class DataTransferObject implements DtoContract
      */
     protected function validateProperty($property, array $parameters): void
     {
-        if (!array_key_exists($property->getName(), $parameters)
+        if (! array_key_exists($property->getName(), $parameters)
             && is_null($property->getDefault())
-            && !$property->isNullable()
+            && ! $property->isNullable()
         ) {
             throw DataTransferObjectError::uninitialized($property);
         }
@@ -158,7 +159,7 @@ abstract class DataTransferObject implements DtoContract
         if ($this->immutable) {
             throw DataTransferObjectError::immutable($name);
         }
-        if (!isset($this->properties[$name])) {
+        if (! isset($this->properties[$name])) {
             throw DataTransferObjectError::propertyNotFound($name, get_class($this));
         }
 
@@ -226,7 +227,7 @@ abstract class DataTransferObject implements DtoContract
                 continue;
             }
 
-            if (!is_array($value)) {
+            if (! is_array($value)) {
                 continue;
             }
 
@@ -236,13 +237,13 @@ abstract class DataTransferObject implements DtoContract
         return $array;
     }
 
-
     /**
      * @return static
      */
     public function mutable() :DtoContract
     {
         $this->immutable = false;
+
         return $this;
     }
 
@@ -252,6 +253,7 @@ abstract class DataTransferObject implements DtoContract
     public function immutable() :DtoContract
     {
         $this->immutable = true;
+
         return $this;
     }
 }
