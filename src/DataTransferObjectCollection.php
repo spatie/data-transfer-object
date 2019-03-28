@@ -7,6 +7,7 @@ namespace Spatie\DataTransferObject;
 use Iterator;
 use Countable;
 use ArrayAccess;
+use Spatie\DataTransferObject\Contracts\DtoContract;
 
 abstract class DataTransferObjectCollection implements
     ArrayAccess,
@@ -79,7 +80,7 @@ abstract class DataTransferObjectCollection implements
 
         foreach ($collection as $key => $item) {
             if (
-                ! $item instanceof DataTransferObject
+                ! $item instanceof DtoContract
                 && ! $item instanceof DataTransferObjectCollection
             ) {
                 continue;
