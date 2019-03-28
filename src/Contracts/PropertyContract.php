@@ -2,8 +2,6 @@
 
 namespace Spatie\DataTransferObject\Contracts;
 
-use ReflectionProperty;
-
 interface PropertyContract
 {
     public function getDefault();
@@ -19,8 +17,6 @@ interface PropertyContract
     public function getValueFromReflection($object);
 
     public function getName(): string;
-
-    public function getReflection(): ReflectionProperty;
 
     public function set($value): void;
 

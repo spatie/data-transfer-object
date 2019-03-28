@@ -309,9 +309,4 @@ class Property implements PropertyContract
     {
         return $this->reflection->getName();
     }
-
-    public function getReflection(): ReflectionProperty
-    {
-        return $this->reflection;
-    }
 }
