@@ -12,7 +12,7 @@ use Spatie\DataTransferObject\Exceptions\InvalidTypeDtoException;
 class Property implements PropertyContract
 {
     /** @var array */
-    private const TYPE_MAPPING = [
+    protected const TYPE_MAPPING = [
         'int' => 'integer',
         'bool' => 'boolean',
         'float' => 'double',
