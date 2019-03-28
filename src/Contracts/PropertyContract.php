@@ -2,7 +2,6 @@
 
 namespace Spatie\DataTransferObject\Contracts;
 
-
 use ReflectionProperty;
 
 interface PropertyContract

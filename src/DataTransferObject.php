@@ -6,14 +6,14 @@ namespace Spatie\DataTransferObject;
 
 use ReflectionClass;
 use ReflectionProperty;
-use Spatie\DataTransferObject\Contracts\DtoContract;
 use Spatie\DataTransferObject\Contracts\immutable;
+use Spatie\DataTransferObject\Contracts\DtoContract;
 use Spatie\DataTransferObject\Contracts\PropertyContract;
 use Spatie\DataTransferObject\Exceptions\ImmutableDtoException;
-use Spatie\DataTransferObject\Exceptions\ImmutablePropertyDtoException;
 use Spatie\DataTransferObject\Exceptions\PropertyNotFoundDtoException;
-use Spatie\DataTransferObject\Exceptions\UninitialisedPropertyDtoException;
+use Spatie\DataTransferObject\Exceptions\ImmutablePropertyDtoException;
 use Spatie\DataTransferObject\Exceptions\UnknownPropertiesDtoException;
+use Spatie\DataTransferObject\Exceptions\UninitialisedPropertyDtoException;
 
 /**
  * Class DataTransferObject.
@@ -73,8 +73,9 @@ abstract class DataTransferObject implements DtoContract
 
     protected function resolveImmutable()
     {
-        if ($this instanceof immutable)
+        if ($this instanceof immutable) {
             $this->immutable = true;
+        }
     }
 
     /**
@@ -101,9 +102,9 @@ abstract class DataTransferObject implements DtoContract
      */
     protected function validateProperty(PropertyContract $property, array $parameters): void
     {
-        if (!array_key_exists($property->getName(), $parameters)
+        if (! array_key_exists($property->getName(), $parameters)
             && is_null($property->getDefault())
-            && !$property->nullable()
+            && ! $property->nullable()
         ) {
             throw new UninitialisedPropertyDtoException($property);
         }
@@ -166,7 +167,7 @@ abstract class DataTransferObject implements DtoContract
         if ($this->immutable) {
             throw new ImmutableDtoException($name);
         }
-        if (!isset($this->properties[$name])) {
+        if (! isset($this->properties[$name])) {
             throw new PropertyNotFoundDtoException($name, get_class($this));
         }
 
@@ -186,13 +187,13 @@ abstract class DataTransferObject implements DtoContract
         return $this->properties[$name]->getValue();
     }
 
-
     /**
      * @return static
      */
     public function mutable(): DtoContract
     {
         $this->immutable = false;
+
         return $this;
     }
 
@@ -202,6 +203,7 @@ abstract class DataTransferObject implements DtoContract
     public function immutable(): DtoContract
     {
         $this->immutable = true;
+
         return $this;
     }
 
@@ -231,6 +233,7 @@ abstract class DataTransferObject implements DtoContract
                 $property->setVisible(false);
             }
         }
+
         return $this;
     }
 
@@ -240,11 +243,12 @@ abstract class DataTransferObject implements DtoContract
         $array = [];
 
         if (count($this->onlyKeys)) {
-            $array = array_intersect_key($data, array_flip((array)$this->onlyKeys));
+            $array = array_intersect_key($data, array_flip((array) $this->onlyKeys));
         } else {
             foreach ($data as $key => $propertyValue) {
-                if ($this->properties[$key]->isVisible())
+                if ($this->properties[$key]->isVisible()) {
                     $array[$key] = $propertyValue;
+                }
             }
         }
 
@@ -263,7 +267,7 @@ abstract class DataTransferObject implements DtoContract
                 continue;
             }
 
-            if (!is_array($value)) {
+            if (! is_array($value)) {
                 continue;
             }
 

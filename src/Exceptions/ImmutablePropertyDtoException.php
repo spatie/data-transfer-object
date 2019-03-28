@@ -2,7 +2,6 @@
 
 namespace Spatie\DataTransferObject\Exceptions;
 
-use Spatie\DataTransferObject\Contracts\PropertyContract;
 use TypeError;
 
 class ImmutablePropertyDtoException extends TypeError
