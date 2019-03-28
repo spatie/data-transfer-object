@@ -20,7 +20,6 @@ use Spatie\DataTransferObject\Exceptions\UninitialisedPropertyDtoException;
  */
 abstract class DataTransferObject implements DtoContract
 {
-
     /** @var array */
     protected $onlyKeys = [];
 
