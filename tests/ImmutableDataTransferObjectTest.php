@@ -2,12 +2,12 @@
 
 namespace Spatie\DataTransferObject\Tests;
 
+use Spatie\DataTransferObject\Tests\TestClasses\NestedChild;
 use Spatie\DataTransferObject\Tests\TestClasses\ImmutableDto;
 use Spatie\DataTransferObject\Exceptions\ImmutableDtoException;
 use Spatie\DataTransferObject\Tests\TestClasses\ImmutableNestedDto;
 use Spatie\DataTransferObject\Tests\TestClasses\ImmutablePropertyDto;
 use Spatie\DataTransferObject\Exceptions\ImmutablePropertyDtoException;
-use Spatie\DataTransferObject\Tests\TestClasses\NestedChild;
 use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
 
 class ImmutableDataTransferObjectTest extends TestCase
@@ -103,27 +103,24 @@ class ImmutableDataTransferObjectTest extends TestCase
     /** @test */
     public function immutable_applies_to_nested_dtos()
     {
-
         $data = [
             'name' => 'parent',
             'children' => [
-                new NestedChild(["name" => "arthur"]),
-                new NestedChild(["name" => "brendt"])
+                new NestedChild(['name' => 'arthur']),
+                new NestedChild(['name' => 'brendt']),
             ],
         ];
 
         $dto = new ImmutableNestedDto($data);
 
-        $this->assertEquals($dto->name, "parent");
+        $this->assertEquals($dto->name, 'parent');
         $this->assertEquals($dto->children[0]->name, 'arthur');
         $this->assertEquals($dto->children[1]->name, 'brendt');
 
         $this->expectException(ImmutableDtoException::class);
         $child = $dto->children[1];
-        $child->name = "another";
+        $child->name = 'another';
 
         $this->assertEquals($dto->children[1]->name, 'brendt');
-
     }
-
 }
