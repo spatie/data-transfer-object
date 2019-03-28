@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\DataTransferObject;
+namespace Spatie\DataTransferObject\Contracts;
 
 interface DtoContract
 {

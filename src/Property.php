@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Spatie\DataTransferObject;
 
 use ReflectionProperty;
+use Spatie\DataTransferObject\Contracts\DtoContract;
+use Spatie\DataTransferObject\Contracts\PropertyContract;
+use Spatie\DataTransferObject\Exceptions\InvalidTypeDtoException;
 
-class Property
+class Property implements PropertyContract
 {
     /** @var array */
     protected static $typeMapping = [
@@ -19,13 +22,16 @@ class Property
     protected $hasTypeDeclaration = false;
 
     /** @var bool */
-    protected $isNullable = false;
+    protected $nullable = false;
 
     /** @var bool */
-    protected $isInitialised = false;
+    protected $initialised = false;
 
     /** @var bool */
-    protected $isImmutable = false;
+    protected $immutable = false;
+
+    /** @var bool */
+    protected $visible = true;
 
     /** @var array */
     protected $types = [];
@@ -54,61 +60,6 @@ class Property
         $this->resolveTypeDefinition();
     }
 
-    public function set($value)
-    {
-        if (is_array($value)) {
-            $value = $this->shouldBeCastToCollection($value) ? $this->castCollection($value) : $this->cast($value);
-        }
-
-        if (!$this->isValidType($value)) {
-            throw DataTransferObjectError::invalidType($this, $value);
-        }
-
-        $this->isInitialised = true;
-
-        $this->value = $value;
-    }
-
-    public function setUninitialized()
-    {
-        $this->isInitialised = false;
-    }
-
-    public function isInitialized()
-    {
-        return $this->isInitialised;
-    }
-
-    public function getTypes(): array
-    {
-        return $this->types;
-    }
-
-    public function getFqn(): string
-    {
-        return "{$this->reflection->getDeclaringClass()->getName()}::{$this->reflection->getName()}";
-    }
-
-    public function isNullable(): bool
-    {
-        return $this->isNullable;
-    }
-
-    public function setNullable(bool $bool): void
-    {
-        $this->isNullable = $bool;
-    }
-
-    public function isImmutable(): bool
-    {
-        return $this->isImmutable;
-    }
-
-    public function setIsImmutable(bool $isImmutable): void
-    {
-        $this->isImmutable = $isImmutable;
-    }
-
     protected function resolveTypeDefinition()
     {
         $docComment = $this->reflection->getDocComment();
@@ -134,7 +85,7 @@ class Property
         $this->arrayTypes = str_replace('[]', '', $this->types);
 
         if (in_array('immutable', $this->types) || in_array('Immutable', $this->types)) {
-            $this->setIsImmutable(true);
+            $this->setImmutable(true);
             unset($this->types['immutable'], $this->types['Immutable']);
 
             if (empty($this->types)) {
@@ -154,7 +105,7 @@ class Property
             return true;
         }
 
-        if ($this->isNullable() && $value === null) {
+        if ($this->nullable() && $value === null) {
             return true;
         }
 
@@ -174,7 +125,7 @@ class Property
         $castTo = null;
 
         foreach ($this->types as $type) {
-            if (!is_subclass_of($type, DataTransferObject::class)) {
+            if (!is_subclass_of($type, DtoContract::class)) {
                 continue;
             }
 
@@ -195,7 +146,7 @@ class Property
         $castTo = null;
 
         foreach ($this->arrayTypes as $type) {
-            if (!is_subclass_of($type, DataTransferObject::class)) {
+            if (!is_subclass_of($type, DtoContract::class)) {
                 continue;
             }
 
@@ -267,6 +218,61 @@ class Property
         return true;
     }
 
+    public function set($value) :void
+    {
+        if (is_array($value)) {
+            $value = $this->shouldBeCastToCollection($value) ? $this->castCollection($value) : $this->cast($value);
+        }
+
+        if (!$this->isValidType($value)) {
+            throw new InvalidTypeDtoException($this, $value);
+        }
+
+        $this->setInitialized(true);
+
+        $this->value = $value;
+    }
+
+    public function setInitialized(bool $bool):void
+    {
+        $this->initialised = $bool;
+    }
+
+    public function isInitialized() :bool
+    {
+        return $this->initialised;
+    }
+
+    public function getTypes(): array
+    {
+        return $this->types;
+    }
+
+    public function getFqn(): string
+    {
+        return "{$this->reflection->getDeclaringClass()->getName()}::{$this->reflection->getName()}";
+    }
+
+    public function nullable(): bool
+    {
+        return $this->nullable;
+    }
+
+    public function setNullable(bool $bool): void
+    {
+        $this->nullable = $bool;
+    }
+
+    public function immutable(): bool
+    {
+        return $this->immutable;
+    }
+
+    public function setImmutable(bool $immutable): void
+    {
+        $this->immutable = $immutable;
+    }
+
     public function getDefault()
     {
         return $this->default;
@@ -277,9 +283,19 @@ class Property
         $this->default = $default;
     }
 
+    public function isVisible(): bool
+    {
+        return $this->visible;
+    }
+
+    public function setVisible(bool $bool): bool
+    {
+        return $this->visible = $bool;
+    }
+
     public function getValue()
     {
-        if (!$this->isNullable() && $this->value == null) {
+        if (!$this->nullable() && $this->value == null) {
             return $this->getDefault();
         }
 
@@ -291,7 +307,7 @@ class Property
         return $this->reflection->getValue($object);
     }
 
-    public function getName()
+    public function getName() :string
     {
         return $this->reflection->getName();
     }
@@ -300,6 +316,5 @@ class Property
     {
         return $this->reflection;
     }
-
 
 }

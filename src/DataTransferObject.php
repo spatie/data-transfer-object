@@ -6,6 +6,14 @@ namespace Spatie\DataTransferObject;
 
 use ReflectionClass;
 use ReflectionProperty;
+use Spatie\DataTransferObject\Contracts\DtoContract;
+use Spatie\DataTransferObject\Contracts\immutable;
+use Spatie\DataTransferObject\Contracts\PropertyContract;
+use Spatie\DataTransferObject\Exceptions\ImmutableDtoException;
+use Spatie\DataTransferObject\Exceptions\ImmutablePropertyDtoException;
+use Spatie\DataTransferObject\Exceptions\PropertyNotFoundDtoException;
+use Spatie\DataTransferObject\Exceptions\UninitialisedPropertyDtoException;
+use Spatie\DataTransferObject\Exceptions\UnknownPropertiesDtoException;
 
 /**
  * Class DataTransferObject.
@@ -22,7 +30,7 @@ abstract class DataTransferObject implements DtoContract
     protected $properties = [];
 
     /** @var bool */
-    protected $immutable;
+    protected $immutable = false;
 
     public function __construct(array $parameters)
     {
@@ -88,25 +96,25 @@ abstract class DataTransferObject implements DtoContract
 
     /**
      * Check if property passes the basic conditions.
-     * @param Property $property
+     * @param PropertyContract $property
      * @param array $parameters
      */
-    protected function validateProperty($property, array $parameters): void
+    protected function validateProperty(PropertyContract $property, array $parameters): void
     {
         if (!array_key_exists($property->getName(), $parameters)
             && is_null($property->getDefault())
-            && !$property->isNullable()
+            && !$property->nullable()
         ) {
-            throw DataTransferObjectError::uninitialized($property);
+            throw new UninitialisedPropertyDtoException($property);
         }
     }
 
     /**
      * Set the value if it's present in the array.
-     * @param Property $property
+     * @param PropertyContract $property
      * @param array $parameters
      */
-    protected function setPropertyValue($property, array $parameters): void
+    protected function setPropertyValue(PropertyContract $property, array $parameters): void
     {
         if (array_key_exists($property->getName(), $parameters)) {
             $property->set($parameters[$property->getName()]);
@@ -115,19 +123,19 @@ abstract class DataTransferObject implements DtoContract
 
     /**
      * Set the value if it's present in the array.
-     * @param Property $property
+     * @param PropertyContract $property
      */
-    protected function setPropertyDefaultValue($property): void
+    protected function setPropertyDefaultValue(PropertyContract $property): void
     {
         $property->setDefault($property->getValueFromReflection($this));
     }
 
     /**
      * Allows to mutate the property before it gets processed.
-     * @param Property $property
-     * @return Property
+     * @param PropertyContract $property
+     * @return PropertyContract
      */
-    protected function mutateProperty($property)
+    protected function mutateProperty(PropertyContract $property): PropertyContract
     {
         return $property;
     }
@@ -137,12 +145,12 @@ abstract class DataTransferObject implements DtoContract
      * Throw error if there are.
      * Additional properties are not allowed in a dto.
      * @param array $parameters
-     * @throws DataTransferObjectError
+     * @throws UnknownPropertiesDtoException
      */
     protected function processRemainingProperties(array $parameters)
     {
         if (count($parameters)) {
-            throw DataTransferObjectError::unknownProperties(array_keys($parameters), static::class);
+            throw new UnknownPropertiesDtoException(array_keys($parameters), static::class);
         }
     }
 
@@ -151,19 +159,19 @@ abstract class DataTransferObject implements DtoContract
      * Throw error if a user tries to set a property.
      * @param $name
      * @param $value
-     * @Throws DataTransferObjectError
+     * @throws ImmutableDtoException|ImmutablePropertyDtoException|PropertyNotFoundDtoException
      */
     public function __set($name, $value)
     {
         if ($this->immutable) {
-            throw DataTransferObjectError::immutable($name);
+            throw new ImmutableDtoException($name);
         }
         if (!isset($this->properties[$name])) {
-            throw DataTransferObjectError::propertyNotFound($name, get_class($this));
+            throw new PropertyNotFoundDtoException($name, get_class($this));
         }
 
-        if ($this->properties[$name]->isImmutable()) {
-            throw DataTransferObjectError::immutableProperty($name);
+        if ($this->properties[$name]->immutable()) {
+            throw new ImmutablePropertyDtoException($name);
         }
         $this->$name = $value;
     }
@@ -176,6 +184,25 @@ abstract class DataTransferObject implements DtoContract
     public function __get($name)
     {
         return $this->properties[$name]->getValue();
+    }
+
+
+    /**
+     * @return static
+     */
+    public function mutable(): DtoContract
+    {
+        $this->immutable = false;
+        return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function immutable(): DtoContract
+    {
+        $this->immutable = true;
+        return $this;
     }
 
     public function all(): array
@@ -198,17 +225,27 @@ abstract class DataTransferObject implements DtoContract
 
     public function except(string ...$keys): DtoContract
     {
-        $this->exceptKeys = array_merge($this->exceptKeys, $keys);
-
+        foreach ($keys as $key) {
+            $property = $this->properties[$key] ?? null;
+            if (isset($property)) {
+                $property->setVisible(false);
+            }
+        }
         return $this;
     }
 
     public function toArray(): array
     {
+        $data = $this->all();
+        $array = [];
+
         if (count($this->onlyKeys)) {
-            $array = Arr::only($this->all(), $this->onlyKeys);
+            $array = array_intersect_key($data, array_flip((array)$this->onlyKeys));
         } else {
-            $array = Arr::except($this->all(), $this->exceptKeys);
+            foreach ($data as $key => $propertyValue) {
+                if ($this->properties[$key]->isVisible())
+                    $array[$key] = $propertyValue;
+            }
         }
 
         return $this->parseArray($array);
@@ -234,24 +271,5 @@ abstract class DataTransferObject implements DtoContract
         }
 
         return $array;
-    }
-
-
-    /**
-     * @return static
-     */
-    public function mutable() :DtoContract
-    {
-        $this->immutable = false;
-        return $this;
-    }
-
-    /**
-     * @return static
-     */
-    public function immutable() :DtoContract
-    {
-        $this->immutable = true;
-        return $this;
     }
 }

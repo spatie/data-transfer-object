@@ -6,6 +6,10 @@ namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\DataTransferObjectError;
+use Spatie\DataTransferObject\Exceptions\InvalidTypeDtoException;
+use Spatie\DataTransferObject\Exceptions\PropertyNotFoundDtoException;
+use Spatie\DataTransferObject\Exceptions\UninitialisedPropertyDtoException;
+use Spatie\DataTransferObject\Exceptions\UnknownPropertiesDtoException;
 use Spatie\DataTransferObject\Tests\TestClasses\DummyClass;
 use Spatie\DataTransferObject\Tests\TestClasses\EmptyChild;
 use Spatie\DataTransferObject\Tests\TestClasses\OtherClass;
@@ -25,7 +29,7 @@ class DataTransferObjectTest extends TestCase
 
         $this->markTestSucceeded();
 
-        $this->expectException(DataTransferObjectError::class);
+        $this->expectException(InvalidTypeDtoException::class);
 
         new class(['foo' => false]) extends DataTransferObject {
             /** @var string */
@@ -77,7 +81,7 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function null_is_allowed_only_if_explicitly_specified()
     {
-        $this->expectException(DataTransferObjectError::class);
+        $this->expectException(InvalidTypeDtoException::class);
 
         new class(['foo' => null]) extends DataTransferObject {
             /** @var string */
@@ -86,9 +90,20 @@ class DataTransferObjectTest extends TestCase
     }
 
     /** @test */
+    public function setting_unknown_property_throws_error()
+    {
+        $dto = new class([]) extends DataTransferObject {
+        };
+
+        $this->expectException(PropertyNotFoundDtoException::class);
+
+        $dto->property = "blabla";
+    }
+
+    /** @test */
     public function unknown_properties_throw_an_error()
     {
-        $this->expectException(DataTransferObjectError::class);
+        $this->expectException(UnknownPropertiesDtoException::class);
 
         new class(['bar' => null]) extends DataTransferObject {
         };
@@ -100,7 +115,7 @@ class DataTransferObjectTest extends TestCase
         try {
             new class(['foo' => null, 'bar' => null]) extends DataTransferObject {
             };
-        } catch (DataTransferObjectError $error) {
+        } catch (UnknownPropertiesDtoException $error) {
             $this->assertContains('`foo`', $error->getMessage());
             $this->assertContains('`bar`', $error->getMessage());
         }
@@ -185,7 +200,7 @@ class DataTransferObjectTest extends TestCase
 
         $this->markTestSucceeded();
 
-        $this->expectException(DataTransferObjectError::class);
+        $this->expectException(InvalidTypeDtoException::class);
 
         new class(['foo' => new class() {
         },
@@ -206,7 +221,7 @@ class DataTransferObjectTest extends TestCase
 
         $this->markTestSucceeded();
 
-        $this->expectException(DataTransferObjectError::class);
+        $this->expectException(InvalidTypeDtoException::class);
 
         new class(['foo' => [new OtherClass()]]) extends DataTransferObject {
             /** @var \Spatie\DataTransferObject\Tests\TestClasses\DummyClass[] */
@@ -217,7 +232,7 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function an_exception_is_thrown_for_a_generic_collection_of_null()
     {
-        $this->expectException(DataTransferObjectError::class);
+        $this->expectException(InvalidTypeDtoException::class);
 
         new class(['foo' => [null]]) extends DataTransferObject {
             /** @var string[] */
@@ -228,7 +243,7 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function an_exception_is_thrown_when_property_was_not_initialised()
     {
-        $this->expectException(DataTransferObjectError::class);
+        $this->expectException(UninitialisedPropertyDtoException::class);
 
         new class([]) extends DataTransferObject {
             /** @var string */
@@ -341,7 +356,7 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function nested_array_dtos_cannot_cast_with_null()
     {
-        $this->expectException(DataTransferObjectError::class);
+        $this->expectException(UninitialisedPropertyDtoException::class);
 
         new NestedParentOfMany([
             'name' => 'parent',
