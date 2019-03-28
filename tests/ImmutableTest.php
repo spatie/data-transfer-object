@@ -4,16 +4,16 @@ namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\DataTransferObjectError;
 use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
-use Spatie\DataTransferObject\Tests\TestClasses\ImmutablePropertyDataTransferObject;
+use Spatie\DataTransferObject\Tests\TestClasses\ImmutablePropertyDto;
 
 class ImmutableTest extends TestCase
 {
     /** @test */
     public function immutable_values_cannot_be_overwritten()
     {
-        $dto = TestDataTransferObject::immutable([
+        $dto = (new TestDataTransferObject([
             'testProperty' => 1,
-        ]);
+        ]))->immutable();
 
         $this->assertEquals(1, $dto->testProperty);
 
@@ -25,9 +25,9 @@ class ImmutableTest extends TestCase
     /** @test */
     public function mutable_values_can_be_overwritten()
     {
-        $dto = TestDataTransferObject::mutable([
+        $dto = (new TestDataTransferObject([
             'testProperty' => 1,
-        ]);
+        ]))->mutable();
 
         $this->assertEquals(1, $dto->testProperty);
 
@@ -39,15 +39,15 @@ class ImmutableTest extends TestCase
     /** @test */
     public function method_calls_are_proxied()
     {
-        $dto = TestDataTransferObject::immutable([
+        $dto = (new TestDataTransferObject([
             'testProperty' => 1,
-        ]);
+        ]))->immutable();
 
         $this->assertEquals(['testProperty' => 1], $dto->toArray());
     }
 
     /** @test */
-    public function immutable_is_default()
+    public function mutable_is_default()
     {
         $dto = new TestDataTransferObject([
             'testProperty' => 1,
@@ -55,15 +55,15 @@ class ImmutableTest extends TestCase
 
         $this->assertEquals(1, $dto->testProperty);
 
-        $this->expectException(DataTransferObjectError::class);
-
         $dto->testProperty = 2;
+
+        $this->assertEquals(2, $dto->testProperty);
     }
 
     /** @test */
     public function property_is_immutable()
     {
-        $dto = ImmutablePropertyDataTransferObject::mutable([
+        $dto = new ImmutablePropertyDto([
             'testProperty' => 'astring',
         ]);
 

@@ -24,19 +24,8 @@ abstract class DataTransferObject implements DtoContract
     /** @var bool */
     protected $immutable;
 
-    public static function mutable(array $parameters): self
+    public function __construct(array $parameters)
     {
-        return new static($parameters, false);
-    }
-
-    public static function immutable(array $parameters): self
-    {
-        return new static($parameters, true);
-    }
-
-    public function __construct(array $parameters, bool $immutable = true)
-    {
-        $this->immutable = $immutable;
         $this->boot($parameters);
     }
 
@@ -47,6 +36,8 @@ abstract class DataTransferObject implements DtoContract
      */
     protected function boot(array $parameters): void
     {
+        $this->resolveImmutable();
+
         foreach ($this->getPublicProperties() as $property) {
 
             /*
@@ -65,14 +56,17 @@ abstract class DataTransferObject implements DtoContract
             /* add the property to an associative array with the name as key */
             $this->properties[$property->getName()] = $property;
 
-            /* remove the property from the parameters array  */
-            unset($parameters[$property->getName()]);
-
-            /* remove the property from the value object  */
-            unset($this->{$property->getName()});
+            /* remove the property from the value object and parameters array  */
+            unset($parameters[$property->getName()], $this->{$property->getName()});
         }
 
         $this->processRemainingProperties($parameters);
+    }
+
+    protected function resolveImmutable()
+    {
+        if ($this instanceof immutable)
+            $this->immutable = true;
     }
 
     /**
@@ -99,9 +93,9 @@ abstract class DataTransferObject implements DtoContract
      */
     protected function validateProperty($property, array $parameters): void
     {
-        if (! array_key_exists($property->getName(), $parameters)
+        if (!array_key_exists($property->getName(), $parameters)
             && is_null($property->getDefault())
-            && ! $property->isNullable()
+            && !$property->isNullable()
         ) {
             throw DataTransferObjectError::uninitialized($property);
         }
@@ -164,7 +158,7 @@ abstract class DataTransferObject implements DtoContract
         if ($this->immutable) {
             throw DataTransferObjectError::immutable($name);
         }
-        if (! isset($this->properties[$name])) {
+        if (!isset($this->properties[$name])) {
             throw DataTransferObjectError::propertyNotFound($name, get_class($this));
         }
 
@@ -232,7 +226,7 @@ abstract class DataTransferObject implements DtoContract
                 continue;
             }
 
-            if (! is_array($value)) {
+            if (!is_array($value)) {
                 continue;
             }
 
@@ -240,5 +234,24 @@ abstract class DataTransferObject implements DtoContract
         }
 
         return $array;
+    }
+
+
+    /**
+     * @return static
+     */
+    public function mutable() :DtoContract
+    {
+        $this->immutable = false;
+        return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function immutable() :DtoContract
+    {
+        $this->immutable = true;
+        return $this;
     }
 }

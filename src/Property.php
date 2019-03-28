@@ -12,8 +12,7 @@ class Property
     protected static $typeMapping = [
         'int' => 'integer',
         'bool' => 'boolean',
-        'float' => 'double',
-        'immutable' => immutable::class,
+        'float' => 'double'
     ];
 
     /** @var bool */
@@ -61,7 +60,7 @@ class Property
             $value = $this->shouldBeCastToCollection($value) ? $this->castCollection($value) : $this->cast($value);
         }
 
-        if (! $this->isValidType($value)) {
+        if (!$this->isValidType($value)) {
             throw DataTransferObjectError::invalidType($this, $value);
         }
 
@@ -114,7 +113,7 @@ class Property
     {
         $docComment = $this->reflection->getDocComment();
 
-        if (! $docComment) {
+        if (!$docComment) {
             $this->setNullable(true);
 
             return;
@@ -122,31 +121,36 @@ class Property
 
         preg_match('/\@var ((?:(?:[\w|\\\\])+(?:\[\])?)+)/', $docComment, $matches);
 
-        if (! count($matches)) {
+
+        if (!count($matches)) {
             $this->setNullable(true);
 
             return;
         }
-
-        $this->hasTypeDeclaration = true;
 
         $varDocComment = end($matches);
 
         $this->types = explode('|', $varDocComment);
         $this->arrayTypes = str_replace('[]', '', $this->types);
 
-        $this->setNullable(strpos($varDocComment, 'null') !== false);
-
         if (in_array('immutable', $this->types) || in_array('Immutable', $this->types)) {
             $this->setIsImmutable(true);
-            unset($this->types['immutable']);
-            unset($this->types['Immutable']);
+            unset($this->types['immutable'], $this->types['Immutable']);
+
+            if (empty($this->types)) {
+                return;
+            }
         }
+
+        $this->hasTypeDeclaration = true;
+
+
+        $this->setNullable(strpos($varDocComment, 'null') !== false);
     }
 
     protected function isValidType($value): bool
     {
-        if (! $this->hasTypeDeclaration) {
+        if (!$this->hasTypeDeclaration) {
             return true;
         }
 
@@ -170,7 +174,7 @@ class Property
         $castTo = null;
 
         foreach ($this->types as $type) {
-            if (! is_subclass_of($type, DataTransferObject::class)) {
+            if (!is_subclass_of($type, DataTransferObject::class)) {
                 continue;
             }
 
@@ -179,7 +183,7 @@ class Property
             break;
         }
 
-        if (! $castTo) {
+        if (!$castTo) {
             return $value;
         }
 
@@ -191,7 +195,7 @@ class Property
         $castTo = null;
 
         foreach ($this->arrayTypes as $type) {
-            if (! is_subclass_of($type, DataTransferObject::class)) {
+            if (!is_subclass_of($type, DataTransferObject::class)) {
                 continue;
             }
 
@@ -200,7 +204,7 @@ class Property
             break;
         }
 
-        if (! $castTo) {
+        if (!$castTo) {
             return $values;
         }
 
@@ -224,7 +228,7 @@ class Property
                 return false;
             }
 
-            if (! is_array($value)) {
+            if (!is_array($value)) {
                 return false;
             }
         }
@@ -248,14 +252,14 @@ class Property
 
     protected function isValidGenericCollection(string $type, $collection): bool
     {
-        if (! is_array($collection)) {
+        if (!is_array($collection)) {
             return false;
         }
 
         $valueType = str_replace('[]', '', $type);
 
         foreach ($collection as $value) {
-            if (! $this->assertTypeEquals($valueType, $value)) {
+            if (!$this->assertTypeEquals($valueType, $value)) {
                 return false;
             }
         }
@@ -275,7 +279,7 @@ class Property
 
     public function getValue()
     {
-        if (! $this->isNullable() && $this->value == null) {
+        if (!$this->isNullable() && $this->value == null) {
             return $this->getDefault();
         }
 
@@ -291,4 +295,11 @@ class Property
     {
         return $this->reflection->getName();
     }
+
+    public function getReflection(): ReflectionProperty
+    {
+        return $this->reflection;
+    }
+
+
 }
