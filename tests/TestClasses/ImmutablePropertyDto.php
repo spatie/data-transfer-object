@@ -10,5 +10,8 @@ use Spatie\DataTransferObject\DataTransferObject;
 class ImmutablePropertyDto extends DataTransferObject
 {
     /** @var string|immutable */
-    public $testProperty;
+    public $immutableProperty;
+
+    /** @var string */
+    public $mutableProperty;
 }

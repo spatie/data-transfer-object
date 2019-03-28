@@ -81,13 +81,19 @@ class ImmutableTest extends TestCase
     public function property_is_immutable()
     {
         $dto = new ImmutablePropertyDto([
-            'testProperty' => 'astring',
+            'immutableProperty' => 'immutable',
+            'mutableProperty' => 'immutable',
         ]);
 
-        $this->assertEquals('astring', $dto->testProperty);
+        $this->assertEquals('immutable', $dto->immutableProperty);
+        $this->assertEquals('immutable', $dto->mutableProperty);
 
         $this->expectException(DataTransferObjectError::class);
 
-        $dto->testProperty = 'otherstring';
+        $dto->immutableProperty = 'mutable';
+        $dto->mutableProperty = 'mutable';
+
+        $this->assertEquals('immutable', $dto->immutableProperty);
+        $this->assertEquals('mutable', $dto->mutableProperty);
     }
 }
