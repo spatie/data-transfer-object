@@ -48,11 +48,6 @@ class Property implements PropertyContract
     /** @var ReflectionProperty */
     protected $reflection;
 
-    public static function fromReflection(ReflectionProperty $reflectionProperty): self
-    {
-        return new static($reflectionProperty);
-    }
-
     public function __construct(ReflectionProperty $reflectionProperty)
     {
         $this->reflection = $reflectionProperty;

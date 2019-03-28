@@ -86,7 +86,7 @@ abstract class DataTransferObject implements DtoContract
 
         $properties = [];
         foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $reflectionProperty) {
-            $properties[$reflectionProperty->getName()] = Property::fromReflection($reflectionProperty);
+            $properties[$reflectionProperty->getName()] = new Property($reflectionProperty);
         }
 
         return $properties;
