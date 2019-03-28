@@ -17,7 +17,9 @@ class ImmutableDataTransferObjectTest extends TestCase
     {
         $dto = (new TestDataTransferObject([
             'testProperty' => 1,
-        ]))->immutable();
+        ]));
+
+        $dto->setImmutable();
 
         $this->assertEquals(1, $dto->testProperty);
 
@@ -45,7 +47,9 @@ class ImmutableDataTransferObjectTest extends TestCase
     {
         $dto = (new TestDataTransferObject([
             'testProperty' => 1,
-        ]))->immutable();
+        ]));
+
+        $dto->setImmutable();
 
         $this->assertEquals(['testProperty' => 1], $dto->toArray());
     }

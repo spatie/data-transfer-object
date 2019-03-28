@@ -74,11 +74,13 @@ abstract class DataTransferObject implements DtoContract
         }
     }
 
-    protected function setImmutable()
+    public function setImmutable(): void
     {
-        $this->immutable = true;
-        foreach ($this->properties as $property) {
-            $this->chainPropertiesImmutable($property);
+        if (!$this->isImmutable()) {
+            $this->immutable = true;
+            foreach ($this->properties as $property) {
+                $this->chainPropertiesImmutable($property);
+            }
         }
     }
 
@@ -86,11 +88,11 @@ abstract class DataTransferObject implements DtoContract
     {
         $dto = $property->getValue();
         if ($dto instanceof DtoContract)
-            $dto->immutable();
+            $dto->setImmutable();
         elseif (is_iterable($dto)) {
             foreach ($dto as $aPotentialDto) {
                 if ($aPotentialDto instanceof DtoContract)
-                    $aPotentialDto->immutable();
+                    $aPotentialDto->setImmutable();
             }
         }
     }
@@ -205,13 +207,15 @@ abstract class DataTransferObject implements DtoContract
     }
 
     /**
+     * @deprecated
+     * @param array $data
      * @return static
      */
-    public function immutable(): DtoContract
+    public static function immutable(array $data): DtoContract
     {
-        if (!$this->isImmutable())
-            $this->setImmutable();
-        return $this;
+        $dto = new static($data);
+        $dto->setImmutable();
+        return $dto;
     }
 
     public function isImmutable(): bool
