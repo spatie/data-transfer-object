@@ -6,8 +6,8 @@ use Spatie\DataTransferObject\DataTransferObjectError;
 use Spatie\DataTransferObject\Exceptions\ImmutableDtoException;
 use Spatie\DataTransferObject\Exceptions\ImmutablePropertyDtoException;
 use Spatie\DataTransferObject\Tests\TestClasses\ImmutableDto;
-use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
 use Spatie\DataTransferObject\Tests\TestClasses\ImmutablePropertyDto;
+use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
 
 class ImmutableTest extends TestCase
 {
@@ -67,16 +67,16 @@ class ImmutableTest extends TestCase
     public function immutable_interface_makes_dto_immutable()
     {
         $dto = new ImmutableDto([
-            'name' => "immutable",
+            'name' => 'immutable',
         ]);
 
-        $this->assertEquals("immutable", $dto->name);
+        $this->assertEquals('immutable', $dto->name);
 
         $this->expectException(ImmutableDtoException::class);
 
-        $dto->name = "mutable";
+        $dto->name = 'mutable';
 
-        $this->assertEquals("immutable", $dto->name);
+        $this->assertEquals('immutable', $dto->name);
     }
 
     /** @test */
