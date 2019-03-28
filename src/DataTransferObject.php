@@ -20,8 +20,6 @@ use Spatie\DataTransferObject\Exceptions\UninitialisedPropertyDtoException;
  */
 abstract class DataTransferObject implements DtoContract
 {
-    /** @var array */
-    protected $exceptKeys = [];
 
     /** @var array */
     protected $onlyKeys = [];
@@ -40,7 +38,7 @@ abstract class DataTransferObject implements DtoContract
     /**
      * Boot the dto and process all parameters.
      * @param array $parameters
-     * @throws \ReflectionException | DataTransferObjectError
+     * @throws \ReflectionException
      */
     protected function boot(array $parameters): void
     {
