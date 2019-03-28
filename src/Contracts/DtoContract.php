@@ -12,7 +12,7 @@ interface DtoContract
 
     public function toArray(): array;
 
-    public function setImmutable() :void ;
+    public function setImmutable() :void;
 
     public function isImmutable(): bool;
 }
