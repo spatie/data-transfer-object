@@ -85,12 +85,13 @@ abstract class DataTransferObject implements DtoContract
     protected function chainPropertiesImmutable(PropertyContract $property)
     {
         $dto = $property->getValue();
-        if ($dto instanceof DtoContract)
+        if ($dto instanceof DtoContract) {
             $dto->immutable();
-        elseif (is_iterable($dto)) {
+        } elseif (is_iterable($dto)) {
             foreach ($dto as $aPotentialDto) {
-                if ($aPotentialDto instanceof DtoContract)
+                if ($aPotentialDto instanceof DtoContract) {
                     $aPotentialDto->immutable();
+                }
             }
         }
     }
@@ -119,9 +120,9 @@ abstract class DataTransferObject implements DtoContract
      */
     protected function validateProperty(PropertyContract $property, array $parameters): void
     {
-        if (!array_key_exists($property->getName(), $parameters)
+        if (! array_key_exists($property->getName(), $parameters)
             && is_null($property->getDefault())
-            && !$property->nullable()
+            && ! $property->nullable()
         ) {
             throw new UninitialisedPropertyDtoException($property);
         }
@@ -184,7 +185,7 @@ abstract class DataTransferObject implements DtoContract
         if ($this->immutable) {
             throw new ImmutableDtoException($name);
         }
-        if (!isset($this->properties[$name])) {
+        if (! isset($this->properties[$name])) {
             throw new PropertyNotFoundDtoException($name, get_class($this));
         }
 
@@ -210,6 +211,7 @@ abstract class DataTransferObject implements DtoContract
     public function immutable(): DtoContract
     {
         $this->setImmutable();
+
         return $this;
     }
 
@@ -249,7 +251,7 @@ abstract class DataTransferObject implements DtoContract
         $array = [];
 
         if (count($this->onlyKeys)) {
-            $array = array_intersect_key($data, array_flip((array)$this->onlyKeys));
+            $array = array_intersect_key($data, array_flip((array) $this->onlyKeys));
         } else {
             foreach ($data as $key => $propertyValue) {
                 if ($this->properties[$key]->isVisible()) {
@@ -273,7 +275,7 @@ abstract class DataTransferObject implements DtoContract
                 continue;
             }
 
-            if (!is_array($value)) {
+            if (! is_array($value)) {
                 continue;
             }
 
