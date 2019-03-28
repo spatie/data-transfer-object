@@ -8,7 +8,7 @@ use Spatie\DataTransferObject\Tests\TestClasses\ImmutablePropertyDto;
 use Spatie\DataTransferObject\Exceptions\ImmutablePropertyDtoException;
 use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
 
-class ImmutableTest extends TestCase
+class ImmutableDataTransferObjectTest extends TestCase
 {
     /** @test */
     public function immutable_values_cannot_be_overwritten()
