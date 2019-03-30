@@ -6,7 +6,7 @@ namespace Spatie\DataTransferObject;
 
 use ReflectionClass;
 use ReflectionProperty;
-use Spatie\DataTransferObject\Contracts\immutable;
+use Spatie\DataTransferObject\Contracts\Immutable;
 use Spatie\DataTransferObject\Contracts\DtoContract;
 use Spatie\DataTransferObject\Contracts\PropertyContract;
 use Spatie\DataTransferObject\Exceptions\ImmutableDtoException;
@@ -69,7 +69,7 @@ abstract class DataTransferObject implements DtoContract
 
     protected function determineImmutability()
     {
-        if ($this instanceof immutable) {
+        if ($this instanceof Immutable) {
             $this->setImmutable();
         }
     }

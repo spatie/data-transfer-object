@@ -2,6 +2,6 @@
 
 namespace Spatie\DataTransferObject\Contracts;
 
-interface immutable
+interface Immutable
 {
 }
