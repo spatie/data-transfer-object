@@ -264,12 +264,31 @@ $postData = new PostData([
 If you want your data object to be never changeable (this is a good idea in some cases), you can make them immutable:
 
 ```php
-$postData = PostData::immutable([
-    'tags' => [
-        ['name' => 'foo'],
-        ['name' => 'bar']
-    ]
+$postData = new PostData::immutable([
+    'name' => 'foo'
 ]);
+$postData->setImmutable();
+```
+
+OR
+
+```php
+class PostData extends DataTransferObject implements Immutable
+{
+    /** @var string */
+    public $name;
+}
+```
+
+
+If you only want to make certain properties immutable you can typehint this on the variable
+
+```php
+class PostData extends DataTransferObject
+{
+    /** @var string|immutable */
+    public $name;
+}
 ```
 
 Trying to change a property of `$postData` after it's constructed, will result in a `DataTransferObjectError`.
