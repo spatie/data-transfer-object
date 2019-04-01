@@ -261,17 +261,6 @@ $postData = new PostData([
 
 ### Immutability
 
-If you want your data object to be never changeable (this is a good idea in some cases), you can make them immutable:
-
-```php
-$postData = PostData::immutable([
-    'tags' => [
-        ['name' => 'foo'],
-        ['name' => 'bar']
-    ]
-]);
-```
-
 You can also mark individual properties as immutable like so:
 
 ```php

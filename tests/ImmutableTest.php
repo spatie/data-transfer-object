@@ -4,7 +4,6 @@ namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\DataTransferObjectError;
-use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
 
 class ImmutableTest extends TestCase
 {
@@ -24,20 +23,6 @@ class ImmutableTest extends TestCase
     }
 
     /** @test */
-    public function a_dto_can_be_made_immutable_as_a_whole()
-    {
-        $dto = TestDataTransferObject::immutable([
-            'testProperty' => 1,
-        ]);
-
-        $this->assertEquals(1, $dto->testProperty);
-
-        $this->expectException(DataTransferObjectError::class);
-
-        $dto->testProperty = 2;
-    }
-
-    /** @test */
     public function only_immutable_type()
     {
         $dto = new class(['prop' => true]) extends DataTransferObject {
@@ -50,5 +35,18 @@ class ImmutableTest extends TestCase
         $this->expectException(DataTransferObjectError::class);
 
         $dto->prop = false;
+    }
+
+    /** @test */
+    public function mutable_arrays_are_still_accessible()
+    {
+        $dto = new class([]) extends DataTransferObject {
+            /** @var array */
+            public $array = [];
+        };
+
+        $dto->array[] = 'abc';
+
+        $this->assertEquals(['abc'], $dto->array);
     }
 }

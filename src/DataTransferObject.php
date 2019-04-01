@@ -21,22 +21,6 @@ abstract class DataTransferObject
     /** @var array */
     protected $onlyKeys = [];
 
-    /**
-     * @param array $parameters
-     *
-     * @return static
-     */
-    public static function immutable(array $parameters): DataTransferObject
-    {
-        $dto = new static($parameters);
-
-        foreach ($dto->propertyDefinitions as $propertyDefinition) {
-            $propertyDefinition->markImmutable();
-        }
-
-        return $dto;
-    }
-
     public function __construct(array $inputParameters)
     {
         $class = new ReflectionClass(static::class);
@@ -56,10 +40,12 @@ abstract class DataTransferObject
 
             $value = $inputParameters[$propertyName] ?? $property->getValue($this);
 
-            unset($this->{$propertyName});
+            if ($property->isImmutable()) {
+                $this->makeImmutable($property);
+            }
+
             unset($inputParameters[$propertyName]);
 
-            $this->propertyDefinitions[$propertyName] = $property;
             $property->set($value);
         }
 
@@ -70,11 +56,11 @@ abstract class DataTransferObject
 
     public function __get($name)
     {
-        if (! array_key_exists($name, $this->propertyDefinitions)) {
+        if (! array_key_exists($name, $this->propertyValues)) {
             throw DataTransferObjectError::fieldNotFound($name);
         }
 
-        return $this->propertyValues[$name];
+        return $this->propertyValues[$name] ?? $this->{$name};
     }
 
     public function __set($name, $value)
@@ -185,5 +171,22 @@ abstract class DataTransferObject
         }
 
         return $properties;
+    }
+
+    private function makeImmutable(Property $property): DataTransferObject
+    {
+        $propertyName = $property->getName();
+
+        $value = $this->{$propertyName};
+
+        $property->markImmutable();
+
+        unset($this->{$propertyName});
+
+        $this->propertyValues[$propertyName] = $value;
+
+        $this->propertyDefinitions[$propertyName] = $property;
+
+        return $this;
     }
 }
