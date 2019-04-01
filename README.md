@@ -272,6 +272,16 @@ $postData = PostData::immutable([
 ]);
 ```
 
+You can also mark individual properties as immutable like so:
+
+```php
+class PostData
+{
+    /** @var string|immutable */
+    public $title;
+}
+```
+
 Trying to change a property of `$postData` after it's constructed, will result in a `DataTransferObjectError`.
 
 ### Helper functions
