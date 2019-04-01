@@ -36,4 +36,19 @@ class ImmutableTest extends TestCase
 
         $dto->testProperty = 2;
     }
+
+    /** @test */
+    public function only_immutable_type()
+    {
+        $dto = new class(['prop' => true]) extends DataTransferObject {
+            /** @var immutable */
+            public $prop;
+        };
+
+        $this->assertTrue($dto->prop);
+
+        $this->expectException(DataTransferObjectError::class);
+
+        $dto->prop = false;
+    }
 }
