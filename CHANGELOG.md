@@ -2,7 +2,7 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
-## 2.0.0 - 2019-03-??
+## 1.9.0 - 2019-03-??
 
 - Support per field immutability
 - Fix immutable DTOs not type-hintable
