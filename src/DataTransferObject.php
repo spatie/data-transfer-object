@@ -9,8 +9,11 @@ use ReflectionProperty;
 
 abstract class DataTransferObject
 {
+    /** @var array */
+    private $propertyValues = [];
+
     /** @var \Spatie\DataTransferObject\Property[] */
-    private $properties;
+    private $propertyDefinitions = [];
 
     /** @var array */
     protected $exceptKeys = [];
@@ -21,11 +24,17 @@ abstract class DataTransferObject
     /**
      * @param array $parameters
      *
-     * @return \Spatie\DataTransferObject\ImmutableDataTransferObject|static
+     * @return static
      */
-    public static function immutable(array $parameters): ImmutableDataTransferObject
+    public static function immutable(array $parameters): DataTransferObject
     {
-        return new ImmutableDataTransferObject(new static($parameters));
+        $dto = new static($parameters);
+
+        foreach ($dto->propertyDefinitions as $propertyDefinition) {
+            $propertyDefinition->markImmutable();
+        }
+
+        return $dto;
     }
 
     public function __construct(array $inputParameters)
@@ -50,6 +59,7 @@ abstract class DataTransferObject
             unset($this->{$propertyName});
             unset($inputParameters[$propertyName]);
 
+            $this->propertyDefinitions[$propertyName] = $property;
             $property->set($value);
         }
 
@@ -60,16 +70,27 @@ abstract class DataTransferObject
 
     public function __get($name)
     {
-        if (! array_key_exists($name, $this->properties)) {
+        if (! array_key_exists($name, $this->propertyDefinitions)) {
             throw DataTransferObjectError::fieldNotFound($name);
         }
 
-        return $this->properties[$name];
+        return $this->propertyValues[$name];
     }
 
     public function __set($name, $value)
     {
-        $this->properties[$name] = $value;
+        if (! array_key_exists($name, $this->propertyDefinitions)) {
+            throw DataTransferObjectError::fieldNotFound($name);
+        }
+
+        if (
+            $this->propertyDefinitions[$name]->isInitialised()
+            && $this->propertyDefinitions[$name]->isImmutable()
+        ) {
+            throw DataTransferObjectError::immutable($name);
+        }
+
+        $this->propertyValues[$name] = $value;
     }
 
     public function all(): array

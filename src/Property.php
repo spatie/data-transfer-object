@@ -27,6 +27,9 @@ class Property extends ReflectionProperty
     /** @var bool */
     protected $isInitialised = false;
 
+    /** @var bool */
+    protected $isImmutable = false;
+
     /** @var array */
     protected $types = [];
 
@@ -57,9 +60,9 @@ class Property extends ReflectionProperty
             throw DataTransferObjectError::invalidType($this, $value);
         }
 
-        $this->isInitialised = true;
-
         $this->valueObject->{$this->getName()} = $value;
+
+        $this->isInitialised = true;
     }
 
     public function getTypes(): array
@@ -75,6 +78,23 @@ class Property extends ReflectionProperty
     public function isNullable(): bool
     {
         return $this->isNullable;
+    }
+
+    public function isImmutable(): bool
+    {
+        return $this->isImmutable;
+    }
+
+    public function isInitialised(): bool
+    {
+        return $this->isInitialised;
+    }
+
+    public function markImmutable(): Property
+    {
+        $this->isImmutable = true;
+
+        return $this;
     }
 
     protected function resolveTypeDefinition()
@@ -95,14 +115,25 @@ class Property extends ReflectionProperty
             return;
         }
 
-        $this->hasTypeDeclaration = true;
-
         $varDocComment = end($matches);
 
-        $this->types = explode('|', $varDocComment);
-        $this->arrayTypes = str_replace('[]', '', $this->types);
+        $types = explode('|', $varDocComment);
+
+        $immutableIndex = array_search('immutable', $types);
+
+        if ($immutableIndex !== false) {
+            $this->isImmutable = true;
+
+            unset($types[$immutableIndex]);
+        }
 
         $this->isNullable = strpos($varDocComment, 'null') !== false;
+
+        if (count($types)) {
+            $this->hasTypeDeclaration = true;
+            $this->types = $types;
+            $this->arrayTypes = str_replace('[]', '', $this->types);
+        }
     }
 
     protected function isValidType($value): bool
