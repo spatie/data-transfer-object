@@ -9,6 +9,9 @@ use ReflectionProperty;
 
 abstract class DataTransferObject
 {
+    /** @var \Spatie\DataTransferObject\Property[] */
+    private $properties;
+
     /** @var array */
     protected $exceptKeys = [];
 
@@ -25,31 +28,48 @@ abstract class DataTransferObject
         return new ImmutableDataTransferObject(new static($parameters));
     }
 
-    public function __construct(array $parameters)
+    public function __construct(array $inputParameters)
     {
         $class = new ReflectionClass(static::class);
 
         $properties = $this->getPublicProperties($class);
 
         foreach ($properties as $property) {
+            $propertyName = $property->getName();
+
             if (
-                ! isset($parameters[$property->getName()])
+                ! isset($inputParameters[$propertyName])
                 && ! $property->isDefault()
                 && ! $property->isNullable()
             ) {
                 throw DataTransferObjectError::uninitialized($property);
             }
 
-            $value = $parameters[$property->getName()] ?? $property->getValue($this);
+            $value = $inputParameters[$propertyName] ?? $property->getValue($this);
+
+            unset($this->{$propertyName});
+            unset($inputParameters[$propertyName]);
 
             $property->set($value);
-
-            unset($parameters[$property->getName()]);
         }
 
-        if (count($parameters)) {
-            throw DataTransferObjectError::unknownProperties(array_keys($parameters), $class->getName());
+        if (count($inputParameters)) {
+            throw DataTransferObjectError::unknownProperties(array_keys($inputParameters), $class->getName());
         }
+    }
+
+    public function __get($name)
+    {
+        if (! array_key_exists($name, $this->properties)) {
+            throw DataTransferObjectError::fieldNotFound($name);
+        }
+
+        return $this->properties[$name];
+    }
+
+    public function __set($name, $value)
+    {
+        $this->properties[$name] = $value;
     }
 
     public function all(): array

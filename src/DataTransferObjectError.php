@@ -43,4 +43,11 @@ class DataTransferObjectError extends TypeError
     {
         return new self("Cannot change the value of property {$property} on an immutable data transfer object");
     }
+
+    public static function fieldNotFound(string $name): DataTransferObjectError
+    {
+        $class = static::class;
+
+        return new self("Field {$name} not found on data transfer object `{$class}`");
+    }
 }
