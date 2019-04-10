@@ -15,6 +15,8 @@ abstract class DataTransferObject
     /** @var array */
     protected $onlyKeys = [];
 
+    protected $strict = true;
+
     /**
      * @param array $parameters
      *
@@ -26,6 +28,11 @@ abstract class DataTransferObject
     }
 
     public function __construct(array $parameters)
+    {
+        $this->hydrate($parameters);
+    }
+
+    public function hydrate(array $parameters)
     {
         $class = new ReflectionClass(static::class);
 
@@ -47,7 +54,7 @@ abstract class DataTransferObject
             unset($parameters[$property->getName()]);
         }
 
-        if (count($parameters)) {
+        if ($this->strict && count($parameters)) {
             throw DataTransferObjectError::unknownProperties(array_keys($parameters), $class->getName());
         }
     }
