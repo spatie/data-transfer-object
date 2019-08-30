@@ -91,6 +91,11 @@ abstract class DataTransferObjectCollection implements
         return $collection;
     }
 
+    public function items(): array
+    {
+        return $this->collection;
+    }
+
     public function count(): int
     {
         return count($this->collection);
