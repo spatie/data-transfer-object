@@ -28,6 +28,21 @@ class DataTransferObjectCollectionTest extends TestCase
     }
 
     /** @test */
+    public function items_returns_the_collection_of_items()
+    {
+        $objects = [
+            new TestDataTransferObject(['testProperty' => 1]),
+            new TestDataTransferObject(['testProperty' => 2]),
+            new TestDataTransferObject(['testProperty' => 3]),
+        ];
+
+        $collection = new class($objects) extends DataTransferObjectCollection {
+        };
+
+        $this->assertCount(3, $collection->items());
+    }
+
+    /** @test */
     public function to_array_also_recursively_casts_dtos_to_array()
     {
         $collection = new NestedChildCollection();
