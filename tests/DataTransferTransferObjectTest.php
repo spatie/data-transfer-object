@@ -13,7 +13,7 @@ use Spatie\DataTransferObject\Tests\TestClasses\NestedChild;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParent;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParentOfMany;
 
-class DataTransferObjectTest extends TestCase
+class DataTransferTransferObjectTest extends TestCase
 {
     /** @test */
     public function only_the_type_hinted_type_may_be_passed()

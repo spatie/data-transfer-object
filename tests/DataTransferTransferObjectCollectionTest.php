@@ -10,7 +10,7 @@ use Spatie\DataTransferObject\Tests\TestClasses\NestedChildCollection;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParentCollection;
 use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
 
-class DataTransferObjectCollectionTest extends TestCase
+class DataTransferTransferObjectCollectionTest extends TestCase
 {
     /** @test */
     public function it_can_hold_value_objects_of_a_certain_type()
