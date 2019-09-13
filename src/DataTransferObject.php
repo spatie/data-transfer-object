@@ -15,6 +15,9 @@ abstract class DataTransferObject
     /** @var array */
     protected $onlyKeys = [];
 
+    /** @var bool */
+    protected $ignoreUnknownParameters = false;
+
     /**
      * @param array $parameters
      *
@@ -47,7 +50,7 @@ abstract class DataTransferObject
             unset($parameters[$property->getName()]);
         }
 
-        if (count($parameters)) {
+        if (! $this->ignoreUnknownParameters && count($parameters)) {
             throw DataTransferObjectError::unknownProperties(array_keys($parameters), $class->getName());
         }
     }

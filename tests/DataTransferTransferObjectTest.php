@@ -95,6 +95,15 @@ class DataTransferObjectTest extends TestCase
     }
 
     /** @test */
+    public function unknown_properties_do_not_throw_an_error_if_explicitly_ignored()
+    {
+        new class(['bar' => null], true) extends DataTransferObject {
+            protected $ignoreUnknownParameters = true;
+        };
+        $this->addToAssertionCount(1);
+    }
+
+    /** @test */
     public function unknown_properties_show_a_comprehensive_error_message()
     {
         try {
