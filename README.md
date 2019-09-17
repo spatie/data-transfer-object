@@ -209,7 +209,7 @@ class PostCollection extends DataTransferObjectCollection
 
 ### Automatic casting of nested DTOs
 
-If you've got nested DTO fields, data passed to the parent DTO will automatically be casted.
+If you've got nested DTO fields, data passed to the parent DTO will automatically be cast.
 
 ```php
 class PostData extends DataTransferObject
@@ -231,7 +231,7 @@ $postData = new PostData([
 
 ### Automatic casting of nested array DTOs
 
-Similarly to above, nested array DTOs will automatically be casted.
+Similarly to above, nested array DTOs will automatically be cast.
 
 ```php
 class TagData extends DataTransferObject
