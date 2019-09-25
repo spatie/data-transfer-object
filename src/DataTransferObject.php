@@ -120,11 +120,9 @@ abstract class DataTransferObject
                 continue;
             }
 
-            if (! is_array($value)) {
-                continue;
+            if (is_array($value)) {
+                $array[$key] = $this->parseArray($value);
             }
-
-            $array[$key] = $this->parseArray($value);
         }
 
         return $array;
