@@ -84,7 +84,10 @@ class Property extends ReflectionProperty
     {
         if (isset(self::$cache[$this->class][$this->getName()])) {
             $this->isNullable = self::$cache[$this->class][$this->getName()]['is_nullable'];
-            $this->hasTypeDeclaration = (!empty(self::$cache[$this->class][$this->getName()]['types']) || !empty(self::$cache[$this->class][$this->getName()]['array_types']));
+            $this->hasTypeDeclaration = (
+                ! empty(self::$cache[$this->class][$this->getName()]['types'])
+                || ! empty(self::$cache[$this->class][$this->getName()]['array_types'])
+            );
             $this->types = self::$cache[$this->class][$this->getName()]['types'] ?? [];
             $this->arrayTypes = self::$cache[$this->class][$this->getName()]['array_types'] ?? [];
 
