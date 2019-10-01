@@ -33,6 +33,9 @@ class Property extends ReflectionProperty
     /** @var array */
     protected $arrayTypes = [];
 
+    /** @var array[] */
+    protected static $cache = [];
+
     public static function fromReflection(DataTransferObject $valueObject, ReflectionProperty $reflectionProperty)
     {
         return new self($valueObject, $reflectionProperty);
@@ -79,10 +82,20 @@ class Property extends ReflectionProperty
 
     protected function resolveTypeDefinition()
     {
+        if (isset(self::$cache[$this->class][$this->getName()])) {
+            $this->isNullable = self::$cache[$this->class][$this->getName()]['is_nullable'];
+            $this->hasTypeDeclaration = (!empty(self::$cache[$this->class][$this->getName()]['types']) || !empty(self::$cache[$this->class][$this->getName()]['array_types']));
+            $this->types = self::$cache[$this->class][$this->getName()]['types'] ?? [];
+            $this->arrayTypes = self::$cache[$this->class][$this->getName()]['array_types'] ?? [];
+
+            return;
+        }
+
         $docComment = $this->getDocComment();
 
         if (! $docComment) {
             $this->isNullable = true;
+            self::$cache[$this->class][$this->getName()]['is_nullable'] = $this->isNullable;
 
             return;
         }
@@ -91,6 +104,7 @@ class Property extends ReflectionProperty
 
         if (! count($matches)) {
             $this->isNullable = true;
+            self::$cache[$this->class][$this->getName()]['is_nullable'] = $this->isNullable;
 
             return;
         }
@@ -100,9 +114,13 @@ class Property extends ReflectionProperty
         $varDocComment = end($matches);
 
         $this->types = explode('|', $varDocComment);
+        self::$cache[$this->class][$this->getName()]['types'] = $this->types;
+
         $this->arrayTypes = str_replace('[]', '', $this->types);
+        self::$cache[$this->class][$this->getName()]['array_types'] = $this->arrayTypes;
 
         $this->isNullable = strpos($varDocComment, 'null') !== false;
+        self::$cache[$this->class][$this->getName()]['is_nullable'] = $this->isNullable;
     }
 
     protected function isValidType($value): bool
