@@ -15,6 +15,9 @@ abstract class DataTransferObject
     /** @var array */
     protected $onlyKeys = [];
 
+    /** @var array[] */
+    protected static $cache = [];
+
     /**
      * @param array $parameters
      *
@@ -137,12 +140,16 @@ abstract class DataTransferObject
      */
     protected function getPublicProperties(ReflectionClass $class): array
     {
-        $properties = [];
-
-        foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $reflectionProperty) {
-            $properties[$reflectionProperty->getName()] = Property::fromReflection($this, $reflectionProperty);
+        if (isset(self::$cache[static::class])) {
+            return self::$cache[static::class];
         }
 
-        return $properties;
+        self::$cache[static::class] = [];
+
+        foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $reflectionProperty) {
+            self::$cache[static::class][$reflectionProperty->getName()] = Property::fromReflection($this, $reflectionProperty);
+        }
+
+        return self::$cache[static::class];
     }
 }
