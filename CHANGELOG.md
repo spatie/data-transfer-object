@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 1.9.1 - 2019-10-03
+
+- Improve type error message
+
 ## 1.9.0 - 2019-08-30
 
 - Add DataTransferObjectCollection::items() 

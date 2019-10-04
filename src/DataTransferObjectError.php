@@ -31,7 +31,9 @@ class DataTransferObjectError extends TypeError
 
         $expectedTypes = implode(', ', $property->getTypes());
 
-        return new self("Invalid type: expected {$property->getFqn()} to be of type {$expectedTypes}, instead got value `{$value}`.");
+        $currentType = gettype($value);
+
+        return new self("Invalid type: expected {$property->getFqn()} to be of type {$expectedTypes}, instead got value `{$value}` ({$currentType}).");
     }
 
     public static function uninitialized(Property $property): DataTransferObjectError
