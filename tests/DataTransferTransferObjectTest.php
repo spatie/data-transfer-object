@@ -8,12 +8,14 @@ use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\DataTransferObjectError;
 use Spatie\DataTransferObject\Tests\TestClasses\DummyClass;
 use Spatie\DataTransferObject\Tests\TestClasses\EmptyChild;
+use Spatie\DataTransferObject\Tests\TestClasses\EmptyClass;
 use Spatie\DataTransferObject\Tests\TestClasses\OtherClass;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedChild;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParent;
+use Spatie\DataTransferObject\Tests\TestClasses\WithUseAndAliases;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParentOfMany;
 
-class DataTransferObjectTest extends TestCase
+class DataTransferTransferObjectTest extends TestCase
 {
     /** @test */
     public function only_the_type_hinted_type_may_be_passed()
@@ -368,5 +370,31 @@ class DataTransferObjectTest extends TestCase
         };
 
         $this->assertInstanceOf(EmptyChild::class, $object->child);
+    }
+
+    /** @test */
+    public function withUseAndAlias()
+    {
+        $object = new WithUseAndAliases([
+            'arrayOfDummies' => [
+                new DummyClass(),
+            ],
+            'arrayOfDummyClasses' => [
+                new DummyClass(),
+            ],
+            'arrayOfEmptyClasses' => [
+                new EmptyClass(),
+            ],
+            'emptyClass' => new EmptyClass(),
+        ], true);
+
+        $this->assertInstanceOf(DummyClass::class, $object->arrayOfDummies[0]);
+        $this->assertInstanceOf(DummyClass::class, $object->arrayOfDummyClasses[0]);
+        $this->assertInstanceOf(EmptyClass::class, $object->arrayOfEmptyClasses[0]);
+        $this->assertInstanceOf(EmptyClass::class, $object->emptyClass);
+
+        $this->expectException(DataTransferObjectError::class);
+
+        new WithUseAndAliases([]);
     }
 }

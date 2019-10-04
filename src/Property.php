@@ -33,18 +33,26 @@ class Property extends ReflectionProperty
     /** @var array */
     protected $arrayTypes = [];
 
-    public static function fromReflection(DataTransferObject $valueObject, ReflectionProperty $reflectionProperty)
-    {
-        return new self($valueObject, $reflectionProperty);
+    public static function fromReflection(
+        DataTransferObject $valueObject,
+        ReflectionProperty $reflectionProperty,
+        string $namespace,
+        array $uses
+    ) {
+        return new self($valueObject, $reflectionProperty, $namespace, $uses);
     }
 
-    public function __construct(DataTransferObject $valueObject, ReflectionProperty $reflectionProperty)
-    {
+    public function __construct(
+        DataTransferObject $valueObject,
+        ReflectionProperty $reflectionProperty,
+        string $namespace,
+        array $uses
+    ) {
         parent::__construct($reflectionProperty->class, $reflectionProperty->getName());
 
         $this->valueObject = $valueObject;
 
-        $this->resolveTypeDefinition();
+        $this->resolveTypeDefinition($namespace, $uses);
     }
 
     public function set($value)
@@ -77,7 +85,7 @@ class Property extends ReflectionProperty
         return $this->isNullable;
     }
 
-    protected function resolveTypeDefinition()
+    protected function resolveTypeDefinition(string $namespace, array $uses)
     {
         $docComment = $this->getDocComment();
 
@@ -99,7 +107,28 @@ class Property extends ReflectionProperty
 
         $varDocComment = end($matches);
 
-        $this->types = explode('|', $varDocComment);
+        $types = explode('|', $varDocComment);
+        foreach ($types as $type) {
+            if (ReflectionUtils::isSkipped($type) || strpos($type, '\\') !== false) {
+                $this->types[] = $type;
+                continue;
+            }
+
+            $array = false;
+            if ($this->hasBrackets($type)) {
+                $array = true;
+                $type = str_replace('[]', '', $type);
+            }
+
+            if (isset($uses[$type])) {
+                $type = $uses[$type];
+                $this->types[] = $type.($array ? '[]' : '');
+                continue;
+            }
+
+            $this->types[] = implode('\\', [$namespace, $type.($array ? '[]' : '')]);
+        }
+
         $this->arrayTypes = str_replace('[]', '', $this->types);
 
         $this->isNullable = strpos($varDocComment, 'null') !== false;
@@ -193,9 +222,14 @@ class Property extends ReflectionProperty
         return true;
     }
 
+    protected function hasBrackets(string $type): bool
+    {
+        return strpos($type, '[]') !== false;
+    }
+
     protected function assertTypeEquals(string $type, $value): bool
     {
-        if (strpos($type, '[]') !== false) {
+        if ($this->hasBrackets($type)) {
             return $this->isValidGenericCollection($type, $value);
         }
 

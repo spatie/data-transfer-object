@@ -25,11 +25,14 @@ abstract class DataTransferObject
         return new ImmutableDataTransferObject(new static($parameters));
     }
 
-    public function __construct(array $parameters)
+    public function __construct(array $parameters, ?bool $aliases = false)
     {
         $class = new ReflectionClass(static::class);
 
-        $properties = $this->getPublicProperties($class);
+        $namespace = $class->getNamespaceName();
+        $uses = $aliases ? ReflectionUtils::getUsesAndAliases($class) : [];
+
+        $properties = $this->getPublicProperties($class, $namespace, $uses);
 
         foreach ($properties as $property) {
             if (
@@ -133,14 +136,18 @@ abstract class DataTransferObject
     /**
      * @param \ReflectionClass $class
      *
+     * @param string $namespace
+     * @param array $uses
      * @return array|\Spatie\DataTransferObject\Property[]
      */
-    protected function getPublicProperties(ReflectionClass $class): array
+    protected function getPublicProperties(ReflectionClass $class, string $namespace, array $uses): array
     {
         $properties = [];
 
         foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $reflectionProperty) {
-            $properties[$reflectionProperty->getName()] = Property::fromReflection($this, $reflectionProperty);
+            $properties[$reflectionProperty->getName()] = Property::fromReflection(
+                $this, $reflectionProperty, $namespace, $uses
+            );
         }
 
         return $properties;
