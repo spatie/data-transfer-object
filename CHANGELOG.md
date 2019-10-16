@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 1.10.0 - 2019-10-16
+
+- Allow a DTO to be constructed without an array (#68)
+
 ## 1.9.1 - 2019-10-03
 
 - Improve type error message
