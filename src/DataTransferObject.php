@@ -20,12 +20,12 @@ abstract class DataTransferObject
      *
      * @return \Spatie\DataTransferObject\ImmutableDataTransferObject|static
      */
-    public static function immutable(array $parameters): ImmutableDataTransferObject
+    public static function immutable(array $parameters = []): ImmutableDataTransferObject
     {
         return new ImmutableDataTransferObject(new static($parameters));
     }
 
-    public function __construct(array $parameters)
+    public function __construct(array $parameters = [])
     {
         $class = new ReflectionClass(static::class);
 

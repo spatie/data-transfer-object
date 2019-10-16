@@ -4,6 +4,7 @@ namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\DataTransferObjectError;
 use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
+use Spatie\DataTransferObject\Tests\TestClasses\NullableTestDataTransferObject;
 
 class ImmutableTest extends TestCase
 {
@@ -29,5 +30,13 @@ class ImmutableTest extends TestCase
         ]);
 
         $this->assertEquals(['testProperty' => 1], $dto->toArray());
+    }
+
+    /** @test */
+    public function passing_parameters_is_not_required()
+    {
+        $dto = NullableTestDataTransferObject::immutable();
+
+        $this->assertEquals(['foo' => 'abc', 'bar' => null], $dto->toArray());
     }
 }

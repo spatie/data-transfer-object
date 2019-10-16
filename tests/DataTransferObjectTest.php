@@ -369,4 +369,18 @@ class DataTransferObjectTest extends TestCase
 
         $this->assertInstanceOf(EmptyChild::class, $object->child);
     }
+
+    /** @test */
+    public function empty_constructor_is_supported()
+    {
+        $valueObject = new class() extends DataTransferObject {
+            /** @var string */
+            public $foo = 'abc';
+
+            /** @var bool|null */
+            public $bar;
+        };
+
+        $this->assertEquals(['foo' => 'abc', 'bar' => null], $valueObject->all());
+    }
 }
