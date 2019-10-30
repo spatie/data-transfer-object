@@ -6,6 +6,9 @@ namespace Spatie\DataTransferObject;
 
 use ReflectionProperty;
 
+/**
+ * @internal
+ */
 class Property extends ReflectionProperty
 {
     /** @var array */
@@ -24,33 +27,25 @@ class Property extends ReflectionProperty
     /** @var bool */
     protected $isNullable = false;
 
-    /** @var bool */
-    protected $isInitialised = false;
-
     /** @var array */
     protected $types = [];
 
     /** @var array */
     protected $arrayTypes = [];
 
-    /** @var array[] */
-    protected static $cache = [];
-
-    public static function fromReflection(DataTransferObject $valueObject, ReflectionProperty $reflectionProperty)
+    public static function fromReflection(ReflectionProperty $reflectionProperty)
     {
-        return new self($valueObject, $reflectionProperty);
+        return new self($reflectionProperty);
     }
 
-    public function __construct(DataTransferObject $valueObject, ReflectionProperty $reflectionProperty)
+    public function __construct(ReflectionProperty $reflectionProperty)
     {
         parent::__construct($reflectionProperty->class, $reflectionProperty->getName());
-
-        $this->valueObject = $valueObject;
 
         $this->resolveTypeDefinition();
     }
 
-    public function set($value)
+    public function set(DataTransferObject $valueObject, $value)
     {
         if (is_array($value)) {
             $value = $this->shouldBeCastToCollection($value) ? $this->castCollection($value) : $this->cast($value);
@@ -60,9 +55,7 @@ class Property extends ReflectionProperty
             throw DataTransferObjectError::invalidType($this, $value);
         }
 
-        $this->isInitialised = true;
-
-        $this->valueObject->{$this->getName()} = $value;
+        $valueObject->{$this->getName()} = $value;
     }
 
     public function getTypes(): array
@@ -82,23 +75,10 @@ class Property extends ReflectionProperty
 
     protected function resolveTypeDefinition()
     {
-        if (isset(self::$cache[$this->class][$this->getName()])) {
-            $this->isNullable = self::$cache[$this->class][$this->getName()]['is_nullable'];
-            $this->hasTypeDeclaration = (
-                ! empty(self::$cache[$this->class][$this->getName()]['types'])
-                || ! empty(self::$cache[$this->class][$this->getName()]['array_types'])
-            );
-            $this->types = self::$cache[$this->class][$this->getName()]['types'] ?? [];
-            $this->arrayTypes = self::$cache[$this->class][$this->getName()]['array_types'] ?? [];
-
-            return;
-        }
-
         $docComment = $this->getDocComment();
 
         if (! $docComment) {
             $this->isNullable = true;
-            self::$cache[$this->class][$this->getName()]['is_nullable'] = $this->isNullable;
 
             return;
         }
@@ -107,7 +87,6 @@ class Property extends ReflectionProperty
 
         if (! count($matches)) {
             $this->isNullable = true;
-            self::$cache[$this->class][$this->getName()]['is_nullable'] = $this->isNullable;
 
             return;
         }
@@ -117,13 +96,9 @@ class Property extends ReflectionProperty
         $varDocComment = end($matches);
 
         $this->types = explode('|', $varDocComment);
-        self::$cache[$this->class][$this->getName()]['types'] = $this->types;
-
         $this->arrayTypes = str_replace('[]', '', $this->types);
-        self::$cache[$this->class][$this->getName()]['array_types'] = $this->arrayTypes;
 
         $this->isNullable = strpos($varDocComment, 'null') !== false;
-        self::$cache[$this->class][$this->getName()]['is_nullable'] = $this->isNullable;
     }
 
     protected function isValidType($value): bool
