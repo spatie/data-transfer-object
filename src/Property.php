@@ -87,7 +87,7 @@ class Property extends ReflectionProperty
             return;
         }
 
-        preg_match('/\@var ((?:(?:[\w|\\\\])+(?:\[\])?)+)/', $docComment, $matches);
+        preg_match('/\@var ((?:(?:[\w|\\\\<>])+(?:\[\])?)+)/', $docComment, $matches);
 
         if (! count($matches)) {
             $this->isNullable = true;
@@ -101,6 +101,10 @@ class Property extends ReflectionProperty
 
         $this->types = explode('|', $varDocComment);
         $this->arrayTypes = str_replace('[]', '', $this->types);
+
+        if (preg_match_all('/iterable<([^|]*)>/', $varDocComment, $matches)) {
+            $this->arrayTypes = array_merge($this->arrayTypes, $matches[1]);
+        }
 
         $this->isNullable = strpos($varDocComment, 'null') !== false;
     }
@@ -196,7 +200,11 @@ class Property extends ReflectionProperty
     protected function assertTypeEquals(string $type, $value): bool
     {
         if (strpos($type, '[]') !== false) {
-            return $this->isValidGenericCollection($type, $value);
+            return $this->isValidArray($type, $value);
+        }
+
+        if ($type === 'iterable' || strpos($type, 'iterable<') === 0) {
+            return $this->isValidIterable($type, $value);
         }
 
         if ($type === 'mixed' && $value !== null) {
@@ -207,7 +215,7 @@ class Property extends ReflectionProperty
             || gettype($value) === (self::$typeMapping[$type] ?? $type);
     }
 
-    protected function isValidGenericCollection(string $type, $collection): bool
+    protected function isValidArray(string $type, $collection): bool
     {
         if (! is_array($collection)) {
             return false;
@@ -215,8 +223,26 @@ class Property extends ReflectionProperty
 
         $valueType = str_replace('[]', '', $type);
 
+        return $this->isValidGenericCollection($valueType, $collection);
+    }
+
+    protected function isValidIterable(string $type, $collection): bool
+    {
+        if (! is_iterable($collection)) {
+            return false;
+        }
+
+        if (preg_match('/^iterable<(.*)>$/', $type, $matches)) {
+            return $this->isValidGenericCollection($matches[1], $collection);
+        }
+
+        return true;
+    }
+
+    protected function isValidGenericCollection(string $type, $collection): bool
+    {
         foreach ($collection as $value) {
-            if (! $this->assertTypeEquals($valueType, $value)) {
+            if (! $this->assertTypeEquals($type, $value)) {
                 return false;
             }
         }
