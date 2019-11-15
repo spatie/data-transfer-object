@@ -47,8 +47,8 @@ abstract class DataTransferObject
             unset($parameters[$property->getName()]);
         }
 
-        if (count($parameters)) {
-            throw DataTransferObjectError::unknownProperties(array_keys($parameters), $class->getName());
+        if (\count($parameters)) {
+            throw DataTransferObjectError::unknownProperties(\array_keys($parameters), $class->getName());
         }
     }
 
@@ -76,7 +76,7 @@ abstract class DataTransferObject
     {
         $valueObject = clone $this;
 
-        $valueObject->onlyKeys = array_merge($this->onlyKeys, $keys);
+        $valueObject->onlyKeys = \array_merge($this->onlyKeys, $keys);
 
         return $valueObject;
     }
@@ -90,14 +90,14 @@ abstract class DataTransferObject
     {
         $valueObject = clone $this;
 
-        $valueObject->exceptKeys = array_merge($this->exceptKeys, $keys);
+        $valueObject->exceptKeys = \array_merge($this->exceptKeys, $keys);
 
         return $valueObject;
     }
 
     public function toArray(): array
     {
-        if (count($this->onlyKeys)) {
+        if (\count($this->onlyKeys)) {
             $array = Arr::only($this->all(), $this->onlyKeys);
         } else {
             $array = Arr::except($this->all(), $this->exceptKeys);
@@ -120,7 +120,7 @@ abstract class DataTransferObject
                 continue;
             }
 
-            if (! is_array($value)) {
+            if (! \is_array($value)) {
                 continue;
             }
 

@@ -49,7 +49,7 @@ class Property extends ReflectionProperty
 
     public function set($value)
     {
-        if (is_array($value)) {
+        if (\is_array($value)) {
             $value = $this->shouldBeCastToCollection($value) ? $this->castCollection($value) : $this->cast($value);
         }
 
@@ -87,9 +87,9 @@ class Property extends ReflectionProperty
             return;
         }
 
-        preg_match('/\@var ((?:(?:[\w|\\\\])+(?:\[\])?)+)/', $docComment, $matches);
+        \preg_match('/\@var ((?:(?:[\w|\\\\])+(?:\[\])?)+)/', $docComment, $matches);
 
-        if (! count($matches)) {
+        if (! \count($matches)) {
             $this->isNullable = true;
 
             return;
@@ -97,12 +97,12 @@ class Property extends ReflectionProperty
 
         $this->hasTypeDeclaration = true;
 
-        $varDocComment = end($matches);
+        $varDocComment = \end($matches);
 
-        $this->types = explode('|', $varDocComment);
-        $this->arrayTypes = str_replace('[]', '', $this->types);
+        $this->types = \explode('|', $varDocComment);
+        $this->arrayTypes = \str_replace('[]', '', $this->types);
 
-        $this->isNullable = strpos($varDocComment, 'null') !== false;
+        $this->isNullable = \strpos($varDocComment, 'null') !== false;
     }
 
     protected function isValidType($value): bool
@@ -131,7 +131,7 @@ class Property extends ReflectionProperty
         $castTo = null;
 
         foreach ($this->types as $type) {
-            if (! is_subclass_of($type, DataTransferObject::class)) {
+            if (! \is_subclass_of($type, DataTransferObject::class)) {
                 continue;
             }
 
@@ -152,7 +152,7 @@ class Property extends ReflectionProperty
         $castTo = null;
 
         foreach ($this->arrayTypes as $type) {
-            if (! is_subclass_of($type, DataTransferObject::class)) {
+            if (! \is_subclass_of($type, DataTransferObject::class)) {
                 continue;
             }
 
@@ -181,11 +181,11 @@ class Property extends ReflectionProperty
         }
 
         foreach ($values as $key => $value) {
-            if (is_string($key)) {
+            if (\is_string($key)) {
                 return false;
             }
 
-            if (! is_array($value)) {
+            if (! \is_array($value)) {
                 return false;
             }
         }
@@ -195,7 +195,7 @@ class Property extends ReflectionProperty
 
     protected function assertTypeEquals(string $type, $value): bool
     {
-        if (strpos($type, '[]') !== false) {
+        if (\strpos($type, '[]') !== false) {
             return $this->isValidGenericCollection($type, $value);
         }
 
@@ -204,16 +204,16 @@ class Property extends ReflectionProperty
         }
 
         return $value instanceof $type
-            || gettype($value) === (self::$typeMapping[$type] ?? $type);
+            || \gettype($value) === (self::$typeMapping[$type] ?? $type);
     }
 
     protected function isValidGenericCollection(string $type, $collection): bool
     {
-        if (! is_array($collection)) {
+        if (! \is_array($collection)) {
             return false;
         }
 
-        $valueType = str_replace('[]', '', $type);
+        $valueType = \str_replace('[]', '', $type);
 
         foreach ($collection as $value) {
             if (! $this->assertTypeEquals($valueType, $value)) {

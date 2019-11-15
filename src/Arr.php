@@ -10,7 +10,7 @@ class Arr
 {
     public static function only($array, $keys): array
     {
-        return array_intersect_key($array, array_flip((array) $keys));
+        return \array_intersect_key($array, \array_flip((array) $keys));
     }
 
     public static function except($array, $keys): array
@@ -22,7 +22,7 @@ class Arr
     {
         $keys = (array) $keys;
 
-        if (count($keys) === 0) {
+        if (\count($keys) === 0) {
             return $array;
         }
 
@@ -34,19 +34,19 @@ class Arr
                 continue;
             }
 
-            $parts = explode('.', $key);
+            $parts = \explode('.', $key);
 
-            while (count($parts) > 1) {
-                $part = array_shift($parts);
+            while (\count($parts) > 1) {
+                $part = \array_shift($parts);
 
-                if (isset($array[$part]) && is_array($array[$part])) {
+                if (isset($array[$part]) && \is_array($array[$part])) {
                     $array = &$array[$part];
                 } else {
                     continue 2;
                 }
             }
 
-            unset($array[array_shift($parts)]);
+            unset($array[\array_shift($parts)]);
         }
 
         return $array;
@@ -58,6 +58,6 @@ class Arr
             return $array->offsetExists($key);
         }
 
-        return array_key_exists($key, $array);
+        return \array_key_exists($key, $array);
     }
 }

@@ -24,6 +24,6 @@ class ImmutableDataTransferObject
 
     public function __call($name, $arguments)
     {
-        return call_user_func_array([$this->dataTransferObject, $name], $arguments);
+        return \call_user_func_array([$this->dataTransferObject, $name], $arguments);
     }
 }

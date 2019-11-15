@@ -10,7 +10,7 @@ class DataTransferObjectError extends TypeError
 {
     public static function unknownProperties(array $properties, string $className): DataTransferObjectError
     {
-        $propertyNames = implode('`, `', $properties);
+        $propertyNames = \implode('`, `', $properties);
 
         return new self("Public properties `{$propertyNames}` not found on {$className}");
     }
@@ -21,17 +21,17 @@ class DataTransferObjectError extends TypeError
             $value = 'null';
         }
 
-        if (is_object($value)) {
-            $value = get_class($value);
+        if (\is_object($value)) {
+            $value = \get_class($value);
         }
 
-        if (is_array($value)) {
+        if (\is_array($value)) {
             $value = 'array';
         }
 
-        $expectedTypes = implode(', ', $property->getTypes());
+        $expectedTypes = \implode(', ', $property->getTypes());
 
-        $currentType = gettype($value);
+        $currentType = \gettype($value);
 
         return new self("Invalid type: expected {$property->getFqn()} to be of type {$expectedTypes}, instead got value `{$value}` ({$currentType}).");
     }

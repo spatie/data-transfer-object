@@ -36,7 +36,7 @@ abstract class DataTransferObjectCollection implements
 
     public function offsetSet($offset, $value)
     {
-        if (is_null($offset)) {
+        if (\is_null($offset)) {
             $this->collection[] = $value;
         } else {
             $this->collection[$offset] = $value;
@@ -45,7 +45,7 @@ abstract class DataTransferObjectCollection implements
 
     public function offsetExists($offset): bool
     {
-        return array_key_exists($offset, $this->collection);
+        return \array_key_exists($offset, $this->collection);
     }
 
     public function offsetUnset($offset)
@@ -65,7 +65,7 @@ abstract class DataTransferObjectCollection implements
 
     public function valid(): bool
     {
-        return array_key_exists($this->position, $this->collection);
+        return \array_key_exists($this->position, $this->collection);
     }
 
     public function rewind()
@@ -98,6 +98,6 @@ abstract class DataTransferObjectCollection implements
 
     public function count(): int
     {
-        return count($this->collection);
+        return \count($this->collection);
     }
 }
