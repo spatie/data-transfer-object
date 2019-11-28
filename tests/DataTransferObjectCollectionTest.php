@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\DataTransferObjectCollection;
-use Spatie\DataTransferObject\Tests\TestClasses\NestedParent;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedChildCollection;
+use Spatie\DataTransferObject\Tests\TestClasses\NestedParent;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParentCollection;
 use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
 
