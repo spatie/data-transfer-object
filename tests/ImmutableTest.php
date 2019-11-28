@@ -3,8 +3,8 @@
 namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\DataTransferObjectError;
-use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
 use Spatie\DataTransferObject\Tests\TestClasses\NullableTestDataTransferObject;
+use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
 
 class ImmutableTest extends TestCase
 {
