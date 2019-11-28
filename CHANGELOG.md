@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 1.11.0 - 2019-11-28 (#71)
+
+- Add `iterable` and `iterable<\Type>` support
+
 ## 1.10.0 - 2019-10-16
 
 - Allow a DTO to be constructed without an array (#68)
