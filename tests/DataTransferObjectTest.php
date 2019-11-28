@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Spatie\DataTransferObject\Tests;
 
+use ArrayIterator;
 use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\DataTransferObjectError;
 use Spatie\DataTransferObject\Tests\TestClasses\DummyClass;
 use Spatie\DataTransferObject\Tests\TestClasses\EmptyChild;
-use Spatie\DataTransferObject\Tests\TestClasses\OtherClass;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedChild;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParent;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParentOfMany;
+use Spatie\DataTransferObject\Tests\TestClasses\OtherClass;
 
 class DataTransferObjectTest extends TestCase
 {
@@ -382,5 +383,64 @@ class DataTransferObjectTest extends TestCase
         };
 
         $this->assertEquals(['foo' => 'abc', 'bar' => null], $valueObject->all());
+    }
+
+    /** @test */
+    public function iterable_is_supported()
+    {
+        new class(['strings' => ['foo', 'bar']]) extends DataTransferObject {
+            /** @var iterable<string> */
+            public $strings;
+        };
+
+        new class(['strings' => new ArrayIterator(['foo', 'bar'])]) extends DataTransferObject {
+            /** @var iterable<string> */
+            public $strings;
+        };
+
+        new class(['mixeds' => ['foo', 1]]) extends DataTransferObject {
+            /** @var iterable */
+            public $mixeds;
+        };
+
+        new class(['mixeds' => new ArrayIterator(['foo', 1])]) extends DataTransferObject {
+            /** @var iterable */
+            public $mixeds;
+        };
+
+        $this->markTestSucceeded();
+    }
+
+    /** @test */
+    public function an_exception_is_thrown_for_incoherent_iterator_type()
+    {
+        $this->expectException(DataTransferObjectError::class);
+
+        new class(['strings' => ['foo', 1]]) extends DataTransferObject {
+            /** @var iterable<string> */
+            public $strings;
+        };
+    }
+
+    /** @test */
+    public function nested_dtos_are_automatically_cast_from_arrays_to_objects_with_iterable_syntax()
+    {
+        $data = [
+            'children' => [
+                ['name' => 'Alice'],
+                ['name' => 'Bob'],
+            ],
+        ];
+
+        $object = new class($data) extends DataTransferObject {
+            /** @var iterable<\Spatie\DataTransferObject\Tests\TestClasses\NestedChild>|iterable<string> */
+            public $children;
+        };
+
+        $this->assertTrue(is_array($object->children));
+        $this->assertCount(2, $object->children);
+        $this->assertContainsOnly(NestedChild::class, $object->children);
+        $this->assertEquals('Alice', $object->children[0]->name);
+        $this->assertEquals('Bob', $object->children[1]->name);
     }
 }

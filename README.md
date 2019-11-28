@@ -131,6 +131,13 @@ class PostData extends DataTransferObject
     public $property;
     
     /**
+     * Iterator of types: 
+     *
+     * @var iterator<\App\Models\Author>
+     */
+    public $property;
+    
+    /**
      * Union types: 
      *
      * @var string|int
@@ -148,6 +155,13 @@ class PostData extends DataTransferObject
      * Mixed types: 
      *
      * @var mixed|null
+     */
+    public $property;
+    
+    /**
+     * Any iterator : 
+     *
+     * @var iterator
      */
     public $property;
     
