@@ -8,6 +8,14 @@ use ReflectionProperty;
 
 class Property extends ReflectionProperty
 {
+    /**
+     * - The key is the type of the propoerty
+     * - The callable receives the value and may return the same or a different one.
+     * @var array<string,callable(mixed)>
+     */
+    public static $make = [
+    ];
+
     /** @var array */
     protected static $typeMapping = [
         'int' => 'integer',
@@ -51,6 +59,8 @@ class Property extends ReflectionProperty
     {
         if (is_array($value)) {
             $value = $this->shouldBeCastToCollection($value) ? $this->castCollection($value) : $this->cast($value);
+        } else {
+            $value = $this->makeValue($value);
         }
 
         if (! $this->isValidType($value)) {
@@ -248,5 +258,20 @@ class Property extends ReflectionProperty
         }
 
         return true;
+    }
+
+    protected function makeValue($value)
+    {
+        foreach ($this->types as $type) {
+            $type = ltrim($type, '\\');
+
+            if (! isset($this::$make[$type])) {
+                continue;
+            }
+
+            return $this::$make[$type]($value);
+        }
+
+        return $value;
     }
 }

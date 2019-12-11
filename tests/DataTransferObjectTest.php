@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Spatie\DataTransferObject\Tests;
 
 use ArrayIterator;
+use DateTime;
 use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\DataTransferObjectError;
+use Spatie\DataTransferObject\Property;
+use Spatie\DataTransferObject\Tests\TestClasses\DateTimeProperty;
 use Spatie\DataTransferObject\Tests\TestClasses\DummyClass;
 use Spatie\DataTransferObject\Tests\TestClasses\EmptyChild;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedChild;
@@ -16,6 +19,13 @@ use Spatie\DataTransferObject\Tests\TestClasses\OtherClass;
 
 class DataTransferObjectTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        Property::$make = [];
+    }
+
     /** @test */
     public function only_the_type_hinted_type_may_be_passed()
     {
@@ -442,5 +452,24 @@ class DataTransferObjectTest extends TestCase
         $this->assertContainsOnly(NestedChild::class, $object->children);
         $this->assertEquals('Alice', $object->children[0]->name);
         $this->assertEquals('Bob', $object->children[1]->name);
+    }
+
+    /** @test */
+    public function can_make_datetime()
+    {
+        Property::$make[DateTime::class] = function ($value) {
+            return new DateTime($value);
+        };
+
+        $expectedDate = '2020-10-10T12:13:14+12:34';
+
+        $data = [
+            'date' => $expectedDate,
+        ];
+
+        $object = new DateTimeProperty($data);
+
+        $this->assertInstanceOf(DateTime::class, $object->date);
+        $this->assertSame($expectedDate, $object->date->format(DateTime::ATOM));
     }
 }
