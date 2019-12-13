@@ -32,22 +32,40 @@ abstract class DataTransferObject
     {
         $class = new ReflectionClass(static::class);
 
-        $properties = $this->getPublicProperties($class);
+        $validators = $this->getFieldValidators($class);
 
-        foreach ($properties as $property) {
+        $valueCaster = new ValueCaster();
+
+        foreach ($validators as $field => $validator) {
             if (
-                ! isset($parameters[$property->getName()])
-                && ! $property->isDefault()
-                && ! $property->isNullable()
+                ! isset($parameters[$field])
+                && ! $validator->hasDefaultValue
+                && ! $validator->isNullable
             ) {
-                throw DataTransferObjectError::uninitialized($property);
+                throw DataTransferObjectError::uninitialized(
+                    static::class,
+                    $field
+                );
             }
 
-            $value = $parameters[$property->getName()] ?? $property->getValue($this);
+            $value = $parameters[$field] ?? $this->{$field} ?? null;
 
-            $property->set($value);
+            if (is_array($value)) {
+                $value = $valueCaster->cast($value, $validator);
+            }
 
-            unset($parameters[$property->getName()]);
+            if (! $validator->isValidType($value)) {
+                throw DataTransferObjectError::invalidType(
+                    static::class,
+                    $field,
+                    $validator->allowedTypes,
+                    $value
+                );
+            }
+
+            $this->{$field} = $value;
+
+            unset($parameters[$field]);
         }
 
         if (! $this->ignoreMissing && count($parameters)) {
@@ -136,14 +154,14 @@ abstract class DataTransferObject
     /**
      * @param \ReflectionClass $class
      *
-     * @return array|\Spatie\DataTransferObject\Property[]
+     * @return \Spatie\DataTransferObject\FieldValidator[]
      */
-    protected function getPublicProperties(ReflectionClass $class): array
+    private function getFieldValidators(ReflectionClass $class): array
     {
         $properties = [];
 
         foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $reflectionProperty) {
-            $properties[$reflectionProperty->getName()] = Property::fromReflection($this, $reflectionProperty);
+            $properties[$reflectionProperty->getName()] = FieldValidator::fromReflection($reflectionProperty);
         }
 
         return $properties;
