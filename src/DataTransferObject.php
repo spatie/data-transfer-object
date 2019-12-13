@@ -9,6 +9,9 @@ use ReflectionProperty;
 
 abstract class DataTransferObject
 {
+    /** @var bool */
+    protected $ignoreMissing = false;
+
     /** @var array */
     protected $exceptKeys = [];
 
@@ -47,7 +50,7 @@ abstract class DataTransferObject
             unset($parameters[$property->getName()]);
         }
 
-        if (count($parameters)) {
+        if (! $this->ignoreMissing && count($parameters)) {
             throw DataTransferObjectError::unknownProperties(array_keys($parameters), $class->getName());
         }
     }
