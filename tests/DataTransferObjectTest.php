@@ -193,10 +193,10 @@ class DataTransferObjectTest extends TestCase
         $this->expectException(DataTransferObjectError::class);
         $this->expectExceptionMessageRegExp('/Invalid type: expected `class@anonymous[^:]+::foo` to be of type `\\\Spatie\\\DataTransferObject\\\Tests\\\TestClasses\\\DummyClass`, instead got value `class@anonymous[^`]+`, which is object/');
 
-        new class(['foo' => new class() {
-        },
-        ]) extends DataTransferObject
-        {
+        new class([
+            'foo' => new class() {
+            },
+        ]) extends DataTransferObject {
 
             /** @var \Spatie\DataTransferObject\Tests\TestClasses\DummyClass */
             public $foo;
