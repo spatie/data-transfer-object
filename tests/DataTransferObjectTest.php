@@ -64,7 +64,7 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function default_values_are_supported()
     {
-        $valueObject = new class(['bar' => true]) extends DataTransferObject {
+        $dataTransferObject = new class(['bar' => true]) extends DataTransferObject {
             /** @var string */
             public $foo = 'abc';
 
@@ -72,7 +72,7 @@ class DataTransferObjectTest extends TestCase
             public $bar;
         };
 
-        $this->assertEquals(['foo' => 'abc', 'bar' => true], $valueObject->all());
+        $this->assertEquals(['foo' => 'abc', 'bar' => true], $dataTransferObject->all());
     }
 
     /** @test */
@@ -110,7 +110,7 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function only_returns_filtered_properties()
     {
-        $valueObject = new class(['foo' => 1, 'bar' => 2]) extends DataTransferObject {
+        $dataTransferObject = new class(['foo' => 1, 'bar' => 2]) extends DataTransferObject {
             /** @var int */
             public $foo;
 
@@ -118,13 +118,13 @@ class DataTransferObjectTest extends TestCase
             public $bar;
         };
 
-        $this->assertEquals(['foo' => 1], $valueObject->only('foo')->toArray());
+        $this->assertEquals(['foo' => 1], $dataTransferObject->only('foo')->toArray());
     }
 
     /** @test */
     public function except_returns_filtered_properties()
     {
-        $valueObject = new class(['foo' => 1, 'bar' => 2]) extends DataTransferObject {
+        $dataTransferObject = new class(['foo' => 1, 'bar' => 2]) extends DataTransferObject {
             /** @var int */
             public $foo;
 
@@ -132,13 +132,13 @@ class DataTransferObjectTest extends TestCase
             public $bar;
         };
 
-        $this->assertEquals(['foo' => 1], $valueObject->except('bar')->toArray());
+        $this->assertEquals(['foo' => 1], $dataTransferObject->except('bar')->toArray());
     }
 
     /** @test */
     public function all_returns_all_properties()
     {
-        $valueObject = new class(['foo' => 1, 'bar' => 2]) extends DataTransferObject {
+        $dataTransferObject = new class(['foo' => 1, 'bar' => 2]) extends DataTransferObject {
             /** @var int */
             public $foo;
 
@@ -146,7 +146,7 @@ class DataTransferObjectTest extends TestCase
             public $bar;
         };
 
-        $this->assertEquals(['foo' => 1, 'bar' => 2], $valueObject->all());
+        $this->assertEquals(['foo' => 1, 'bar' => 2], $dataTransferObject->all());
     }
 
     /** @test */
@@ -293,12 +293,12 @@ class DataTransferObjectTest extends TestCase
 
         $this->assertEquals(['name' => 'child'], $object->toArray()['child']);
 
-        $valueObject = new class(['childs' => [new NestedChild(['name' => 'child'])]]) extends DataTransferObject {
+        $dataTransferObject = new class(['childs' => [new NestedChild(['name' => 'child'])]]) extends DataTransferObject {
             /** @var Spatie\DataTransferObject\Tests\TestClasses\NestedChild[] */
             public $childs;
         };
 
-        $this->assertEquals(['name' => 'child'], $valueObject->toArray()['childs'][0]);
+        $this->assertEquals(['name' => 'child'], $dataTransferObject->toArray()['childs'][0]);
     }
 
     /** @test */
@@ -376,7 +376,7 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function empty_constructor_is_supported()
     {
-        $valueObject = new class() extends DataTransferObject {
+        $dataTransferObject = new class() extends DataTransferObject {
             /** @var string */
             public $foo = 'abc';
 
@@ -384,7 +384,7 @@ class DataTransferObjectTest extends TestCase
             public $bar;
         };
 
-        $this->assertEquals(['foo' => 'abc', 'bar' => null], $valueObject->all());
+        $this->assertEquals(['foo' => 'abc', 'bar' => null], $dataTransferObject->all());
     }
 
     /** @test */
