@@ -21,6 +21,7 @@ All notable changes to `data-transfer-object` will be documented in this file
 ## 1.8.0 - 2019-03-18
 
 - Support immutability
+- Improved performance by adding a cache
 
 ## 1.7.1 - 2019-02-11
 

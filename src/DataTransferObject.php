@@ -161,7 +161,13 @@ abstract class DataTransferObject
         $properties = [];
 
         foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $reflectionProperty) {
-            $properties[$reflectionProperty->getName()] = FieldValidator::fromReflection($reflectionProperty);
+            $field = $reflectionProperty->getName();
+
+            $properties[$field] = FieldCache::resolve(
+                static::class,
+                $field,
+                fn () => FieldValidator::fromReflection($reflectionProperty)
+            );
         }
 
         return $properties;
