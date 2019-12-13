@@ -100,7 +100,7 @@ abstract class DataTransferObject
     {
         $dataTransferObject = clone $this;
 
-        $dataTransferObject->onlyKeys = array_merge($this->onlyKeys, $keys);
+        $dataTransferObject->onlyKeys = [...$this->onlyKeys, ...$keys];
 
         return $dataTransferObject;
     }
@@ -114,7 +114,7 @@ abstract class DataTransferObject
     {
         $dataTransferObject = clone $this;
 
-        $dataTransferObject->exceptKeys = array_merge($this->exceptKeys, $keys);
+        $dataTransferObject->exceptKeys = [...$this->exceptKeys, ...$keys];
 
         return $dataTransferObject;
     }

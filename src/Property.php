@@ -102,7 +102,7 @@ class Property extends ReflectionProperty
         $this->arrayTypes = str_replace('[]', '', $this->types);
 
         if (preg_match_all('/iterable<([^|]*)>/', $varDocComment, $matches)) {
-            $this->arrayTypes = array_merge($this->arrayTypes, $matches[1]);
+            $this->arrayTypes = [...$this->arrayTypes, ...$matches[1]];
         }
 
         $this->isNullable = strpos($varDocComment, 'null') !== false;
