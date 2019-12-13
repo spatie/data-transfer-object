@@ -4,8 +4,7 @@ namespace Spatie\DataTransferObject;
 
 class ImmutableDataTransferObject
 {
-    /** @var \Spatie\DataTransferObject\DataTransferObject */
-    protected $dataTransferObject;
+    protected DataTransferObject $dataTransferObject;
 
     public function __construct(DataTransferObject $dataTransferObject)
     {
