@@ -9,14 +9,11 @@ use ReflectionProperty;
 
 abstract class DataTransferObject
 {
-    /** @var bool */
-    protected $ignoreMissing = false;
+    protected bool $ignoreMissing = false;
 
-    /** @var array */
-    protected $exceptKeys = [];
+    protected array $exceptKeys = [];
 
-    /** @var array */
-    protected $onlyKeys = [];
+    protected array $onlyKeys = [];
 
     /**
      * @param array $parameters
