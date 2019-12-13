@@ -8,34 +8,25 @@ use ReflectionProperty;
 
 class FieldValidator
 {
-    /** @var array */
-    private static $typeMapping = [
+    private static array $typeMapping = [
         'int' => 'integer',
         'bool' => 'boolean',
         'float' => 'double',
     ];
 
-    /** @var bool */
-    private $hasTypeDeclaration = false;
+    private bool $hasTypeDeclaration = false;
 
-    /** @var bool */
-    public $isNullable = false;
+    public bool $isNullable = false;
 
-    /** @var bool */
-    public $isMixed = false;
+    public bool $isMixed = false;
 
-    /** @var bool */
-    public $isMixedArray = false;
+    public bool $isMixedArray = false;
 
-    /** @var bool */
-    public $hasDefaultValue = false;
+    public bool $hasDefaultValue = false;
 
-    /** @var array */
-    public $allowedTypes = [];
+    public array $allowedTypes = [];
 
-    /** @var array */
-    public $allowedArrayTypes = [];
-
+    public array $allowedArrayTypes = [];
 
     public static function fromReflection(ReflectionProperty $property): FieldValidator
     {
@@ -180,9 +171,7 @@ class FieldValidator
     private function normaliseTypes(?string ...$types): array
     {
         return array_filter(array_map(
-            function (?string $type) {
-                return self::$typeMapping[$type] ?? $type;
-            },
+            fn(?string $type) => self::$typeMapping[$type] ?? $type,
             $types
         ));
     }
