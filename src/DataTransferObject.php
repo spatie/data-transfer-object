@@ -158,20 +158,16 @@ abstract class DataTransferObject
      */
     private function getFieldValidators(ReflectionClass $class): array
     {
-        $properties = [];
+        return DTOCache::resolve(static::class, function () use ($class) {
+            $properties = [];
 
-        foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $reflectionProperty) {
-            $field = $reflectionProperty->getName();
+            foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $reflectionProperty) {
+                $field = $reflectionProperty->getName();
 
-            $properties[$field] = FieldCache::resolve(
-                static::class,
-                $field,
-                function () use ($reflectionProperty) {
-                    return FieldValidator::fromReflection($reflectionProperty);
-                }
-            );
-        }
+                $properties[$field] = FieldValidator::fromReflection($reflectionProperty);
+            }
 
-        return $properties;
+            return $properties;
+        });
     }
 }
