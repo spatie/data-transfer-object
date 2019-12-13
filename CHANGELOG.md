@@ -18,6 +18,11 @@ All notable changes to `data-transfer-object` will be documented in this file
 
 - Improve type error message
 
+## 2.0.0 - ?
+
+- Add `FlexibleDataTransferObject` which allows for unknown properties to be ignored
+- Bump minimum required PHP version to 7.4
+
 ## 1.9.0 - 2019-08-30
 
 - Add DataTransferObjectCollection::items() 
