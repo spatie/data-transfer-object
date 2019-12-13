@@ -197,8 +197,10 @@ class DataTransferObjectTest extends TestCase
         },
         ]) extends DataTransferObject
         {
+
             /** @var \Spatie\DataTransferObject\Tests\TestClasses\DummyClass */
             public $foo;
+
         };
     }
 
