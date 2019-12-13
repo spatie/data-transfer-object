@@ -1,9 +1,7 @@
 # Data transfer objects with batteries included
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/data-transfer-object.svg?style=flat-square)](https://packagist.org/packages/spatie/data-transfer-object)
-[![Build Status](https://img.shields.io/travis/spatie/data-transfer-object/master.svg?style=flat-square)](https://travis-ci.org/spatie/data-transfer-object)
 [![Quality Score](https://img.shields.io/scrutinizer/g/spatie/data-transfer-object.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/data-transfer-object)
-[![StyleCI](https://github.styleci.io/repos/153632216/shield?branch=master)](https://github.styleci.io/repos/153632216)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/data-transfer-object.svg?style=flat-square)](https://packagist.org/packages/spatie/data-transfer-object)
 
 ## Installation
