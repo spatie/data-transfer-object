@@ -6,9 +6,15 @@ namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\FieldValidator;
 
-class Foo {}
-class FooChild extends Foo {}
-class Bar {}
+class Foo
+{
+}
+class FooChild extends Foo
+{
+}
+class Bar
+{
+}
 
 class FieldValidatorTest extends TestCase
 {
