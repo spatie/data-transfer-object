@@ -29,7 +29,7 @@ return PhpCsFixer\Config::create()
         'phpdoc_var_without_name' => true,
         'class_attributes_separation' => [
             'elements' => [
-                'method', 'property',
+                'method',
             ],
         ],
         'method_argument_space' => [

@@ -188,10 +188,10 @@ class DataTransferObjectTest extends TestCase
 
         $this->expectException(DataTransferObjectError::class);
 
-        new class(['foo' => new class() {
-        },
-        ]) extends DataTransferObject
-        {
+        new class([
+            'foo' => new class() {
+            },
+        ]) extends DataTransferObject {
 
             /** @var \Spatie\DataTransferObject\Tests\TestClasses\DummyClass */
             public $foo;

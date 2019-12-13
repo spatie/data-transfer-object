@@ -13,9 +13,7 @@ abstract class DataTransferObjectCollection implements
     Iterator,
     Countable
 {
-    protected array
-
- $collection;
+    protected array $collection;
 
     protected int $position = 0;
 

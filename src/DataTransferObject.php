@@ -9,19 +9,11 @@ use ReflectionProperty;
 
 abstract class DataTransferObject
 {
-<<<<<<< HEAD
     protected bool $ignoreMissing = false;
 
     protected array $exceptKeys = [];
-=======
-    protected array
->>>>>>> Fix styling
 
- $exceptKeys = [];
-
-    protected array
-
- $onlyKeys = [];
+    protected array $onlyKeys = [];
 
     /**
      * @param array $parameters

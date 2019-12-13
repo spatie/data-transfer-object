@@ -24,13 +24,9 @@ class Property extends ReflectionProperty
 
     protected bool $isInitialised = false;
 
-    protected array
+    protected array $types = [];
 
- $types = [];
-
-    protected array
-
- $arrayTypes = [];
+    protected array $arrayTypes = [];
 
     public static function fromReflection(DataTransferObject $dataTransferObject, ReflectionProperty $reflectionProperty)
     {
