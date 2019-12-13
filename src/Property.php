@@ -8,9 +8,7 @@ use ReflectionProperty;
 
 class Property extends ReflectionProperty
 {
-    protected static array
-
- $typeMapping = [
+    protected static array $typeMapping = [
         'int' => 'integer',
         'bool' => 'boolean',
         'float' => 'double',
