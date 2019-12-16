@@ -30,9 +30,7 @@ abstract class DataTransferObject
 
     public function __construct(array $parameters = [])
     {
-        $class = new ReflectionClass(static::class);
-
-        $validators = $this->getFieldValidators($class);
+        $validators = $this->getFieldValidators();
 
         $valueCaster = new ValueCaster();
 
@@ -69,7 +67,7 @@ abstract class DataTransferObject
         }
 
         if (! $this->ignoreMissing && count($parameters)) {
-            throw DataTransferObjectError::unknownProperties(array_keys($parameters), $class->getName());
+            throw DataTransferObjectError::unknownProperties(array_keys($parameters), static::class);
         }
     }
 
@@ -156,9 +154,11 @@ abstract class DataTransferObject
      *
      * @return \Spatie\DataTransferObject\FieldValidator[]
      */
-    private function getFieldValidators(ReflectionClass $class): array
+    private function getFieldValidators(): array
     {
-        return DTOCache::resolve(static::class, function () use ($class) {
+        return DTOCache::resolve(static::class, function () {
+            $class = new ReflectionClass(static::class);
+
             $properties = [];
 
             foreach ($class->getProperties(ReflectionProperty::IS_PUBLIC) as $reflectionProperty) {
