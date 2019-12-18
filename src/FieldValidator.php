@@ -180,7 +180,9 @@ class FieldValidator
     private function normaliseTypes(?string ...$types): array
     {
         return array_filter(array_map(
-            fn(?string $type) => self::$typeMapping[$type] ?? $type,
+            function (?string $type) {
+                return self::$typeMapping[$type] ?? $type;
+            },
             $types
         ));
     }
