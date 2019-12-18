@@ -166,7 +166,9 @@ abstract class DataTransferObject
             $properties[$field] = FieldCache::resolve(
                 static::class,
                 $field,
-                fn () => FieldValidator::fromReflection($reflectionProperty)
+                function () use ($reflectionProperty) {
+                    return FieldValidator::fromReflection($reflectionProperty);
+                }
             );
         }
 

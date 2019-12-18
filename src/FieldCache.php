@@ -6,7 +6,8 @@ use Closure;
 
 class FieldCache
 {
-    private static array $cache = [];
+    /** @var array */
+    private static $cache = [];
 
     public static function resolve(string $class, string $field, Closure $closure): FieldValidator
     {
