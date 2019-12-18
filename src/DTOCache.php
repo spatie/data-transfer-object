@@ -6,7 +6,8 @@ use Closure;
 
 class DTOCache
 {
-    private static array $cache = [];
+    /** @var array */
+    private static $cache = [];
 
     public static function resolve(string $class, Closure $closure): array
     {

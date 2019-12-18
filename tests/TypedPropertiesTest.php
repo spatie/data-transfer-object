@@ -9,7 +9,7 @@ class TypedPropertiesTest extends TestCase
     /** @test */
     public function test()
     {
-        $dto = new MyDTO([
+        $dto = new TypedMyDTO([
             'typed' => 1,
             'docblock' => 'a',
         ]);
@@ -19,9 +19,10 @@ class TypedPropertiesTest extends TestCase
     }
 }
 
-class MyDTO extends DataTransferObject
+class TypedMyDTO extends DataTransferObject
 {
-    public int $typed;
+    /** @var int */
+    public $typed;
 
     /** @var string */
     public $docblock;
