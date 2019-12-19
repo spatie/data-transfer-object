@@ -32,7 +32,7 @@ abstract class DataTransferObject
     {
         $validators = $this->getFieldValidators();
 
-        $valueCaster = new ValueCaster();
+        $valueCaster = $this->getValueCaster();
 
         foreach ($validators as $field => $validator) {
             if (
@@ -182,5 +182,10 @@ abstract class DataTransferObject
         }
 
         return $value;
+    }
+
+    protected function getValueCaster(): ValueCaster
+    {
+        return new ValueCaster();
     }
 }
