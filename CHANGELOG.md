@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 1.12.0 - 2019-12-19
+
+- Improved performance by adding a cache (#79)
+
 ## 1.11.0 - 2019-11-28 (#71)
 
 - Add `iterable` and `iterable<\Type>` support
@@ -21,7 +25,6 @@ All notable changes to `data-transfer-object` will be documented in this file
 ## 1.8.0 - 2019-03-18
 
 - Support immutability
-- Improved performance by adding a cache
 
 ## 1.7.1 - 2019-02-11
 
