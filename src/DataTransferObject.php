@@ -48,9 +48,7 @@ abstract class DataTransferObject
 
             $value = $parameters[$field] ?? $this->{$field} ?? null;
 
-            if (is_array($value)) {
-                $value = $valueCaster->cast($value, $validator);
-            }
+            $value = $this->castValue($valueCaster, $validator, $value);
 
             if (! $validator->isValidType($value)) {
                 throw DataTransferObjectError::invalidType(
@@ -169,5 +167,20 @@ abstract class DataTransferObject
 
             return $properties;
         });
+    }
+
+    /**
+     * @param \Spatie\DataTransferObject\ValueCaster $valueCaster
+     * @param \Spatie\DataTransferObject\FieldValidator $fieldValidator
+     * @param mixed $value
+     * @return mixed
+     */
+    protected function castValue(ValueCaster $valueCaster, FieldValidator $fieldValidator, $value)
+    {
+        if (is_array($value)) {
+            return $valueCaster->cast($value, $fieldValidator);
+        }
+
+        return $value;
     }
 }
