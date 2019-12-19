@@ -152,7 +152,7 @@ abstract class DataTransferObject
      *
      * @return \Spatie\DataTransferObject\FieldValidator[]
      */
-    private function getFieldValidators(): array
+    protected function getFieldValidators(): array
     {
         return DTOCache::resolve(static::class, function () {
             $class = new ReflectionClass(static::class);
