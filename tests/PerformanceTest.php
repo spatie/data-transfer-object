@@ -4,7 +4,8 @@ namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\DataTransferObject;
 
-class MyDTO extends DataTransferObject {
+class MyDTO extends DataTransferObject
+{
     public int $i;
 }
 
