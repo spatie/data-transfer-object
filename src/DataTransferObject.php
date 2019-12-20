@@ -28,6 +28,21 @@ abstract class DataTransferObject
         return new ImmutableDataTransferObject(new static($parameters));
     }
 
+    /**
+     * @param array $arrayOfParameters
+     *
+     * @return \Spatie\DataTransferObject\ImmutableDataTransferObject[]|static[]
+     */
+    public static function arrayOf(array $arrayOfParameters): array
+    {
+        return array_map(
+            function ($parameters) {
+                return new static($parameters);
+            },
+            $arrayOfParameters
+        );
+    }
+
     public function __construct(array $parameters = [])
     {
         $validators = $this->getFieldValidators();
