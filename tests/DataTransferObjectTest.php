@@ -80,7 +80,7 @@ class DataTransferObjectTest extends TestCase
     public function null_is_allowed_only_if_explicitly_specified()
     {
         $this->expectException(DataTransferObjectError::class);
-        $this->expectExceptionMessageRegExp('/Invalid type: expected `class@anonymous[^:]+::foo` to be of type `string`, instead got value `null`, which is string/');
+        $this->expectExceptionMessageRegExp('/Invalid type: expected `class@anonymous[^:]+::foo` to be of type `string`, instead got value `null`, which is NULL/');
 
         new class(['foo' => null]) extends DataTransferObject {
             /** @var string */
@@ -190,7 +190,7 @@ class DataTransferObjectTest extends TestCase
         $this->markTestSucceeded();
 
         $this->expectException(DataTransferObjectError::class);
-        $this->expectExceptionMessageRegExp('/Invalid type: expected `class@anonymous[^:]+::foo` to be of type `\\\Spatie\\\DataTransferObject\\\Tests\\\TestClasses\\\DummyClass`, instead got value `class@anonymous[^`]+`, which is string/');
+        $this->expectExceptionMessageRegExp('/Invalid type: expected `class@anonymous[^:]+::foo` to be of type `\\\Spatie\\\DataTransferObject\\\Tests\\\TestClasses\\\DummyClass`, instead got value `class@anonymous[^`]+`, which is object/');
 
         new class(['foo' => new class() {
         },
@@ -212,7 +212,7 @@ class DataTransferObjectTest extends TestCase
         $this->markTestSucceeded();
 
         $this->expectException(DataTransferObjectError::class);
-        $this->expectExceptionMessageRegExp('/Invalid type: expected `class@anonymous[^:]+::foo` to be of type `\\\Spatie\\\DataTransferObject\\\Tests\\\TestClasses\\\DummyClass\[\]`, instead got value `array`, which is string/');
+        $this->expectExceptionMessageRegExp('/Invalid type: expected `class@anonymous[^:]+::foo` to be of type `\\\Spatie\\\DataTransferObject\\\Tests\\\TestClasses\\\DummyClass\[\]`, instead got value `array`, which is array/');
 
         new class(['foo' => [new OtherClass()]]) extends DataTransferObject {
             /** @var \Spatie\DataTransferObject\Tests\TestClasses\DummyClass[] */
@@ -224,7 +224,7 @@ class DataTransferObjectTest extends TestCase
     public function an_exception_is_thrown_for_a_generic_collection_of_null()
     {
         $this->expectException(DataTransferObjectError::class);
-        $this->expectExceptionMessageRegExp('/Invalid type: expected `class@anonymous[^:]+::foo` to be of type `string\[\]`, instead got value `array`, which is string./');
+        $this->expectExceptionMessageRegExp('/Invalid type: expected `class@anonymous[^:]+::foo` to be of type `string\[\]`, instead got value `array`, which is array./');
 
         new class(['foo' => [null]]) extends DataTransferObject {
             /** @var string[] */
@@ -236,7 +236,7 @@ class DataTransferObjectTest extends TestCase
     public function an_exception_is_thrown_when_property_was_not_initialised()
     {
         $this->expectException(DataTransferObjectError::class);
-        $this->expectExceptionMessageRegExp('/Invalid type: expected `class@anonymous[^:]+::foo` to be of type `string`, instead got value `null`, which is string/');
+        $this->expectExceptionMessageRegExp('/Invalid type: expected `class@anonymous[^:]+::foo` to be of type `string`, instead got value `null`, which is NULL/');
 
         new class([]) extends DataTransferObject {
             /** @var string */
@@ -350,7 +350,7 @@ class DataTransferObjectTest extends TestCase
     public function nested_array_dtos_cannot_cast_with_null()
     {
         $this->expectException(DataTransferObjectError::class);
-        $this->expectExceptionMessage('Invalid type: expected `Spatie\DataTransferObject\Tests\TestClasses\NestedParentOfMany::children` to be of type `\Spatie\DataTransferObject\Tests\TestClasses\NestedChild[]`, instead got value `null`, which is string.');
+        $this->expectExceptionMessage('Invalid type: expected `Spatie\DataTransferObject\Tests\TestClasses\NestedParentOfMany::children` to be of type `\Spatie\DataTransferObject\Tests\TestClasses\NestedChild[]`, instead got value `null`, which is NULL.');
 
         new NestedParentOfMany([
             'name' => 'parent',
@@ -423,7 +423,7 @@ class DataTransferObjectTest extends TestCase
     public function an_exception_is_thrown_for_incoherent_iterator_type()
     {
         $this->expectException(DataTransferObjectError::class);
-        $this->expectExceptionMessageRegExp('/Invalid type: expected `class@anonymous[^:]+::strings` to be of type `iterable<string>`, instead got value `array`, which is string./');
+        $this->expectExceptionMessageRegExp('/Invalid type: expected `class@anonymous[^:]+::strings` to be of type `iterable<string>`, instead got value `array`, which is array./');
 
         new class(['strings' => ['foo', 1]]) extends DataTransferObject {
             /** @var iterable<string> */

@@ -21,6 +21,8 @@ class DataTransferObjectError extends TypeError
         array $expectedTypes,
         $value
     ): DataTransferObjectError {
+        $currentType = gettype($value);
+
         if ($value === null) {
             $value = 'null';
         }
@@ -34,8 +36,6 @@ class DataTransferObjectError extends TypeError
         }
 
         $expectedTypes = implode(', ', $expectedTypes);
-
-        $currentType = gettype($value);
 
         return new self("Invalid type: expected `{$class}::{$field}` to be of type `{$expectedTypes}`, instead got value `{$value}`, which is {$currentType}.");
     }
