@@ -473,7 +473,6 @@ class DataTransferObjectTest extends TestCase
         $this->assertSame(1, $arrayOf[0]->testProperty);
         $this->assertSame(2, $arrayOf[1]->testProperty);
     }
-  
       
     /** @test */
     public function ignore_static_public_properties()
