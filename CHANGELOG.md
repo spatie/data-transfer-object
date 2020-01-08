@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 1.13.1 - 2020-01-08
+
+- Improve extendability of DTOs (#80)
+
 ## 1.13.0 - 2020-01-08
 
 - Ignore static properties (#82)
