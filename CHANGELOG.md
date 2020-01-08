@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 1.13.2 - 2020-01-08
+
+- DataTransferObjectError::invalidType : get actual type before mutating $value for the error message (#81)
+
 ## 1.13.1 - 2020-01-08
 
 - Improve extendability of DTOs (#80)
