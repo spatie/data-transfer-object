@@ -193,6 +193,7 @@ abstract class DataTransferObject
      * @param \Spatie\DataTransferObject\ValueCaster $valueCaster
      * @param \Spatie\DataTransferObject\FieldValidator $fieldValidator
      * @param mixed $value
+     *
      * @return mixed
      */
     protected function castValue(ValueCaster $valueCaster, FieldValidator $fieldValidator, $value)
