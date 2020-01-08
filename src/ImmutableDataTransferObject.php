@@ -8,6 +8,11 @@ class ImmutableDataTransferObject
 
     public function __construct(DataTransferObject $dataTransferObject)
     {
+        foreach (get_object_vars($dataTransferObject) as $k => $v) {
+            if (is_subclass_of($v, DataTransferObject::class)) {
+                $dataTransferObject->{$k} = new self($v);
+            };
+        }
         $this->dataTransferObject = $dataTransferObject;
     }
 
