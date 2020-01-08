@@ -18,6 +18,7 @@ class ImmutableTest extends TestCase
         $this->assertEquals(1, $dto->testProperty);
 
         $this->expectException(DataTransferObjectError::class);
+        $this->expectExceptionMessage('Cannot change the value of property testProperty on an immutable data transfer object');
 
         $dto->testProperty = 2;
     }
