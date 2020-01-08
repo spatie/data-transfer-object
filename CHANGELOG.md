@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 1.13.0 - 2020-01-08
+
+- Ignore static properties (#82)
+
 ## 1.12.0 - 2019-12-19
 
 - Improved performance by adding a cache (#79)
