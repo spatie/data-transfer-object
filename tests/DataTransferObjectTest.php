@@ -443,4 +443,16 @@ class DataTransferObjectTest extends TestCase
         $this->assertEquals('Alice', $object->children[0]->name);
         $this->assertEquals('Bob', $object->children[1]->name);
     }
+
+    /** @test */
+    public function ignore_static_public_properties()
+    {
+        $object = new class(['foo' => 'bar']) extends DataTransferObject {
+            /** @var string */
+            public $foo;
+            public static $prop;
+        };
+
+        $this->assertSame('bar', $object->foo);
+    }
 }
