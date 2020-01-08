@@ -5,6 +5,7 @@ All notable changes to `data-transfer-object` will be documented in this file
 ## 1.13.0 - 2020-01-08
 
 - Ignore static properties (#82)
+- Add `DataTransferObject::arrayOf` (#83)
 
 ## 1.12.0 - 2019-12-19
 
