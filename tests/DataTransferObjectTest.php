@@ -462,6 +462,7 @@ class DataTransferObjectTest extends TestCase
         $this->assertCount(2, $arrayOf);
         $this->assertSame(1, $arrayOf[0]->testProperty);
         $this->assertSame(2, $arrayOf[1]->testProperty);
+    }
   
       
     /** @test */
