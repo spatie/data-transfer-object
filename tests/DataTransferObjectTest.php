@@ -13,6 +13,7 @@ use Spatie\DataTransferObject\Tests\TestClasses\NestedChild;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParent;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParentOfMany;
 use Spatie\DataTransferObject\Tests\TestClasses\OtherClass;
+use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
 
 class DataTransferObjectTest extends TestCase
 {
@@ -444,6 +445,26 @@ class DataTransferObjectTest extends TestCase
         $this->assertEquals('Bob', $object->children[1]->name);
     }
 
+    /** @test */
+    public function array_of_dtos()
+    {
+        $data = [
+            [
+                'testProperty' => 1,
+            ],
+            [
+                'testProperty' => 2,
+            ],
+        ];
+
+        $arrayOf = TestDataTransferObject::arrayOf($data);
+
+        $this->assertCount(2, $arrayOf);
+        $this->assertSame(1, $arrayOf[0]->testProperty);
+        $this->assertSame(2, $arrayOf[1]->testProperty);
+    }
+  
+      
     /** @test */
     public function ignore_static_public_properties()
     {
