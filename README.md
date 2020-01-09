@@ -349,6 +349,10 @@ Our address is: Spatie, Samberstraat 69D, 2060 Antwerp, Belgium.
 
 We publish all received postcards [on our company website](https://spatie.be/en/opensource/postcards).
 
+## External tools
+
+- [json2dto](https://json2dto.atymic.dev/): a GUI to convert JSON objects to DTO classes
+
 ## Credits
 
 - [Brent Roose](https://github.com/brendt)
