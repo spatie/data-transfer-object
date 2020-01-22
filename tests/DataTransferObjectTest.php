@@ -485,4 +485,20 @@ class DataTransferObjectTest extends TestCase
 
         $this->assertSame('bar', $object->foo);
     }
+
+    /** @test */
+    public function ignore_static_public_properties_when_serializing()
+    {
+        $object = new class(['foo' => 'bar']) extends DataTransferObject {
+            /** @var string */
+            public $foo;
+            public static $prop;
+        };
+
+        $expected = [
+            'foo' => 'bar',
+        ];
+
+        $this->assertSame($expected, $object->all());
+    }
 }
