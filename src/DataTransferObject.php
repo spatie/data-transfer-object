@@ -93,6 +93,11 @@ abstract class DataTransferObject
         $properties = $class->getProperties(ReflectionProperty::IS_PUBLIC);
 
         foreach ($properties as $reflectionProperty) {
+            // Skip static properties
+            if ($reflectionProperty->isStatic()) {
+                continue;
+            }
+
             $data[$reflectionProperty->getName()] = $reflectionProperty->getValue($this);
         }
 
