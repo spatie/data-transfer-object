@@ -2,6 +2,11 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+
+## 1.13.3 - 2020-01-29
+
+- Ignore static properties when serializing (#88)
+
 ## 1.13.2 - 2020-01-08
 
 - DataTransferObjectError::invalidType : get actual type before mutating $value for the error message (#81)
