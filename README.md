@@ -323,6 +323,33 @@ If not, a `Spatie\DataTransferObject\DataTransferObjectError` will be thrown.
 
 Likewise, if you're trying to set non-defined properties, you'll get a `DataTransferObjectError`.
 
+### Flexible Data Transfer Objects
+Sometimes you might want to be able to instantiate a DTO with a subset of an array. A good example of this is a large
+API response where only a small amount of the fields are used. Normally, if you tried to instantiate a standard DTO
+with superfluous properties, a `DataTransferObjectError` will be throw.
+
+You can avoid this behaviour by instead extending from `FlexibleDataTransferObject`. For example:
+
+```php
+class PostData extends FlexibleDataTransferObject
+{
+    /** @var string */
+    public $content;
+}
+
+
+// No errors thrown
+$dto = new PostData([
+    'author' => [
+        'id' => 1,
+    ],
+    'content' => 'blah blah',
+    'created_at' => '2020-01-02',
+]);
+
+$dto->toArray(); // ['content' => 'blah blah']
+```
+
 ### Testing
 
 ``` bash
