@@ -93,9 +93,9 @@ class PostData extends DataTransferObject
     public static function fromRequest(Request $request): self
     {
         return new self([
-            'title' => $request->get('title'),
-            'body' => $request->get('body'),
-            'author' => Author::find($request->get('author_id')),
+            'title' => $request->input('title'),
+            'body' => $request->input('body'),
+            'author' => Author::find($request->input('author_id')),
         ]);
     }
 }
