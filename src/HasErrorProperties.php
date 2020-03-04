@@ -18,8 +18,8 @@ trait HasErrorProperties
     /** @var array */
     protected $properties = [];
 
-    /** @var string */
-    protected $value = '';
+    /** @var mixed */
+    protected $value;
 
     /** @var string */
     protected $type = '';
@@ -95,9 +95,9 @@ trait HasErrorProperties
      *
      * Applies to error types: invalidType
      *
-     * @return string
+     * @return mixed
      */
-    public function getValue(): string
+    public function getValue()
     {
         return $this->value;
     }
