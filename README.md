@@ -323,6 +323,20 @@ If not, a `Spatie\DataTransferObject\DataTransferObjectError` will be thrown.
 
 Likewise, if you're trying to set non-defined properties, you'll get a `DataTransferObjectError`.
 
+### Exception Properties
+
+The `DataTransferObjectError` exception object exposes information about the specific error through various getter methods:
+
+| Exception Method | Description | Applies To<br>Error Types |
+| ------ | ----------- | ----------- |
+| `getError(): string` | Type of error being thrown<br>Error types: unknownProperties, invalidType, uninitialized, immutable | N/A
+| `getClass(): string` | Name of the data transfer object class | unknownProperties<br>invalidType<br>uninitialized<br>immutable
+| `getProperty(): string` | Name of the data transfer object property | invalidType<br>uninitialized<br>immutable
+| `getProperties(): string[]` | Names of the data transfer object properties | unknownProperties
+| `getValue(): mixed` | Value of the data transfer object property | invalidType
+| `getType(): string` | Type of the data transfer object property | invalidType
+| `getExpectedTypes(): string[]` | Expected types of the data transfer object property | invalidType
+
 ### Flexible Data Transfer Objects
 Sometimes you might want to be able to instantiate a DTO with a subset of an array. A good example of this is a large
 API response where only a small amount of the fields are used. Normally, if you tried to instantiate a standard DTO
