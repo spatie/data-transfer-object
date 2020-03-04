@@ -2,6 +2,7 @@
 
 namespace Spatie\DataTransferObject\Tests;
 
+use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\DataTransferObjectError;
 use Spatie\DataTransferObject\Tests\TestClasses\NullableTestDataTransferObject;
 use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
@@ -21,6 +22,21 @@ class ImmutableTest extends TestCase
         $this->expectExceptionMessage('Cannot change the value of property testProperty on an immutable data transfer object');
 
         $dto->testProperty = 2;
+    }
+
+    /** @test */
+    public function immutable_errors_set_exception_properties()
+    {
+        try {
+            $dto = TestDataTransferObject::immutable([
+                'testProperty' => 1,
+            ]);
+
+            $dto->testProperty = 2;
+        } catch (DataTransferObjectError $error) {
+            $this->assertEquals('immutable', $error->getError());
+            $this->assertEquals('testProperty', $error->getProperty());
+        }
     }
 
     /** @test */

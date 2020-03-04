@@ -37,6 +37,24 @@ class DataTransferObjectTest extends TestCase
     }
 
     /** @test */
+    public function invalid_types_set_exception_properties()
+    {
+        try {
+            new class(['foo' => 'value']) extends DataTransferObject {
+                /** @var boolean */
+                public $foo;
+            };
+        } catch (DataTransferObjectError $error) {
+            $this->assertEquals('invalidType', $error->getError());
+            $this->assertRegExp('/class@anonymous/', $error->getClass());
+            $this->assertEquals('foo', $error->getProperty());
+            $this->assertEquals('value', $error->getValue());
+            $this->assertEquals('string', $error->getType());
+            $this->assertEquals(['boolean'], $error->getExpectedTypes());
+        }
+    }
+
+    /** @test */
     public function union_types_are_supported()
     {
         new class(['foo' => 'value']) extends DataTransferObject {
@@ -108,6 +126,19 @@ class DataTransferObjectTest extends TestCase
         } catch (DataTransferObjectError $error) {
             $this->assertContains('`foo`', $error->getMessage());
             $this->assertContains('`bar`', $error->getMessage());
+        }
+    }
+
+    /** @test */
+    public function unknown_properties_set_exception_properties()
+    {
+        try {
+            new class(['foo' => null, 'bar' => null]) extends DataTransferObject {
+            };
+        } catch (DataTransferObjectError $error) {
+            $this->assertEquals('unknownProperties', $error->getError());
+            $this->assertRegExp('/class@anonymous/', $error->getClass());
+            $this->assertEquals(['foo', 'bar'], $error->getProperties());
         }
     }
 
@@ -243,6 +274,26 @@ class DataTransferObjectTest extends TestCase
             /** @var string */
             public $foo;
         };
+    }
+
+    /** @test */
+    public function uninitialized_properties_set_exception_properties()
+    {
+        try {
+            new class([]) extends DataTransferObject {
+                /** @var string */
+                public $foo;
+            };
+        } catch (DataTransferObjectError $error) {
+            // https://github.com/spatie/data-transfer-object/pull/95
+            // PR #95 fixes a bug that causes the "invalidType" error to be thrown for
+            // uninitialized non-nullable properties instead of the "uninitialized" error.
+            // As of this change the PR is still open, so this test checks for both errors
+            // to handle both pre-merge and post-merge situations.
+            $this->assertContains($error->getError(), ['uninitialized', 'invalidType']);
+            $this->assertRegExp('/class@anonymous/', $error->getClass());
+            $this->assertEquals('foo', $error->getProperty());
+        }
     }
 
     /** @test */
@@ -472,8 +523,8 @@ class DataTransferObjectTest extends TestCase
         $this->assertSame(1, $arrayOf[0]->testProperty);
         $this->assertSame(2, $arrayOf[1]->testProperty);
     }
-  
-      
+
+
     /** @test */
     public function ignore_static_public_properties()
     {
