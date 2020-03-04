@@ -39,9 +39,11 @@ class FieldValidator
 
     public static function fromReflection(ReflectionProperty $property): FieldValidator
     {
+        $defaultProperties = $property->getDeclaringClass()->getDefaultProperties();
+
         return new self(
             $property->getDocComment() ?: null,
-            $property->isDefault()
+            ($defaultProperties[$property->name] ?? null) !== null
         );
     }
 
