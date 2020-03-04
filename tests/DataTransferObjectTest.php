@@ -81,7 +81,7 @@ class DataTransferObjectTest extends TestCase
     public function null_is_allowed_only_if_explicitly_specified()
     {
         $this->expectException(DataTransferObjectError::class);
-        $this->expectExceptionMessageRegExp('/Invalid type: expected `class@anonymous[^:]+::foo` to be of type `string`, instead got value `null`, which is NULL/');
+        $this->expectExceptionMessageRegExp('/Non-nullable property `class@anonymous[^:]+::foo` has not been initialized./');
 
         new class(['foo' => null]) extends DataTransferObject {
             /** @var string */
@@ -237,7 +237,7 @@ class DataTransferObjectTest extends TestCase
     public function an_exception_is_thrown_when_property_was_not_initialised()
     {
         $this->expectException(DataTransferObjectError::class);
-        $this->expectExceptionMessageRegExp('/Invalid type: expected `class@anonymous[^:]+::foo` to be of type `string`, instead got value `null`, which is NULL/');
+        $this->expectExceptionMessageRegExp('/Non-nullable property `class@anonymous[^:]+::foo` has not been initialized./');
 
         new class([]) extends DataTransferObject {
             /** @var string */
@@ -351,7 +351,7 @@ class DataTransferObjectTest extends TestCase
     public function nested_array_dtos_cannot_cast_with_null()
     {
         $this->expectException(DataTransferObjectError::class);
-        $this->expectExceptionMessage('Invalid type: expected `Spatie\DataTransferObject\Tests\TestClasses\NestedParentOfMany::children` to be of type `\Spatie\DataTransferObject\Tests\TestClasses\NestedChild[]`, instead got value `null`, which is NULL.');
+        $this->expectExceptionMessage('Non-nullable property `Spatie\DataTransferObject\Tests\TestClasses\NestedParentOfMany::children` has not been initialized.');
 
         new NestedParentOfMany([
             'name' => 'parent',
@@ -472,8 +472,8 @@ class DataTransferObjectTest extends TestCase
         $this->assertSame(1, $arrayOf[0]->testProperty);
         $this->assertSame(2, $arrayOf[1]->testProperty);
     }
-  
-      
+
+
     /** @test */
     public function ignore_static_public_properties()
     {
