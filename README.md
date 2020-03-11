@@ -191,8 +191,21 @@ class PostCollection extends DataTransferObjectCollection
 }
 ```
 
-By overriding the `current` method, you'll get auto completion in your IDE, 
-and use the collections like so.
+By overriding the `current` method, you'll get auto completion in your IDE.
+Alternatively you can also use a phpdoc for this:
+
+```php
+use \Spatie\DataTransferObject\DataTransferObjectCollection;
+
+/**
+ * @method PostData current
+ */
+class PostCollection extends DataTransferObjectCollection
+{
+}
+```
+
+Then you can use the collections like so:
 
 ```php
 foreach ($postCollection as $postData) {
@@ -209,14 +222,7 @@ class PostCollection extends DataTransferObjectCollection
 {
     public static function create(array $data): PostCollection
     {
-        $collection = [];
-
-        foreach ($data as $item)
-        {
-            $collection[] = PostData::create($item);
-        }
-
-        return new self($collection);
+        return new static(PostData::arrayOf($data));
     }
 }
 ```
