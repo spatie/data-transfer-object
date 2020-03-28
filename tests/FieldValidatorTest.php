@@ -44,6 +44,11 @@ class FieldValidatorTest extends TestCase
         $this->assertEquals(['string'], (new FieldValidator('/** @var string[]|int */'))->allowedArrayTypes);
         $this->assertEquals(['string'], (new FieldValidator('/** @var iterable<string> */'))->allowedArrayTypes);
         $this->assertEquals(['string', 'integer'], (new FieldValidator('/** @var iterable<string>|int[] */'))->allowedArrayTypes);
+        $this->assertEquals(['string'], (new FieldValidator('/** @var array<string> */'))->allowedArrayTypes);
+        $this->assertEquals(['integer'], (new FieldValidator('/** @var array<int> */'))->allowedArrayTypes);
+        $this->assertEquals([['integer', 'string']], (new FieldValidator('/** @var array<int,string> */'))->allowedArrayTypes);
+        $this->assertEquals([['string', 'integer']], (new FieldValidator('/** @var array<string,int> */'))->allowedArrayTypes);
+        $this->assertEquals([['string', '\A\B']], (new FieldValidator('/** @var array<string,\A\B> */'))->allowedArrayTypes);
     }
 
     /** @test */

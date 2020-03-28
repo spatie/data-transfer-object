@@ -33,7 +33,7 @@ class FieldValidator
     /** @var array */
     public $allowedTypes = [];
 
-    /** @var array */
+    /** @var array<string|array{0:string,1:string}> */
     public $allowedArrayTypes = [];
 
 
@@ -48,7 +48,7 @@ class FieldValidator
     public function __construct(?string $docComment = null, bool $hasDefaultValue = false)
     {
         preg_match(
-            '/@var ((?:(?:[\w?|\\\\<>])+(?:\[])?)+)/',
+            '/@var ((?:(?:[\w?|\\\\<>,])+(?:\[])?)+)/',
             $docComment ?? '',
             $matches
         );
@@ -108,9 +108,25 @@ class FieldValidator
         return $value instanceof $type || gettype($value) === $type;
     }
 
-    private function assertValidArrayTypes(string $type, $collection): bool
+    /**
+     * @param string|array $type
+     * @param iterable $collection
+     * @return bool
+     */
+    private function assertValidArrayTypes($type, $collection): bool
     {
-        foreach ($collection as $value) {
+        foreach ($collection as $key => $value) {
+            if (is_array($type)) {
+                if (! $this->assertValidType($type[0], $key)) {
+                    return false;
+                }
+                if (! $this->assertValidType($type[1], $value)) {
+                    return false;
+                }
+
+                continue;
+            }
+
             if (! $this->assertValidType($type, $value)) {
                 return false;
             }
@@ -171,16 +187,29 @@ class FieldValidator
                     return str_replace(['iterable<', '>'], ['', ''], $type);
                 }
 
+                if (strpos($type, 'array<') !== false) {
+                    $arrayTypes = explode(',', str_replace(['array<', '>'], ['', ''], $type));
+
+                    return count($arrayTypes) == 1 ? $arrayTypes[0] : $arrayTypes;
+                }
+
                 return null;
             },
             explode('|', $definition)
         ));
     }
 
-    private function normaliseTypes(?string ...$types): array
+    private function normaliseTypes(...$types): array
     {
         return array_filter(array_map(
-            function (?string $type) {
+            function ($type) {
+                if (is_array($type)) {
+                    return [
+                        self::$typeMapping[$type[0]] ?? $type[0],
+                        self::$typeMapping[$type[1]] ?? $type[1],
+                    ];
+                }
+
                 return self::$typeMapping[$type] ?? $type;
             },
             $types
