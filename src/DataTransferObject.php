@@ -69,7 +69,12 @@ abstract class DataTransferObject
                 throw DataTransferObjectError::invalidType(
                     static::class,
                     $field,
-                    $validator->allowedTypes,
+                    array_map(
+                        function (FieldType $type): string {
+                            return $type->getValueType();
+                        },
+                        $validator->allowedTypes,
+                    ),
                     $value
                 );
             }

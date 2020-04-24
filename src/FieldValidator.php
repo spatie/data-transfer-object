@@ -30,10 +30,10 @@ class FieldValidator
     /** @var bool */
     public $hasDefaultValue = false;
 
-    /** @var array */
+    /** @var FieldType[] */
     public $allowedTypes = [];
 
-    /** @var array<string|array{0:string,1:string}> */
+    /** @var FieldType[] */
     public $allowedArrayTypes = [];
 
 
@@ -93,7 +93,7 @@ class FieldValidator
         }
 
         foreach ($this->allowedTypes as $type) {
-            $isValidType = $this->assertValidType($type, $value);
+            $isValidType = $this->assertValidType($type->getValueType(), $value);
 
             if ($isValidType) {
                 return true;
@@ -108,26 +108,14 @@ class FieldValidator
         return $value instanceof $type || gettype($value) === $type;
     }
 
-    /**
-     * @param string|array $type
-     * @param iterable $collection
-     * @return bool
-     */
-    private function assertValidArrayTypes($type, $collection): bool
+    private function assertValidArrayTypes(FieldType $type, $collection): bool
     {
         foreach ($collection as $key => $value) {
-            if (is_array($type)) {
-                if (! $this->assertValidType($type[0], $key)) {
-                    return false;
-                }
-                if (! $this->assertValidType($type[1], $value)) {
-                    return false;
-                }
-
-                continue;
+            if (! $this->assertValidType($type->getValueType(), $value)) {
+                return false;
             }
 
-            if (! $this->assertValidType($type, $value)) {
+            if ($type->hasKeyType() && ! $this->assertValidType($type->getKeyType(), $key)) {
                 return false;
             }
         }
@@ -158,7 +146,7 @@ class FieldValidator
         $types = $this->normaliseTypes(...explode('|', $definition));
 
         foreach ($types as $type) {
-            if (in_array($type, ['iterable', 'array'])) {
+            if (in_array($type->getValueType(), ['iterable', 'array'])) {
                 return true;
             }
         }
@@ -166,17 +154,25 @@ class FieldValidator
         return false;
     }
 
+    /**
+     * @param string $definition
+     * @return FieldType[]
+     */
     private function resolveAllowedTypes(string $definition): array
     {
         return $this->normaliseTypes(...explode('|', $definition));
     }
 
+    /**
+     * @param string $definition
+     * @return FieldType[]
+     */
     private function resolveAllowedArrayTypes(string $definition): array
     {
-        return $this->normaliseTypes(...array_map(
+        return $this->normaliseTypes(...array_filter(array_map(
             function (string $type) {
                 if (! $type) {
-                    return;
+                    return null;
                 }
 
                 if (strpos($type, '[]') !== false) {
@@ -196,23 +192,23 @@ class FieldValidator
                 return null;
             },
             explode('|', $definition)
-        ));
+        )));
     }
 
     private function normaliseTypes(...$types): array
     {
-        return array_filter(array_map(
+        return array_map(
             function ($type) {
                 if (is_array($type)) {
-                    return [
-                        self::$typeMapping[$type[0]] ?? $type[0],
+                    return new FieldType(
                         self::$typeMapping[$type[1]] ?? $type[1],
-                    ];
+                        self::$typeMapping[$type[0]] ?? $type[0]
+                    );
                 }
 
-                return self::$typeMapping[$type] ?? $type;
+                return new FieldType(self::$typeMapping[$type] ?? $type);
             },
             $types
-        ));
+        );
     }
 }

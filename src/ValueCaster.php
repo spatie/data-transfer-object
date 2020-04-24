@@ -11,11 +11,18 @@ class ValueCaster
             : $this->castValue($value, $validator->allowedTypes);
     }
 
+    /**
+     * @param mixed $value
+     * @param FieldType[] $allowedTypes
+     * @return mixed
+     */
     public function castValue($value, array $allowedTypes)
     {
         $castTo = null;
 
         foreach ($allowedTypes as $type) {
+            $type = $type->getValueType();
+
             if (! is_subclass_of($type, DataTransferObject::class)) {
                 continue;
             }
@@ -32,11 +39,18 @@ class ValueCaster
         return new $castTo($value);
     }
 
+    /**
+     * @param mixed $values
+     * @param FieldType[] $allowedArrayTypes
+     * @return array
+     */
     public function castCollection($values, array $allowedArrayTypes)
     {
         $castTo = null;
 
         foreach ($allowedArrayTypes as $type) {
+            $type = $type->getValueType();
+
             if (! is_subclass_of($type, DataTransferObject::class)) {
                 continue;
             }

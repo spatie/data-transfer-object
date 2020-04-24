@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spatie\DataTransferObject\Tests;
 
+use Spatie\DataTransferObject\FieldType;
 use Spatie\DataTransferObject\FieldValidator;
 
 class Foo {}
@@ -27,28 +28,28 @@ class FieldValidatorTest extends TestCase
     /** @test */
     public function allowed_types()
     {
-        $this->assertEquals(['string'], (new FieldValidator('/** @var string */'))->allowedTypes);
-        $this->assertEquals(['\A\B'], (new FieldValidator('/** @var \A\B */'))->allowedTypes);
-        $this->assertEquals(['string', 'integer'], (new FieldValidator('/** @var string|integer */'))->allowedTypes);
-        $this->assertEquals(['string', 'integer'], (new FieldValidator('/** @var string|int */'))->allowedTypes);
-        $this->assertEquals(['boolean'], (new FieldValidator('/** @var bool */'))->allowedTypes);
-        $this->assertEquals(['double'], (new FieldValidator('/** @var float */'))->allowedTypes);
+        $this->assertEquals([new FieldType('string')], (new FieldValidator('/** @var string */'))->allowedTypes);
+        $this->assertEquals([new FieldType('\A\B')], (new FieldValidator('/** @var \A\B */'))->allowedTypes);
+        $this->assertEquals([new FieldType('string'), new FieldType('integer')], (new FieldValidator('/** @var string|integer */'))->allowedTypes);
+        $this->assertEquals([new FieldType('string'), new FieldType('integer')], (new FieldValidator('/** @var string|int */'))->allowedTypes);
+        $this->assertEquals([new FieldType('boolean')], (new FieldValidator('/** @var bool */'))->allowedTypes);
+        $this->assertEquals([new FieldType('double')], (new FieldValidator('/** @var float */'))->allowedTypes);
     }
 
     /** @test */
     public function allowed_array_types()
     {
-        $this->assertEquals(['string'], (new FieldValidator('/** @var string[] */'))->allowedArrayTypes);
-        $this->assertEquals(['\A\B'], (new FieldValidator('/** @var \A\B[] */'))->allowedArrayTypes);
-        $this->assertEquals(['string', 'integer'], (new FieldValidator('/** @var string[]|int[] */'))->allowedArrayTypes);
-        $this->assertEquals(['string'], (new FieldValidator('/** @var string[]|int */'))->allowedArrayTypes);
-        $this->assertEquals(['string'], (new FieldValidator('/** @var iterable<string> */'))->allowedArrayTypes);
-        $this->assertEquals(['string', 'integer'], (new FieldValidator('/** @var iterable<string>|int[] */'))->allowedArrayTypes);
-        $this->assertEquals(['string'], (new FieldValidator('/** @var array<string> */'))->allowedArrayTypes);
-        $this->assertEquals(['integer'], (new FieldValidator('/** @var array<int> */'))->allowedArrayTypes);
-        $this->assertEquals([['integer', 'string']], (new FieldValidator('/** @var array<int,string> */'))->allowedArrayTypes);
-        $this->assertEquals([['string', 'integer']], (new FieldValidator('/** @var array<string,int> */'))->allowedArrayTypes);
-        $this->assertEquals([['string', '\A\B']], (new FieldValidator('/** @var array<string,\A\B> */'))->allowedArrayTypes);
+        $this->assertEquals([new FieldType('string')], (new FieldValidator('/** @var string[] */'))->allowedArrayTypes);
+        $this->assertEquals([new FieldType('\A\B')], (new FieldValidator('/** @var \A\B[] */'))->allowedArrayTypes);
+        $this->assertEquals([new FieldType('string'), new FieldType('integer')], (new FieldValidator('/** @var string[]|int[] */'))->allowedArrayTypes);
+        $this->assertEquals([new FieldType('string')], (new FieldValidator('/** @var string[]|int */'))->allowedArrayTypes);
+        $this->assertEquals([new FieldType('string')], (new FieldValidator('/** @var iterable<string> */'))->allowedArrayTypes);
+        $this->assertEquals([new FieldType('string'), new FieldType('integer')], (new FieldValidator('/** @var iterable<string>|int[] */'))->allowedArrayTypes);
+        $this->assertEquals([new FieldType('string')], (new FieldValidator('/** @var array<string> */'))->allowedArrayTypes);
+        $this->assertEquals([new FieldType('integer')], (new FieldValidator('/** @var array<int> */'))->allowedArrayTypes);
+        $this->assertEquals([new FieldType('string', 'integer')], (new FieldValidator('/** @var array<int,string> */'))->allowedArrayTypes);
+        $this->assertEquals([new FieldType('integer', 'string')], (new FieldValidator('/** @var array<string,int> */'))->allowedArrayTypes);
+        $this->assertEquals([new FieldType('\A\B', 'string')], (new FieldValidator('/** @var array<string,\A\B> */'))->allowedArrayTypes);
     }
 
     /** @test */
