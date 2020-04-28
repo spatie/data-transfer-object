@@ -6,53 +6,51 @@ namespace Spatie\DataTransferObject;
 
 use ReflectionProperty;
 
-class FieldValidator
+abstract class FieldValidator
 {
-    private static array $typeMapping = [
+    public bool $isNullable;
+
+    public bool $isMixed;
+
+    public bool $isMixedArray;
+
+    public bool $hasDefaultValue;
+
+    public array $allowedTypes;
+
+    public array $allowedArrayTypes;
+
+    protected static array $typeMapping = [
         'int' => 'integer',
         'bool' => 'boolean',
         'float' => 'double',
     ];
 
-    private bool $hasTypeDeclaration = false;
-
-    public bool $isNullable = false;
-
-    public bool $isMixed = false;
-
-    public bool $isMixedArray = false;
-
-    public bool $hasDefaultValue = false;
-
-    public array $allowedTypes = [];
-
-    public array $allowedArrayTypes = [];
+    protected bool $hasTypeDeclaration;
 
     public static function fromReflection(ReflectionProperty $property): FieldValidator
     {
-        return new self(
-            $property->getDocComment() ?: null,
-            $property->isDefault()
-        );
+        $docDefinition = null;
+
+        if ($property->getDocComment()) {
+            preg_match(
+                DocblockFieldValidator::DOCBLOCK_REGEX,
+                $property->getDocComment(),
+                $matches
+            );
+
+            $docDefinition = $matches[1] ?? '';
+        }
+
+        if ($docDefinition !== null) {
+            return new DocblockFieldValidator($docDefinition, $property->isDefault());
+        }
+
+        return new PropertyFieldValidator($property);
     }
 
-    public function __construct(?string $docComment = null, bool $hasDefaultValue = false)
+    public function __construct(ReflectionProperty $property)
     {
-        preg_match(
-            '/@var ((?:(?:[\w?|\\\\<>])+(?:\[])?)+)/',
-            $docComment ?? '',
-            $matches
-        );
-
-        $definition = $matches[1] ?? '';
-
-        $this->hasTypeDeclaration = $definition !== '';
-        $this->hasDefaultValue = $hasDefaultValue;
-        $this->isNullable = $this->resolveNullable($definition);
-        $this->isMixed = $this->resolveIsMixed($definition);
-        $this->isMixedArray = $this->resolveIsMixedArray($definition);
-        $this->allowedTypes = $this->resolveAllowedTypes($definition);
-        $this->allowedArrayTypes = $this->resolveAllowedArrayTypes($definition);
     }
 
     public function isValidType($value): bool
@@ -108,71 +106,5 @@ class FieldValidator
         }
 
         return true;
-    }
-
-    private function resolveNullable(string $definition): bool
-    {
-        if (! $definition) {
-            return true;
-        }
-
-        if (Str::contains($definition, ['mixed', 'null', '?'])) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private function resolveIsMixed(string $definition): bool
-    {
-        return Str::contains($definition, ['mixed']);
-    }
-
-    private function resolveIsMixedArray(string $definition): bool
-    {
-        $types = $this->normaliseTypes(...explode('|', $definition));
-
-        foreach ($types as $type) {
-            if (in_array($type, ['iterable', 'array'])) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function resolveAllowedTypes(string $definition): array
-    {
-        return $this->normaliseTypes(...explode('|', $definition));
-    }
-
-    private function resolveAllowedArrayTypes(string $definition): array
-    {
-        return $this->normaliseTypes(...array_map(
-            function (string $type) {
-                if (! $type) {
-                    return;
-                }
-
-                if (strpos($type, '[]') !== false) {
-                    return str_replace('[]', '', $type);
-                }
-
-                if (strpos($type, 'iterable<') !== false) {
-                    return str_replace(['iterable<', '>'], ['', ''], $type);
-                }
-
-                return null;
-            },
-            explode('|', $definition)
-        ));
-    }
-
-    private function normaliseTypes(?string ...$types): array
-    {
-        return array_filter(array_map(
-            fn (?string $type) => self::$typeMapping[$type] ?? $type,
-            $types
-        ));
     }
 }
