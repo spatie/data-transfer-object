@@ -4,11 +4,15 @@ namespace Spatie\DataTransferObject;
 
 class ImmutableDataTransferObject
 {
-    /** @var \Spatie\DataTransferObject\DataTransferObject */
-    protected $dataTransferObject;
+    protected DataTransferObject $dataTransferObject;
 
     public function __construct(DataTransferObject $dataTransferObject)
     {
+        foreach (get_object_vars($dataTransferObject) as $k => $v) {
+            if (is_subclass_of($v, DataTransferObject::class)) {
+                $dataTransferObject->{$k} = new self($v);
+            };
+        }
         $this->dataTransferObject = $dataTransferObject;
     }
 
