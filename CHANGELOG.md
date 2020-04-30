@@ -4,7 +4,6 @@ All notable changes to `data-transfer-object` will be documented in this file
 
 ## 2.0.0 - 2020-04-28
 
-- Add `FlexibleDataTransferObject` which allows for unknown properties to be ignored
 - Bump minimum required PHP version to 7.4
 - Support for nested immutable DTOs (#86)
 
@@ -28,6 +27,7 @@ All notable changes to `data-transfer-object` will be documented in this file
 ## 1.12.0 - 2019-12-19
 
 - Improved performance by adding a cache (#79)
+- Add `FlexibleDataTransferObject` which allows for unknown properties to be ignored
 
 ## 1.11.0 - 2019-11-28 (#71)
 
