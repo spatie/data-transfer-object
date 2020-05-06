@@ -14,6 +14,7 @@ use Spatie\DataTransferObject\Tests\TestClasses\NestedParent;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParentOfMany;
 use Spatie\DataTransferObject\Tests\TestClasses\OtherClass;
 use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
+use Spatie\DataTransferObject\Tests\TestClasses\TypedNestedParent;
 
 class DataTransferObjectTest extends TestCase
 {
@@ -280,6 +281,23 @@ class DataTransferObjectTest extends TestCase
         ];
 
         $object = new NestedParent($data);
+
+        $this->assertInstanceOf(NestedChild::class, $object->child);
+        $this->assertEquals('parent', $object->name);
+        $this->assertEquals('child', $object->child->name);
+    }
+
+    /** @test */
+    public function nested_typed_dtos_are_automatically_cast_from_arrays_to_objects()
+    {
+        $data = [
+            'name' => 'parent',
+            'child' => [
+                'name' => 'child',
+            ],
+        ];
+
+        $object = new TypedNestedParent($data);
 
         $this->assertInstanceOf(NestedChild::class, $object->child);
         $this->assertEquals('parent', $object->name);
