@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Spatie\DataTransferObject;
 
 use ReflectionProperty;
+use ReflectionNamedType;
 
 class FieldValidator
 {
@@ -31,20 +32,14 @@ class FieldValidator
     public static function fromReflection(ReflectionProperty $property): FieldValidator
     {
         return new self(
-            $property->getDocComment() ?: null,
+            $property,
             $property->isDefault()
         );
     }
 
-    public function __construct(?string $docComment = null, bool $hasDefaultValue = false)
+    public function __construct($docComment = null, bool $hasDefaultValue = false)
     {
-        preg_match(
-            '/@var ((?:(?:[\w?|\\\\<>])+(?:\[])?)+)/',
-            $docComment ?? '',
-            $matches
-        );
-
-        $definition = $matches[1] ?? '';
+        $definition = $this->getDefinition($docComment);
 
         $this->hasTypeDeclaration = $definition !== '';
         $this->hasDefaultValue = $hasDefaultValue;
@@ -110,10 +105,14 @@ class FieldValidator
         return true;
     }
 
-    private function resolveNullable(string $definition): bool
+    private function resolveNullable($definition): bool
     {
         if (! $definition) {
             return true;
+        }
+
+        if ($this->isTypedProperty($definition)) {
+            return $definition->allowsNull();
         }
 
         if (Str::contains($definition, ['mixed', 'null', '?'])) {
@@ -123,13 +122,21 @@ class FieldValidator
         return false;
     }
 
-    private function resolveIsMixed(string $definition): bool
+    private function resolveIsMixed($definition): bool
     {
+        if ($this->isTypedProperty($definition)) {
+            return false;
+        }
+
         return Str::contains($definition, ['mixed']);
     }
 
-    private function resolveIsMixedArray(string $definition): bool
+    private function resolveIsMixedArray($definition): bool
     {
+        if ($this->isTypedProperty($definition)) {
+            return false;
+        }
+
         $types = $this->normaliseTypes(...explode('|', $definition));
 
         foreach ($types as $type) {
@@ -141,13 +148,21 @@ class FieldValidator
         return false;
     }
 
-    private function resolveAllowedTypes(string $definition): array
+    private function resolveAllowedTypes($definition): array
     {
+        if ($this->isTypedProperty($definition)) {
+            return $this->normaliseTypes($definition->getName());
+        }
+
         return $this->normaliseTypes(...explode('|', $definition));
     }
 
-    private function resolveAllowedArrayTypes(string $definition): array
+    private function resolveAllowedArrayTypes($definition): array
     {
+        if ($this->isTypedProperty($definition)) {
+            return [];
+        }
+
         return $this->normaliseTypes(...array_map(
             function (string $type) {
                 if (! $type) {
@@ -174,5 +189,29 @@ class FieldValidator
             fn (?string $type) => self::$typeMapping[$type] ?? $type,
             $types
         ));
+    }
+
+    private function getDefinition($docComment)
+    {
+        if ($docComment instanceof ReflectionProperty) {
+            if ($docComment->hasType()) {
+                return $docComment->getType();
+            }
+
+            $docComment = $docComment->getDocComment() ?: '';
+        }
+
+        preg_match(
+            '/@var ((?:(?:[\w?|\\\\<>])+(?:\[])?)+)/',
+            $docComment ?? '',
+            $matches
+        );
+
+        return $matches[1] ?? '';
+    }
+
+    private function isTypedProperty($definition): bool
+    {
+        return $definition instanceof ReflectionNamedType;
     }
 }

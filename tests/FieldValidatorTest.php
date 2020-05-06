@@ -15,6 +15,16 @@ class FooChild extends Foo
 class Bar
 {
 }
+class FooBar
+{
+    public string $string;
+    public int $int;
+    public bool $bool;
+    public array $array;
+    public ?string $nullable;
+    public Foo $object;
+    public $untyped;
+}
 
 class FieldValidatorTest extends TestCase
 {
@@ -28,6 +38,14 @@ class FieldValidatorTest extends TestCase
         $this->assertTrue((new FieldValidator('/** @var mixed */'))->isNullable);
 
         $this->assertFalse((new FieldValidator('/** @var string */'))->isNullable);
+
+        $reflection = new \ReflectionClass(FooBar::class);
+        $this->assertFalse((new FieldValidator($reflection->getProperty('string')))->isNullable);
+        $this->assertFalse((new FieldValidator($reflection->getProperty('int')))->isNullable);
+        $this->assertFalse((new FieldValidator($reflection->getProperty('bool')))->isNullable);
+        $this->assertFalse((new FieldValidator($reflection->getProperty('array')))->isNullable);
+        $this->assertTrue((new FieldValidator($reflection->getProperty('nullable')))->isNullable);
+        $this->assertFalse((new FieldValidator($reflection->getProperty('object')))->isNullable);
     }
 
     /** @test */
@@ -39,6 +57,14 @@ class FieldValidatorTest extends TestCase
         $this->assertEquals(['string', 'integer'], (new FieldValidator('/** @var string|int */'))->allowedTypes);
         $this->assertEquals(['boolean'], (new FieldValidator('/** @var bool */'))->allowedTypes);
         $this->assertEquals(['double'], (new FieldValidator('/** @var float */'))->allowedTypes);
+
+        $reflection = new \ReflectionClass(FooBar::class);
+        $this->assertEquals(['string'], (new FieldValidator($reflection->getProperty('string')))->allowedTypes);
+        $this->assertEquals(['integer'], (new FieldValidator($reflection->getProperty('int')))->allowedTypes);
+        $this->assertEquals(['boolean'], (new FieldValidator($reflection->getProperty('bool')))->allowedTypes);
+        $this->assertEquals(['array'], (new FieldValidator($reflection->getProperty('array')))->allowedTypes);
+        $this->assertEquals(['string'], (new FieldValidator($reflection->getProperty('nullable')))->allowedTypes);
+        $this->assertEquals([Foo::class], (new FieldValidator($reflection->getProperty('object')))->allowedTypes);
     }
 
     /** @test */
@@ -50,6 +76,14 @@ class FieldValidatorTest extends TestCase
         $this->assertEquals(['string'], (new FieldValidator('/** @var string[]|int */'))->allowedArrayTypes);
         $this->assertEquals(['string'], (new FieldValidator('/** @var iterable<string> */'))->allowedArrayTypes);
         $this->assertEquals(['string', 'integer'], (new FieldValidator('/** @var iterable<string>|int[] */'))->allowedArrayTypes);
+
+        $reflection = new \ReflectionClass(FooBar::class);
+        $this->assertEquals([], (new FieldValidator($reflection->getProperty('string')))->allowedArrayTypes);
+        $this->assertEquals([], (new FieldValidator($reflection->getProperty('int')))->allowedArrayTypes);
+        $this->assertEquals([], (new FieldValidator($reflection->getProperty('bool')))->allowedArrayTypes);
+        $this->assertEquals([], (new FieldValidator($reflection->getProperty('array')))->allowedArrayTypes);
+        $this->assertEquals([], (new FieldValidator($reflection->getProperty('nullable')))->allowedArrayTypes);
+        $this->assertEquals([], (new FieldValidator($reflection->getProperty('object')))->allowedArrayTypes);
     }
 
     /** @test */
@@ -58,6 +92,11 @@ class FieldValidatorTest extends TestCase
         $this->assertTrue((new FieldValidator())->isValidType(1));
         $this->assertTrue((new FieldValidator())->isValidType('a'));
         $this->assertTrue((new FieldValidator())->isValidType(null));
+
+        $reflection = new \ReflectionClass(FooBar::class);
+        $this->assertTrue((new FieldValidator($reflection->getProperty('untyped')))->isValidType(1));
+        $this->assertTrue((new FieldValidator($reflection->getProperty('untyped')))->isValidType('a'));
+        $this->assertTrue((new FieldValidator($reflection->getProperty('untyped')))->isValidType(null));
     }
 
     /** @test */
@@ -98,6 +137,13 @@ class FieldValidatorTest extends TestCase
         $this->assertFalse((new FieldValidator('/** @var string[] */'))->isValidType(['a', 1]));
         $this->assertFalse((new FieldValidator('/** @var iterable<string> */'))->isValidType(['a', 1]));
         $this->assertFalse((new FieldValidator('/** @var string[] */'))->isValidType(['a', 1]));
+
+        $reflection = new \ReflectionClass(FooBar::class);
+        $this->assertFalse((new FieldValidator($reflection->getProperty('string')))->isValidType(['a', 1]));
+        $this->assertFalse((new FieldValidator($reflection->getProperty('int')))->isValidType(['a', 1]));
+        $this->assertFalse((new FieldValidator($reflection->getProperty('bool')))->isValidType(['a', 1]));
+        $this->assertTrue((new FieldValidator($reflection->getProperty('array')))->isValidType(['a', 1]));
+        $this->assertFalse((new FieldValidator($reflection->getProperty('object')))->isValidType(['a', 1]));
     }
 
     /** @test */
@@ -116,5 +162,16 @@ class FieldValidatorTest extends TestCase
 
         $this->assertFalse((new FieldValidator('/** @var string */'))->isValidType(1));
         $this->assertFalse((new FieldValidator('/** @var \Spatie\DataTransferObject\Tests\Foo */'))->isValidType(new Bar));
+
+        $reflection = new \ReflectionClass(FooBar::class);
+        $this->assertTrue((new FieldValidator($reflection->getProperty('string')))->isValidType('a'));
+        $this->assertTrue((new FieldValidator($reflection->getProperty('int')))->isValidType(1));
+        $this->assertTrue((new FieldValidator($reflection->getProperty('bool')))->isValidType(true));
+        $this->assertTrue((new FieldValidator($reflection->getProperty('array')))->isValidType([1, 2]));
+        $this->assertTrue((new FieldValidator($reflection->getProperty('nullable')))->isValidType(null));
+        $this->assertTrue((new FieldValidator($reflection->getProperty('object')))->isValidType(new Foo()));
+
+        $this->assertFalse((new FieldValidator($reflection->getProperty('object')))->isValidType('foo'));
+        $this->assertFalse((new FieldValidator($reflection->getProperty('string')))->isValidType(1));
     }
 }
