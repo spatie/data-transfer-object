@@ -20,12 +20,12 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function only_the_type_hinted_type_may_be_passed()
     {
-//        new class(['foo' => 'value']) extends DataTransferObject {
-//            /** @var string */
-//            public $foo;
-//        };
-//
-//        $this->markTestSucceeded();
+        new class(['foo' => 'value']) extends DataTransferObject {
+            /** @var string */
+            public $foo;
+        };
+
+        $this->markTestSucceeded();
 
         $this->expectException(DataTransferObjectError::class);
         $this->expectExceptionMessageRegExp('/Invalid type: expected `class@anonymous.*::foo` to be of type `string`, instead got value ``, which is boolean/');
