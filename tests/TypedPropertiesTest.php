@@ -23,7 +23,7 @@ class TypedPropertiesTest extends TestCase
     public function typed_properties_combined_with_docblocks()
     {
         $dto = new CombinedTypedDTO([
-            'numbers' => [1, 2]
+            'numbers' => [1, 2],
         ]);
 
         $this->assertInstanceOf(CombinedTypedDTO::class, $dto);
@@ -31,7 +31,7 @@ class TypedPropertiesTest extends TestCase
         $this->expectException(DataTransferObjectError::class);
 
         new CombinedTypedDTO([
-            'numbers' => ['invalid', 'string']
+            'numbers' => ['invalid', 'string'],
         ]);
     }
 }
