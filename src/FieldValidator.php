@@ -39,7 +39,7 @@ abstract class FieldValidator
                 $matches
             );
 
-            $docDefinition = $matches[1] ?? '';
+            $docDefinition = $matches[0] ?? '';
         }
 
         if ($docDefinition !== null) {
@@ -47,10 +47,6 @@ abstract class FieldValidator
         }
 
         return new PropertyFieldValidator($property);
-    }
-
-    public function __construct(ReflectionProperty $property)
-    {
     }
 
     public function isValidType($value): bool
@@ -92,7 +88,7 @@ abstract class FieldValidator
         return false;
     }
 
-    private function assertValidType(string $type, $value): bool
+    private function assertValidType($type, $value): bool
     {
         return $value instanceof $type || gettype($value) === $type;
     }

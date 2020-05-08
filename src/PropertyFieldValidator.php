@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spatie\DataTransferObject;
 
+use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionType;
 
@@ -34,11 +37,17 @@ class PropertyFieldValidator extends FieldValidator
 
     private function resolveIsMixedArray(ReflectionProperty $property): bool
     {
+        $reflectionType = $property->getType();
+
+        if (! $reflectionType instanceof ReflectionNamedType) {
+            return false;
+        }
+
         // We cast to array to support future union types in PHP 8
-        $types = [$property->getType()];
+        $types = [$reflectionType];
 
         foreach ($types as $type) {
-            if (in_array($type, ['iterable', 'array'])) {
+            if (in_array($type->getName(), ['iterable', 'array'])) {
                 return true;
             }
         }
@@ -57,7 +66,13 @@ class PropertyFieldValidator extends FieldValidator
     private function normaliseTypes(?ReflectionType ...$types): array
     {
         return array_filter(array_map(
-            fn(?ReflectionType $type) => self::$typeMapping[$type] ?? $type,
+            function (?ReflectionType $type) {
+                if ($type instanceof ReflectionNamedType) {
+                    return $type->getName();
+                }
+
+                return self::$typeMapping[$type] ?? $type;
+            },
             $types
         ));
     }

@@ -55,9 +55,9 @@ class DocblockFieldValidatorTest extends TestCase
     /** @test */
     public function empty_type_is_always_valid()
     {
-        $this->assertTrue((new DocblockFieldValidator())->isValidType(1));
-        $this->assertTrue((new DocblockFieldValidator())->isValidType('a'));
-        $this->assertTrue((new DocblockFieldValidator())->isValidType(null));
+        $this->assertTrue((new DocblockFieldValidator(''))->isValidType(1));
+        $this->assertTrue((new DocblockFieldValidator(''))->isValidType('a'));
+        $this->assertTrue((new DocblockFieldValidator(''))->isValidType(null));
     }
 
     /** @test */
@@ -71,7 +71,7 @@ class DocblockFieldValidatorTest extends TestCase
     /** @test */
     public function nullable_types_are_validated()
     {
-        $this->assertTrue((new DocblockFieldValidator())->isValidType(null));
+        $this->assertTrue((new DocblockFieldValidator(''))->isValidType(null));
         $this->assertTrue((new DocblockFieldValidator('/**  */'))->isValidType(null));
         $this->assertTrue((new DocblockFieldValidator('/** @var string|null */'))->isValidType(null));
         $this->assertTrue((new DocblockFieldValidator('/** @var null */'))->isValidType(null));
