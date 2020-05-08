@@ -30,11 +30,7 @@ abstract class FieldValidator
 
     public static function fromReflection(ReflectionProperty $property): FieldValidator
     {
-        if ($property->hasType()) {
-            return new PropertyFieldValidator($property);
-        }
-
-        $docDefinition = '';
+        $docDefinition = null;
 
         if ($property->getDocComment()) {
             preg_match(
@@ -43,10 +39,14 @@ abstract class FieldValidator
                 $matches
             );
 
-            $docDefinition = $matches[0] ?? '';
+            $docDefinition = $matches[0] ?? null;
         }
 
-        return new DocblockFieldValidator($docDefinition, $property->isDefault());
+        if ($docDefinition) {
+            return new DocblockFieldValidator($docDefinition, $property->isDefault());
+        }
+
+        return new PropertyFieldValidator($property);
     }
 
     public function isValidType($value): bool
