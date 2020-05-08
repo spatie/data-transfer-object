@@ -51,4 +51,6 @@ class PropertyFieldValidatorTest extends TestCase
     }
 }
 
-class A {}
+class A
+{
+}
