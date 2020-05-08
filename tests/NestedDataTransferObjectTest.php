@@ -13,8 +13,8 @@ class NestedDataTransferObjectTest extends TestCase
     {
         $a = new DtoAPropertyType([
             'b' => [
-                'name' => 'test'
-            ]
+                'name' => 'test',
+            ],
         ]);
 
         $this->assertEquals('test', $a->b->name);
