@@ -88,7 +88,7 @@ abstract class FieldValidator
         return false;
     }
 
-    private function assertValidType($type, $value): bool
+    private function assertValidType(string $type, $value): bool
     {
         return $value instanceof $type || gettype($value) === $type;
     }
