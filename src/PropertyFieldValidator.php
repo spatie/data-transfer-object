@@ -68,7 +68,7 @@ class PropertyFieldValidator extends FieldValidator
         return array_filter(array_map(
             function (?ReflectionType $type) {
                 if ($type instanceof ReflectionNamedType) {
-                    return $type->getName();
+                    $type = $type->getName();
                 }
 
                 return self::$typeMapping[$type] ?? $type;
