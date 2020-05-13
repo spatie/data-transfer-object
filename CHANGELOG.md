@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 2.2.1 - 2020-05-13
+
+- Validator for typed 7.4 properties (#109)
+
 ## 2.2.0 - 2020-05-08
 
 - Add support for typed properties to DTO casting in PHP 7.4
