@@ -13,6 +13,10 @@ use Spatie\DataTransferObject\Tests\TestClasses\NestedChild;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParent;
 use Spatie\DataTransferObject\Tests\TestClasses\NestedParentOfMany;
 use Spatie\DataTransferObject\Tests\TestClasses\OtherClass;
+use Spatie\DataTransferObject\Tests\TestClasses\SelfDataTransferObject;
+use Spatie\DataTransferObject\Tests\TestClasses\SelfExtensionDataTransferObject;
+use Spatie\DataTransferObject\Tests\TestClasses\StaticDataTransferObject;
+use Spatie\DataTransferObject\Tests\TestClasses\StaticExtensionDataTransferObject;
 use Spatie\DataTransferObject\Tests\TestClasses\TestDataTransferObject;
 
 class DataTransferObjectTest extends TestCase
@@ -284,6 +288,42 @@ class DataTransferObjectTest extends TestCase
         $this->assertInstanceOf(NestedChild::class, $object->child);
         $this->assertEquals('parent', $object->name);
         $this->assertEquals('child', $object->child->name);
+    }
+
+    /** @test */
+    public function nested_self_dtos_are_automatically_cast_from_arrays_to_instance_of_self()
+    {
+        $data = [
+            'name' => 'extension',
+            'self' => [
+                'name' => 'self',
+            ],
+        ];
+
+        $object = new SelfExtensionDataTransferObject($data);
+
+        $this->assertInstanceOf(SelfDataTransferObject::class, $object->self);
+        $this->assertNotInstanceOf(SelfExtensionDataTransferObject::class, $object->self);
+        $this->assertEquals('extension', $object->name);
+        $this->assertEquals('self', $object->self->name);
+    }
+
+    /** @test */
+    public function nested_static_dtos_are_automatically_cast_from_arrays_to_instance_of_static()
+    {
+        $data = [
+            'name' => 'extension',
+            'static' => [
+                'name' => 'static',
+            ],
+        ];
+
+        $object = new StaticExtensionDataTransferObject($data);
+
+        $this->assertInstanceOf(StaticDataTransferObject::class, $object->static);
+        $this->assertInstanceOf(StaticExtensionDataTransferObject::class, $object->static);
+        $this->assertEquals('extension', $object->name);
+        $this->assertEquals('static', $object->static->name);
     }
 
     /** @test */

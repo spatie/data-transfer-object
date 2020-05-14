@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spatie\DataTransferObject;
 
+use ReflectionClass;
 use ReflectionProperty;
 
 abstract class FieldValidator
@@ -20,6 +21,10 @@ abstract class FieldValidator
 
     public array $allowedArrayTypes;
 
+    protected ReflectionProperty $property;
+
+    protected ReflectionClass $class;
+
     protected static array $typeMapping = [
         'int' => 'integer',
         'bool' => 'boolean',
@@ -28,7 +33,7 @@ abstract class FieldValidator
 
     protected bool $hasTypeDeclaration;
 
-    public static function fromReflection(ReflectionProperty $property): FieldValidator
+    public static function fromReflection(ReflectionProperty $property, ReflectionClass $class): FieldValidator
     {
         $docDefinition = null;
 
@@ -43,10 +48,10 @@ abstract class FieldValidator
         }
 
         if ($docDefinition) {
-            return new DocblockFieldValidator($docDefinition, $property->isDefault());
+            return new DocblockFieldValidator($docDefinition, $property, $class);
         }
 
-        return new PropertyFieldValidator($property);
+        return new PropertyFieldValidator($property, $class);
     }
 
     public function isValidType($value): bool
@@ -86,6 +91,19 @@ abstract class FieldValidator
         }
 
         return false;
+    }
+
+    protected function normaliseType(?string $type): ?string
+    {
+        if ($type === 'self') {
+            return $this->property->getDeclaringClass()->getName();
+        }
+
+        if ($type === 'static') {
+            return $this->class->getName();
+        }
+
+        return self::$typeMapping[$type] ?? $type;
     }
 
     private function assertValidType(string $type, $value): bool

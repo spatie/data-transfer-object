@@ -10,8 +10,10 @@ use ReflectionType;
 
 class PropertyFieldValidator extends FieldValidator
 {
-    public function __construct(ReflectionProperty $property)
+    public function __construct(ReflectionProperty $property, \ReflectionClass $class)
     {
+        $this->property = $property;
+        $this->class = $class;
         $this->hasTypeDeclaration = $property->hasType();
         $this->hasDefaultValue = $property->isDefault();
         $this->isNullable = $this->resolveAllowsNull($property);
@@ -71,7 +73,7 @@ class PropertyFieldValidator extends FieldValidator
                     $type = $type->getName();
                 }
 
-                return self::$typeMapping[$type] ?? $type;
+                return $this->normaliseType($type);
             },
             $types
         ));

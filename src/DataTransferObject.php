@@ -184,7 +184,7 @@ abstract class DataTransferObject
 
                 $field = $reflectionProperty->getName();
 
-                $properties[$field] = FieldValidator::fromReflection($reflectionProperty);
+                $properties[$field] = FieldValidator::fromReflection($reflectionProperty, $class);
             }
 
             return $properties;

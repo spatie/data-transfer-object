@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Spatie\DataTransferObject;
 
+use ReflectionClass;
+use ReflectionProperty;
+
 class DocblockFieldValidator extends FieldValidator
 {
     public const DOCBLOCK_REGEX = '/@var ((?:(?:[\w?|\\\\<>])+(?:\[])?)+)/';
 
-    public function __construct(string $definition, bool $hasDefaultValue = false)
+    public function __construct(string $definition, ReflectionProperty $property, ReflectionClass $class)
     {
         preg_match(
             DocblockFieldValidator::DOCBLOCK_REGEX,
@@ -18,8 +21,10 @@ class DocblockFieldValidator extends FieldValidator
 
         $definition = $matches[1] ?? '';
 
+        $this->property = $property;
+        $this->class = $class;
         $this->hasTypeDeclaration = $definition !== '';
-        $this->hasDefaultValue = $hasDefaultValue;
+        $this->hasDefaultValue = $property->isDefault();
         $this->isNullable = $this->resolveNullable($definition);
         $this->isMixed = $this->resolveIsMixed($definition);
         $this->isMixedArray = $this->resolveIsMixedArray($definition);
@@ -88,7 +93,7 @@ class DocblockFieldValidator extends FieldValidator
     private function normaliseTypes(?string ...$types): array
     {
         return array_filter(array_map(
-            fn (?string $type) => self::$typeMapping[$type] ?? $type,
+            fn (?string $type) => $this->normaliseType($type),
             $types
         ));
     }
