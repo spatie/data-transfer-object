@@ -4,6 +4,14 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/spatie/data-transfer-object.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/data-transfer-object)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/data-transfer-object.svg?style=flat-square)](https://packagist.org/packages/spatie/data-transfer-object)
 
+## Installation
+
+You can install the package via composer:
+
+```bash
+composer require spatie/data-transfer-object
+```
+
 ## Support us
 
 Learn how to create a package like this one, by watching our premium video course:
@@ -13,14 +21,6 @@ Learn how to create a package like this one, by watching our premium video cours
 We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
 
 We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
-
-## Installation
-
-You can install the package via composer:
-
-```bash
-composer require spatie/data-transfer-object
-```
 
 ## Have you ever…
 
