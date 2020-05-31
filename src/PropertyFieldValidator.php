@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Spatie\DataTransferObject;
 
+use ReflectionClass;
+use ReflectionException;
 use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionType;
@@ -18,7 +20,7 @@ class PropertyFieldValidator extends FieldValidator
         $this->isMixed = $this->resolveIsMixed($property);
         $this->isMixedArray = $this->resolveIsMixedArray($property);
         $this->allowedTypes = $this->resolveAllowedTypes($property);
-        $this->allowedArrayTypes = [];
+        $this->allowedArrayTypes = $this->resolveAllowedArrayTypes($property);
     }
 
     private function resolveAllowsNull(ReflectionProperty $property): bool
@@ -61,6 +63,48 @@ class PropertyFieldValidator extends FieldValidator
         $types = [$property->getType()];
 
         return $this->normaliseTypes(...$types);
+    }
+
+    private function resolveAllowedArrayTypes(ReflectionProperty $property): array
+    {
+        $type = $property->getType();
+
+        if (!$type || ! class_exists($type->getName())) {
+            return [];
+        }
+
+        $class = new ReflectionClass($type->getName());
+
+        if (! $class->isSubclassOf(DataTransferObjectCollection::class)) {
+            return [];
+        }
+
+        $currentReturnType = $class->getMethod('current')->getReturnType();
+
+        $docblockReturnType = $class->getDocComment() ? $this->getCurrentReturnTypeFromDocblock($class->getDocComment()) : null;
+
+        $types = [$currentReturnType, $docblockReturnType];
+
+        return $this->normaliseTypes(...$types);
+    }
+
+    private function getCurrentReturnTypeFromDocblock($definition): ?ReflectionType
+    {
+        $DOCBLOCK_REGEX = '/@method ((?:(?:[\w?|\\\\<>])+(?:\[])?)+) current/';
+
+        preg_match(
+            $DOCBLOCK_REGEX,
+            $definition,
+            $matches
+        );
+
+        $type = $matches[1] ?? null;
+
+        if (! $type) {
+            return null;
+        }
+
+        return new ReflectionType($type);
     }
 
     private function normaliseTypes(?ReflectionType ...$types): array
