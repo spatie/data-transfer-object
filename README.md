@@ -206,7 +206,7 @@ Alternatively you can also use a phpdoc for this:
 use \Spatie\DataTransferObject\DataTransferObjectCollection;
 
 /**
- * @method PostData current
+ * @method \App\DTOs\PostData current
  */
 class PostCollection extends DataTransferObjectCollection
 {

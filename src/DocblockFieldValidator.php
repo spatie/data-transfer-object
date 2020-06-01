@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Spatie\DataTransferObject;
 
+use RecursiveArrayIterator;
+use RecursiveIteratorIterator;
+
 class DocblockFieldValidator extends FieldValidator
 {
     public const DOCBLOCK_REGEX = '/@var ((?:(?:[\w?|\\\\<>])+(?:\[])?)+)/';
@@ -65,7 +68,7 @@ class DocblockFieldValidator extends FieldValidator
 
     private function resolveAllowedArrayTypes(string $definition): array
     {
-        return $this->normaliseTypes(...array_map(
+        return $this->normaliseTypes(...(new RecursiveIteratorIterator(new RecursiveArrayIterator(array_map(
             function (string $type) {
                 if (! $type) {
                     return;
@@ -79,17 +82,13 @@ class DocblockFieldValidator extends FieldValidator
                     return str_replace(['iterable<', '>'], ['', ''], $type);
                 }
 
+                if (is_subclass_of($type, DataTransferObjectCollection::class)) {
+                    return $this->resolveAllowedArrayTypesFromCollection($type);
+                }
+
                 return null;
             },
             explode('|', $definition)
-        ));
-    }
-
-    private function normaliseTypes(?string ...$types): array
-    {
-        return array_filter(array_map(
-            fn (?string $type) => self::$typeMapping[$type] ?? $type,
-            $types
-        ));
+        )))));
     }
 }

@@ -47,7 +47,7 @@ class ValueCaster
         }
 
         if (! $castTo) {
-            return $values;
+            return $collectionClass ? new $collectionClass($values) : $values;
         }
 
         $casts = [];

@@ -60,64 +60,16 @@ class PropertyFieldValidator extends FieldValidator
     private function resolveAllowedTypes(ReflectionProperty $property): array
     {
         // We cast to array to support future union types in PHP 8
-        $types = [$property->getType()];
+        $types = [$property->getType() ? $property->getType()->getName() : null];
 
         return $this->normaliseTypes(...$types);
     }
 
     private function resolveAllowedArrayTypes(ReflectionProperty $property): array
     {
-        $type = $property->getType();
-
-        if (!$type || ! class_exists($type->getName())) {
-            return [];
-        }
-
-        $class = new ReflectionClass($type->getName());
-
-        if (! $class->isSubclassOf(DataTransferObjectCollection::class)) {
-            return [];
-        }
-
-        $currentReturnType = $class->getMethod('current')->getReturnType();
-
-        $docblockReturnType = $class->getDocComment() ? $this->getCurrentReturnTypeFromDocblock($class->getDocComment()) : null;
-
-        $types = [$currentReturnType, $docblockReturnType];
+        // We cast to array to support future union types in PHP 8
+        $types = $property->getType() ? $this->resolveAllowedArrayTypesFromCollection($property->getType()->getName()) : [];
 
         return $this->normaliseTypes(...$types);
-    }
-
-    private function getCurrentReturnTypeFromDocblock($definition): ?ReflectionType
-    {
-        $DOCBLOCK_REGEX = '/@method ((?:(?:[\w?|\\\\<>])+(?:\[])?)+) current/';
-
-        preg_match(
-            $DOCBLOCK_REGEX,
-            $definition,
-            $matches
-        );
-
-        $type = $matches[1] ?? null;
-
-        if (! $type) {
-            return null;
-        }
-
-        return new ReflectionType($type);
-    }
-
-    private function normaliseTypes(?ReflectionType ...$types): array
-    {
-        return array_filter(array_map(
-            function (?ReflectionType $type) {
-                if ($type instanceof ReflectionNamedType) {
-                    $type = $type->getName();
-                }
-
-                return self::$typeMapping[$type] ?? $type;
-            },
-            $types
-        ));
     }
 }
