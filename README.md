@@ -228,7 +228,7 @@ If you're working with collections of DTOs, you probably want auto completion an
 This package adds a simple collection implementation, which you can extend from.
 
 ```php
-use PostData;
+use App\DataTransferObjects\PostData;
 use Spatie\DataTransferObject\DataTransferObjectCollection;
 
 class PostCollection extends DataTransferObjectCollection
@@ -267,7 +267,7 @@ $postCollection[0]-> // … and also here.
 Of course you're free to implement your own static constructors:
 
 ```php
-use PostData;
+use App\DataTransferObjects\PostData;
 use Spatie\DataTransferObject\DataTransferObjectCollection;
 
 class PostCollection extends DataTransferObjectCollection
@@ -284,7 +284,7 @@ class PostCollection extends DataTransferObjectCollection
 If you've got nested DTO fields, data passed to the parent DTO will automatically be cast.
 
 ```php
-use AuthorData;
+use App\DataTransferObjects\AuthorData;
 use Spatie\DataTransferObject\DataTransferObject;
 
 class PostData extends DataTransferObject
