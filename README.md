@@ -62,14 +62,11 @@ We did our best to keep the syntax and overhead as little as possible:
 ```php
 class PostData extends DataTransferObject
 {
-    /** @var string */
-    public $title;
+    public string $title;
     
-    /** @var string */
-    public $body;
+    public string $body;
     
-    /** @var \Author */
-    public $author;
+    public \Author $author;
 }
 ```
 
@@ -109,10 +106,41 @@ class PostData extends DataTransferObject
 }
 ```
 
-By adding doc blocks to our properties, their values will be validated against the given type; 
-and a `TypeError` will be thrown if the value doesn't comply with the given type.
+Since PHP 7.4 introduced typed properties, you can type the properties with the new, built-in syntax. The upcoming release of PHP 8 will allow even more extensive typing.
 
-Here are the possible ways of declaring types:
+```php
+class PostData extends DataTransferObject
+{
+    /**
+     * Built in types:
+     */
+    public string $property;
+
+    /**
+     * Classes with their FQCN:
+     */
+    public \App\Models\Author $property;
+
+    /**
+     * Nullable types:
+     */
+    public ?string $property;
+    
+    /**
+     * Any iterator:
+     */
+    public \Iterator $property;
+    
+    /**
+     * No type, which allows everything
+     */
+    public $property;
+}
+```
+
+By adding doc blocks to our properties we can enforce stricter typing. Their values will be validated against the given type and a `TypeError` will be thrown if the value does not comply with it.
+
+Here are the possible ways of declaring types with doc blocks:
 
 ```php
 class PostData extends DataTransferObject
@@ -180,8 +208,6 @@ class PostData extends DataTransferObject
 }
 ```
 
-When PHP 7.4 introduces typed properties, you'll be able to simply remove the doc blocks and type the properties with the new, built-in syntax.
-
 ### Working with collections
 
 If you're working with collections of DTOs, you probably want auto completion and proper type validation on your collections too.
@@ -242,8 +268,7 @@ If you've got nested DTO fields, data passed to the parent DTO will automaticall
 ```php
 class PostData extends DataTransferObject
 {
-    /** @var \AuthorData */
-    public $author;
+    public \AuthorData $author;
 }
 ```
 
@@ -264,8 +289,7 @@ Similarly to above, nested array DTOs will automatically be cast.
 ```php
 class TagData extends DataTransferObject
 {
-    /** @var string */
-   public $name;
+   public string $name;
 }
 
 class PostData extends DataTransferObject
@@ -347,8 +371,7 @@ You can avoid this behaviour by instead extending from `FlexibleDataTransferObje
 ```php
 class PostData extends FlexibleDataTransferObject
 {
-    /** @var string */
-    public $content;
+    public string $content;
 }
 
 
