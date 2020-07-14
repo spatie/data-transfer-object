@@ -60,7 +60,8 @@ This package allows you to create data transfer object definitions, classes, whi
 We did our best to keep the syntax and overhead as little as possible:
 
 ```php
-use \App\Models\Author;
+use App\Models\Author;
+use Spatie\DataTransferObject\DataTransferObject;
 
 class PostData extends DataTransferObject
 {
@@ -93,7 +94,8 @@ $postData->author_id;
 It's, of course, possible to add static constructors to `PostData`:
 
 ```php
-use \App\Models\Author;
+use App\Models\Author;
+use Spatie\DataTransferObject\DataTransferObject;
 
 class PostData extends DataTransferObject
 {
@@ -115,8 +117,9 @@ Since PHP 7.4 introduced typed properties, you can use the new, built-in syntax.
 * **NOTE:** Watch out for the upcoming release of PHP 8. More typing features are on the way!
 
 ```php
-use \App\Models\Author;
-use \Iterator;
+use App\Models\Author;
+use Iterator;
+use Spatie\DataTransferObject\DataTransferObject;
 
 class PostData extends DataTransferObject
 {
@@ -152,6 +155,8 @@ By adding doc blocks to our properties we can enforce stricter typing. Below are
 * **Attention**: When type casting to a class, your Docblock definition needs to be a Fully Qualified Class Name (`\App\Models\Author` instead of `Author` and a use statement at the top).
 
 ```php
+use Spatie\DataTransferObject\DataTransferObject;
+
 class PostData extends DataTransferObject
 {
     /**
@@ -223,8 +228,8 @@ If you're working with collections of DTOs, you probably want auto completion an
 This package adds a simple collection implementation, which you can extend from.
 
 ```php
-use \PostData;
-use \Spatie\DataTransferObject\DataTransferObjectCollection;
+use PostData;
+use Spatie\DataTransferObject\DataTransferObjectCollection;
 
 class PostCollection extends DataTransferObjectCollection
 {
@@ -239,7 +244,7 @@ By overriding the `current` method, you'll get auto completion in your IDE.
 Alternatively you can also use a phpdoc for this:
 
 ```php
-use \Spatie\DataTransferObject\DataTransferObjectCollection;
+use Spatie\DataTransferObject\DataTransferObjectCollection;
 
 /**
  * @method PostData current
@@ -262,7 +267,8 @@ $postCollection[0]-> // … and also here.
 Of course you're free to implement your own static constructors:
 
 ```php
-use \PostData;
+use PostData;
+use Spatie\DataTransferObject\DataTransferObjectCollection;
 
 class PostCollection extends DataTransferObjectCollection
 {
@@ -278,7 +284,8 @@ class PostCollection extends DataTransferObjectCollection
 If you've got nested DTO fields, data passed to the parent DTO will automatically be cast.
 
 ```php
-use \AuthorData;
+use AuthorData;
+use Spatie\DataTransferObject\DataTransferObject;
 
 class PostData extends DataTransferObject
 {
@@ -301,6 +308,8 @@ $postData = new PostData([
 Similarly to above, nested array DTOs will automatically be cast.
 
 ```php
+use Spatie\DataTransferObject\DataTransferObject;
+
 class TagData extends DataTransferObject
 {
    public string $name;
@@ -383,6 +392,8 @@ with superfluous properties, a `DataTransferObjectError` will be throw.
 You can avoid this behaviour by instead extending from `FlexibleDataTransferObject`. For example:
 
 ```php
+use Spatie\DataTransferObject\FlexibleDataTransferObject;
+
 class PostData extends FlexibleDataTransferObject
 {
     public string $content;
