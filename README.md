@@ -305,19 +305,29 @@ $postData = new PostData([
 
 ### Automatic casting of nested array DTOs
 
-Similarly to above, nested array DTOs will automatically be cast.
+Similarly to above, nested array DTOs will automatically be cast. For example, we can define the following DTO:
 
 ```php
+namespace App\DataTransferObjects;
+
 use Spatie\DataTransferObject\DataTransferObject;
 
 class TagData extends DataTransferObject
 {
    public string $name;
 }
+```
+
+By referencing this object in our `PostData` DTO, a `TagData` DTO will be automatically cast.
+
+```php
+namespace App\DataTransferObjects;
+
+use Spatie\DataTransferObject\DataTransferObject;
 
 class PostData extends DataTransferObject
 {
-    /** @var \TagData[] */
+    /** @var \App\DataTransferObjects\TagData[] */
    public $tags;
 }
 ```
@@ -332,7 +342,7 @@ $postData = new PostData([
     ]
 ]);
 ```
-**Attention**: Remember, for nested type casting to work, your Docblock definition needs to be a Fully Qualified Class Name (`\App\DTOs\TagData[]` instead of `TagData[]` and a use statement at the top).
+**Attention**: Remember, for nested type casting to work, your Docblock definition needs to be a Fully Qualified Class Name (`\App\DataTransferObjects\TagData[]` instead of `TagData[]` and a use statement at the top).
 
 ### Immutability
 
