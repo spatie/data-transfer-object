@@ -129,7 +129,7 @@ class PostData extends DataTransferObject
     public string $property;
 
     /**
-     * Classes with their FQCN:
+     * Imported class or fully qualified class name:
      */
     public Author $property;
 
