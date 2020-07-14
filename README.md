@@ -106,7 +106,9 @@ class PostData extends DataTransferObject
 }
 ```
 
-Since PHP 7.4 introduced typed properties, you can type the properties with the new, built-in syntax. The upcoming release of PHP 8 will allow even more extensive typing.
+Since PHP 7.4 introduced typed properties, you can type the properties with the new, built-in syntax. Their values will be validated against the given type and a TypeError will be thrown if the value does not comply with it.
+
+* **NOTE:** Watch out for the upcoming release of PHP 8. More typing features are on the way!
 
 ```php
 class PostData extends DataTransferObject
@@ -138,9 +140,7 @@ class PostData extends DataTransferObject
 }
 ```
 
-By adding doc blocks to our properties we can enforce stricter typing. Their values will be validated against the given type and a `TypeError` will be thrown if the value does not comply with it.
-
-Here are the possible ways of declaring types with doc blocks:
+By adding doc blocks to our properties we can enforce stricter typing. Here are the possible ways of declaring types with doc blocks:
 
 ```php
 class PostData extends DataTransferObject
