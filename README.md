@@ -106,7 +106,7 @@ class PostData extends DataTransferObject
 }
 ```
 
-Since PHP 7.4 introduced typed properties, you can type the properties with the new, built-in syntax. Their values will be validated against the given type and a TypeError will be thrown if the value does not comply with it.
+Since PHP 7.4 introduced typed properties, you can use the new, built-in syntax. Their values will be validated against the given type and a `TypeError` will be thrown if the value does not comply with it.
 
 * **NOTE:** Watch out for the upcoming release of PHP 8. More typing features are on the way!
 
