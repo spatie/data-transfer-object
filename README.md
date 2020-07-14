@@ -12,6 +12,8 @@ You can install the package via composer:
 composer require spatie/data-transfer-object
 ```
 
+* **Note**: This package requires PHP 7.4 so it can take full advantage of type casting in PHP.
+
 ## Support us
 
 Learn how to create a package like this one, by watching our premium video course:
@@ -112,9 +114,7 @@ class PostData extends DataTransferObject
 }
 ```
 
-Since PHP 7.4 introduced typed properties, you can use the new, built-in syntax. Their values will be validated against the given type and a `TypeError` will be thrown if the value does not comply with it.
-
-* **NOTE:** Watch out for the upcoming release of PHP 8. More typing features are on the way!
+When defining typed properties, you can take advantage of the built-in types supported by PHP. These properties will be validated against the given type and a `TypeError` will be thrown if the value does not comply with it.
 
 ```php
 use App\Models\Author;
