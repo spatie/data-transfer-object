@@ -60,13 +60,15 @@ This package allows you to create data transfer object definitions, classes, whi
 We did our best to keep the syntax and overhead as little as possible:
 
 ```php
+use \App\Models\Author;
+
 class PostData extends DataTransferObject
 {
     public string $title;
     
     public string $body;
     
-    public \Author $author;
+    public Author $author;
 }
 ```
 
@@ -91,6 +93,8 @@ $postData->author_id;
 It's, of course, possible to add static constructors to `PostData`:
 
 ```php
+use \App\Models\Author;
+
 class PostData extends DataTransferObject
 {
     // …
@@ -111,6 +115,9 @@ Since PHP 7.4 introduced typed properties, you can use the new, built-in syntax.
 * **NOTE:** Watch out for the upcoming release of PHP 8. More typing features are on the way!
 
 ```php
+use \App\Models\Author;
+use \Iterator;
+
 class PostData extends DataTransferObject
 {
     /**
@@ -121,7 +128,7 @@ class PostData extends DataTransferObject
     /**
      * Classes with their FQCN:
      */
-    public \App\Models\Author $property;
+    public Author $property;
 
     /**
      * Nullable types:
@@ -131,7 +138,7 @@ class PostData extends DataTransferObject
     /**
      * Any iterator:
      */
-    public \Iterator $property;
+    public Iterator $property;
     
     /**
      * No type, which allows everything
@@ -140,7 +147,9 @@ class PostData extends DataTransferObject
 }
 ```
 
-By adding doc blocks to our properties we can enforce stricter typing. Here are the possible ways of declaring types with doc blocks:
+By adding doc blocks to our properties we can enforce stricter typing. Below are the possible ways of declaring types with doc blocks.
+
+* **Attention**: When type casting to a class, your Docblock definition needs to be a Fully Qualified Class Name (`\App\Models\Author` instead of `Author` and a use statement at the top).
 
 ```php
 class PostData extends DataTransferObject
@@ -214,6 +223,7 @@ If you're working with collections of DTOs, you probably want auto completion an
 This package adds a simple collection implementation, which you can extend from.
 
 ```php
+use \PostData;
 use \Spatie\DataTransferObject\DataTransferObjectCollection;
 
 class PostCollection extends DataTransferObjectCollection
@@ -252,6 +262,8 @@ $postCollection[0]-> // … and also here.
 Of course you're free to implement your own static constructors:
 
 ```php
+use \PostData;
+
 class PostCollection extends DataTransferObjectCollection
 {
     public static function create(array $data): PostCollection
@@ -266,9 +278,11 @@ class PostCollection extends DataTransferObjectCollection
 If you've got nested DTO fields, data passed to the parent DTO will automatically be cast.
 
 ```php
+use \AuthorData;
+
 class PostData extends DataTransferObject
 {
-    public \AuthorData $author;
+    public AuthorData $author;
 }
 ```
 
@@ -309,7 +323,7 @@ $postData = new PostData([
     ]
 ]);
 ```
-**Attention**: For nested type casting to work your Docblock definition needs to be a Fully Qualified Class Name (`\App\DTOs\TagData[]` instead of `TagData[]` and an use statement at the top)
+**Attention**: Remember, for nested type casting to work, your Docblock definition needs to be a Fully Qualified Class Name (`\App\DTOs\TagData[]` instead of `TagData[]` and a use statement at the top).
 
 ### Immutability
 
