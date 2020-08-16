@@ -422,6 +422,22 @@ $dto = new PostData([
 $dto->toArray(); // ['content' => 'blah blah']
 ```
 
+### PHPStan
+
+If you're using [phpstan](https://phpstan.org/) and set `checkUninitializedProperties: true`, phpstan by default doesn't understand that the DTO properties will always be correctly initialized.
+
+To help with that, this package provides a rule you can add to your `.neon` config file:
+```yaml
+services:
+  -
+    class: Spatie\DataTransferObject\PHPstan\PropertiesAreAlwaysInitializedExtension
+    tags:
+      - phpstan.properties.readWriteExtension
+#…
+parameters:
+  checkUninitializedProperties: true
+```
+
 ### Testing
 
 ``` bash
