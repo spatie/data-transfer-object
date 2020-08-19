@@ -2,8 +2,9 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
-## Unreleased
-- Add PHPStan extension to support `checkUninitializedProperties: true`
+## 2.3.0
+
+- Add PHPStan extension to support `checkUninitializedProperties: true` (#135)
 
 ## 2.2.1 - 2020-05-13
 
