@@ -6,7 +6,7 @@ namespace Spatie\DataTransferObject;
 
 class DocblockFieldValidator extends FieldValidator
 {
-    public const DOCBLOCK_REGEX = '/@var ((?:(?:[\w?|\\\\<>])+(?:\[])?)+)/';
+    public const DOCBLOCK_REGEX = '/@var ((?:(?:[\w?|\\\\<>,\s])+(?:\[])?)+)/';
 
     public function __construct(string $definition, bool $hasDefaultValue = false)
     {
@@ -16,7 +16,7 @@ class DocblockFieldValidator extends FieldValidator
             $matches
         );
 
-        $definition = $matches[1] ?? '';
+        $definition = trim($matches[1] ?? '');
 
         $this->hasTypeDeclaration = $definition !== '';
         $this->hasDefaultValue = $hasDefaultValue;
@@ -25,6 +25,7 @@ class DocblockFieldValidator extends FieldValidator
         $this->isMixedArray = $this->resolveIsMixedArray($definition);
         $this->allowedTypes = $this->resolveAllowedTypes($definition);
         $this->allowedArrayTypes = $this->resolveAllowedArrayTypes($definition);
+        $this->allowedArrayKeyTypes = $this->resolveAllowedArrayKeyTypes($definition);
     }
 
     private function resolveNullable(string $definition): bool
@@ -75,8 +76,10 @@ class DocblockFieldValidator extends FieldValidator
                     return str_replace('[]', '', $type);
                 }
 
-                if (strpos($type, 'iterable<') !== false) {
-                    return str_replace(['iterable<', '>'], ['', ''], $type);
+                if (strpos($type, '>') !== false) {
+                    preg_match('/([\w\\\\]+)(>)/', $type, $matches);
+
+                    return $matches[1];
                 }
 
                 return null;
@@ -85,10 +88,26 @@ class DocblockFieldValidator extends FieldValidator
         ));
     }
 
+    private function resolveAllowedArrayKeyTypes(string $definition): array
+    {
+        return $this->normaliseTypes(...array_map(
+            function (string $type) {
+                if (strpos($type, '<') === false) {
+                    return;
+                }
+
+                preg_match('/(<)([\w\\\\]+)(,)/', $type, $matches);
+
+                return $matches[2] ?? null;
+            },
+            explode('|', $definition)
+        ));
+    }
+
     private function normaliseTypes(?string ...$types): array
     {
         return array_filter(array_map(
-            fn (?string $type) => self::$typeMapping[$type] ?? $type,
+            fn(?string $type) => self::$typeMapping[$type] ?? $type,
             $types
         ));
     }

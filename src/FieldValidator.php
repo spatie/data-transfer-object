@@ -20,6 +20,8 @@ abstract class FieldValidator
 
     public array $allowedArrayTypes;
 
+    public array $allowedArrayKeyTypes;
+
     protected static array $typeMapping = [
         'int' => 'integer',
         'bool' => 'boolean',
@@ -68,13 +70,29 @@ abstract class FieldValidator
         }
 
         if (is_iterable($value)) {
-            foreach ($this->allowedArrayTypes as $type) {
-                $isValid = $this->assertValidArrayTypes($type, $value);
+            // We assume value types are invalid by default
+            $isValidValue = false;
 
-                if ($isValid) {
-                    return true;
+            foreach ($this->allowedArrayTypes as $type) {
+                $isValidValue = $this->assertValidArrayValueTypes($type, $value);
+
+                if ($isValidValue) {
+                    break;
                 }
             }
+
+            // We assume key types are valid by default, because they can be omitted
+            $isValidKey = true;
+
+            foreach ($this->allowedArrayKeyTypes as $keyType) {
+                $isValidKey = $this->assertValidArrayKeyTypes($keyType, $value);
+
+                if (! $isValidKey) {
+                    break;
+                }
+            }
+
+            return $isValidValue && $isValidKey;
         }
 
         foreach ($this->allowedTypes as $type) {
@@ -93,10 +111,21 @@ abstract class FieldValidator
         return $value instanceof $type || gettype($value) === $type;
     }
 
-    private function assertValidArrayTypes(string $type, $collection): bool
+    private function assertValidArrayValueTypes(string $type, $collection): bool
     {
         foreach ($collection as $value) {
             if (! $this->assertValidType($type, $value)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function assertValidArrayKeyTypes(string $keyType, $collection): bool
+    {
+        foreach ($collection as $key => $value) {
+            if (! $this->assertValidType($keyType, $key)) {
                 return false;
             }
         }
