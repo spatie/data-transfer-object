@@ -92,7 +92,13 @@ abstract class FieldValidator
                 }
             }
 
-            return $isValidValue && $isValidKey;
+            if (! $isValidKey) {
+                return false;
+            }
+
+            if ($isValidValue && $isValidKey) {
+                return true;
+            }
         }
 
         foreach ($this->allowedTypes as $type) {
