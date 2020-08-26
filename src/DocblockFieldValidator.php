@@ -107,7 +107,7 @@ class DocblockFieldValidator extends FieldValidator
     private function normaliseTypes(?string ...$types): array
     {
         return array_filter(array_map(
-            fn(?string $type) => self::$typeMapping[$type] ?? $type,
+            fn (?string $type) => self::$typeMapping[$type] ?? $type,
             $types
         ));
     }
