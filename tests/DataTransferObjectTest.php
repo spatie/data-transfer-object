@@ -430,6 +430,7 @@ class DataTransferObjectTest extends TestCase
         };
 
         $this->expectException(DataTransferObjectError::class);
+        $this->expectExceptionMessageRegExp('/Invalid type: expected `class@anonymous.*::map` to be of type `array<string, int>`, instead got value `array`./');
 
         new class(['map' => ['a' => 1, 'b' => 'wrong']]) extends DataTransferObject {
             /** @var array<string, int> */
