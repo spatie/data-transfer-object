@@ -429,6 +429,11 @@ class DataTransferObjectTest extends TestCase
             public $map;
         };
 
+        new class(['map' => ['a' => 1, 'b' => 2]]) extends DataTransferObject {
+            /** @var array<string,int> */
+            public $map;
+        };
+
         $this->expectException(DataTransferObjectError::class);
         $this->expectExceptionMessageRegExp('/Invalid type: expected `class@anonymous.*::map` to be of type `array<string, int>`, instead got value `array`./');
 
@@ -446,6 +451,18 @@ class DataTransferObjectTest extends TestCase
 
         new class(['map' => [1 => 1, 'b' => 2]]) extends DataTransferObject {
             /** @var array<string, int> */
+            public $map;
+        };
+    }
+
+    /** @test */
+    public function key_value_arrays_key_is_type_checked_when_no_spaces_between_key_and_value_definition()
+    {
+        $this->expectException(DataTransferObjectError::class);
+        $this->expectExceptionMessageRegExp('/Invalid type: expected `class@anonymous.*::map` to be of type `array<string,int>`, instead got value `array`./');
+
+        new class(['map' => [1 => 1, 'b' => 2]]) extends DataTransferObject {
+            /** @var array<string,int> */
             public $map;
         };
     }
