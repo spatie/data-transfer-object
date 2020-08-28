@@ -547,4 +547,33 @@ class DataTransferObjectTest extends TestCase
 
         $this->assertSame($expected, $object->all());
     }
+
+    /** @test */
+    public function multiple_required_properties_are_reported()
+    {
+        $exception = null;
+
+        try {
+            new class() extends DataTransferObject {
+                public string $i_am_required;
+                public int $so_am_i;
+            };
+        } catch (DataTransferObjectError $exception) {
+            // Deliberately empty
+        }
+
+        $this->assertInstanceOf(DataTransferObjectError::class, $exception);
+
+        $actual = $exception->getMessage();
+        $actual = preg_replace('/anonymous.*:/', 'anonymous:', $actual);
+
+        $expected = <<<EXPECTED
+The following invalid types were encountered:
+expected `class@anonymous:i_am_required` to be of type `string`, instead got value `null`, which is NULL.
+expected `class@anonymous:so_am_i` to be of type `integer`, instead got value `null`, which is NULL.
+
+EXPECTED;
+
+        $this->assertSame($expected, $actual);
+    }
 }
