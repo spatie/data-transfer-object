@@ -6,6 +6,24 @@ namespace Spatie\DataTransferObject;
 
 class DocblockFieldValidator extends FieldValidator
 {
+    /*
+     * @var (                               Starting with `@var `, we'll capture the definition the follows
+     *
+     *      (?:                             Not explicitly capturing this group,
+     *                                        which contains repeated sets of type definitions
+     *
+     *          (?:                         Not explicitly capturing this group
+     *              [\w?|\\\\<>,\s]         Matches type definitions like `int|string|\My\Object|array<int, string>`
+     *          )+                          These definitions can be repeated
+     *
+     *          (?:                         Not explicitly capturing this group
+     *              \[]                     Matches array definitions like `int[]`
+     *          )?                          Array definitions are optional though
+     *
+     *      )+                              Repeated sets of type definitions
+     *
+     * )                                    The whole definition after `@var ` is captured in one group
+     */
     public const DOCBLOCK_REGEX = '/@var ((?:(?:[\w?|\\\\<>,\s])+(?:\[])?)+)/';
 
     public function __construct(string $definition, bool $hasDefaultValue = false)
