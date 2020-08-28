@@ -10,7 +10,7 @@ All notable changes to `data-transfer-object` will be documented in this file
 
 - Support for `array<int, string>` syntax (#136)
 
-## 2.3.0
+## 2.3.0 - 2020-08-19
 
 - Add PHPStan extension to support `checkUninitializedProperties: true` (#135)
 
