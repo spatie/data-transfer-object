@@ -6,7 +6,25 @@ namespace Spatie\DataTransferObject;
 
 class DocblockFieldValidator extends FieldValidator
 {
-    public const DOCBLOCK_REGEX = '/@var ((?:(?:[\w?|\\\\<>])+(?:\[])?)+)/';
+    /*
+     * @var (                               Starting with `@var `, we'll capture the definition the follows
+     *
+     *      (?:                             Not explicitly capturing this group,
+     *                                        which contains repeated sets of type definitions
+     *
+     *          (?:                         Not explicitly capturing this group
+     *              [\w?|\\\\<>,\s]         Matches type definitions like `int|string|\My\Object|array<int, string>`
+     *          )+                          These definitions can be repeated
+     *
+     *          (?:                         Not explicitly capturing this group
+     *              \[]                     Matches array definitions like `int[]`
+     *          )?                          Array definitions are optional though
+     *
+     *      )+                              Repeated sets of type definitions
+     *
+     * )                                    The whole definition after `@var ` is captured in one group
+     */
+    public const DOCBLOCK_REGEX = '/@var ((?:(?:[\w?|\\\\<>,\s])+(?:\[])?)+)/';
 
     public function __construct(string $definition, bool $hasDefaultValue = false)
     {
@@ -16,7 +34,7 @@ class DocblockFieldValidator extends FieldValidator
             $matches
         );
 
-        $definition = $matches[1] ?? '';
+        $definition = trim($matches[1] ?? '');
 
         $this->hasTypeDeclaration = $definition !== '';
         $this->hasDefaultValue = $hasDefaultValue;
@@ -25,6 +43,7 @@ class DocblockFieldValidator extends FieldValidator
         $this->isMixedArray = $this->resolveIsMixedArray($definition);
         $this->allowedTypes = $this->resolveAllowedTypes($definition);
         $this->allowedArrayTypes = $this->resolveAllowedArrayTypes($definition);
+        $this->allowedArrayKeyTypes = $this->resolveAllowedArrayKeyTypes($definition);
     }
 
     private function resolveNullable(string $definition): bool
@@ -75,11 +94,29 @@ class DocblockFieldValidator extends FieldValidator
                     return str_replace('[]', '', $type);
                 }
 
-                if (strpos($type, 'iterable<') !== false) {
-                    return str_replace(['iterable<', '>'], ['', ''], $type);
+                if (strpos($type, '>') !== false) {
+                    preg_match('/([\w\\\\]+)(>)/', $type, $matches);
+
+                    return $matches[1];
                 }
 
                 return null;
+            },
+            explode('|', $definition)
+        ));
+    }
+
+    private function resolveAllowedArrayKeyTypes(string $definition): array
+    {
+        return $this->normaliseTypes(...array_map(
+            function (string $type) {
+                if (strpos($type, '<') === false) {
+                    return;
+                }
+
+                preg_match('/(<)([\w\\\\]+)(,)/', $type, $matches);
+
+                return $matches[2] ?? null;
             },
             explode('|', $definition)
         ));

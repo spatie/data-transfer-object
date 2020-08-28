@@ -46,7 +46,13 @@ class DataTransferObjectError extends TypeError
 
         $expectedTypes = implode(', ', $expectedTypes);
 
-        return "expected `{$class}::{$field}` to be of type `{$expectedTypes}`, instead got value `{$value}`, which is {$currentType}";
+        if ($value === $currentType) {
+            $instead = "instead got value `{$value}`.";
+        } else {
+            $instead = "instead got value `{$value}`, which is {$currentType}.";
+        }
+
+        return "expected `{$class}::{$field}` to be of type `{$expectedTypes}`, {$instead}";
     }
 
     public static function uninitialized(string $class, string $field): DataTransferObjectError
