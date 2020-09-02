@@ -29,7 +29,9 @@ class ValueCaster
             return $value;
         }
 
-        return new $castTo($value);
+        return (method_exists($castTo, 'fromRequest'))
+            ? $castTo::fromRequest($value)
+            : new $castTo($value);
     }
 
     public function castCollection($values, array $allowedArrayTypes)
@@ -52,7 +54,15 @@ class ValueCaster
 
         $casts = [];
 
+        $use_fromRequest = method_exists($castTo, 'fromRequest');
+
         foreach ($values as $value) {
+            if ($use_fromRequest) {
+                $casts[] = $castTo::fromRequest($value);
+
+                continue;
+            }
+
             $casts[] = new $castTo($value);
         }
 
