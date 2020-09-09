@@ -9,8 +9,6 @@ use ReflectionProperty;
 
 abstract class DataTransferObject
 {
-    protected bool $ignoreMissing = false;
-
     protected array $exceptKeys = [];
 
     protected array $onlyKeys = [];
@@ -85,9 +83,14 @@ abstract class DataTransferObject
             DataTransferObjectError::invalidTypes($invalidTypes);
         }
 
-        if (! $this->ignoreMissing && count($parameters)) {
+        if (! $this->ignoreMissing() && count($parameters)) {
             throw DataTransferObjectError::unknownProperties(array_keys($parameters), static::class);
         }
+    }
+
+    protected function ignoreMissing(): bool
+    {
+        return false;
     }
 
     public function all(): array
