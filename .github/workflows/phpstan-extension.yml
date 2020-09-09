@@ -1,0 +1,31 @@
+name: Test PHPStan extension
+
+on: [push]
+
+jobs:
+  phpstan-extension:
+    runs-on: ubuntu-latest
+    env:
+        COMPOSER_NO_INTERACTION: 1
+
+    steps:
+      -   name: Checkout code
+          uses: actions/checkout@v2
+
+      -   name: Setup PHP
+          uses: shivammathur/setup-php@v2
+          with:
+            tool: composer:v2
+            coverage: none
+
+      -   name: Install dependencies
+          run: |
+            composer update --no-progress
+            composer require phpstan/phpstan --no-progress
+
+      -   name: Run PHPStan with extension
+          run:  vendor/bin/phpstan analyse --configuration=tests/PHPStan/phpstan-with-extension.neon
+
+      # This simply ensures that in case the extension is not enabled, the expected PHPStan error is really triggered
+      -   name: Run PHPStan without extension
+          run:  vendor/bin/phpstan analyse --configuration=tests/PHPStan/phpstan-without-extension.neon 2>&1 | grep 'has an uninitialized property'

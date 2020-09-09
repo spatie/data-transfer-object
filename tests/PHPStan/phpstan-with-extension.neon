@@ -1,0 +1,10 @@
+services:
+  -
+    class: Spatie\DataTransferObject\PHPstan\PropertiesAreAlwaysInitializedExtension
+    tags:
+      - phpstan.properties.readWriteExtension
+parameters:
+    paths:
+      - .
+    level: 0
+    checkUninitializedProperties: true

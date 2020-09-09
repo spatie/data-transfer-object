@@ -19,7 +19,7 @@ class DocblockFieldValidator extends FieldValidator
             $matches
         );
 
-        $definition = $matches[1] ?? '';
+        $definition = trim($matches[1] ?? '');
 
         $this->hasTypeDeclaration = $definition !== '';
         $this->hasDefaultValue = $hasDefaultValue;
@@ -28,6 +28,7 @@ class DocblockFieldValidator extends FieldValidator
         $this->isMixedArray = $this->resolveIsMixedArray($definition);
         $this->allowedTypes = $this->resolveAllowedTypes($definition);
         $this->allowedArrayTypes = $this->resolveAllowedArrayTypes($definition);
+        $this->allowedArrayKeyTypes = $this->resolveAllowedArrayKeyTypes($definition);
     }
 
     private function resolveNullable(string $definition): bool
@@ -78,8 +79,10 @@ class DocblockFieldValidator extends FieldValidator
                     return str_replace('[]', '', $type);
                 }
 
-                if (strpos($type, 'iterable<') !== false) {
-                    return str_replace(['iterable<', '>'], ['', ''], $type);
+                if (strpos($type, '>') !== false) {
+                    preg_match('/([\w\\\\]+)(>)/', $type, $matches);
+
+                    return $matches[1];
                 }
 
                 if (is_subclass_of($type, DataTransferObjectCollection::class)) {
@@ -90,5 +93,21 @@ class DocblockFieldValidator extends FieldValidator
             },
             explode('|', $definition)
         )))));
+    }
+
+    private function resolveAllowedArrayKeyTypes(string $definition): array
+    {
+        return $this->normaliseTypes(...array_map(
+            function (string $type) {
+                if (strpos($type, '<') === false) {
+                    return;
+                }
+
+                preg_match('/(<)([\w\\\\]+)(,)/', $type, $matches);
+
+                return $matches[2] ?? null;
+            },
+            explode('|', $definition)
+        ));
     }
 }

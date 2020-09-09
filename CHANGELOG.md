@@ -2,6 +2,18 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 2.5.0 - 2020-08-28
+
+- Group type errors (#130)
+
+## 2.4.0 - 2020-08-28
+
+- Support for `array<int, string>` syntax (#136)
+
+## 2.3.0 - 2020-08-19
+
+- Add PHPStan extension to support `checkUninitializedProperties: true` (#135)
+
 ## 2.2.1 - 2020-05-13
 
 - Validator for typed 7.4 properties (#109)

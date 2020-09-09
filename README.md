@@ -12,6 +12,8 @@ You can install the package via composer:
 composer require spatie/data-transfer-object
 ```
 
+* **Note**: This package requires PHP 7.4 so it can take full advantage of type casting in PHP.
+
 ## Support us
 
 Learn how to create a package like this one, by watching our premium video course:
@@ -60,16 +62,16 @@ This package allows you to create data transfer object definitions, classes, whi
 We did our best to keep the syntax and overhead as little as possible:
 
 ```php
+use App\Models\Author;
+use Spatie\DataTransferObject\DataTransferObject;
+
 class PostData extends DataTransferObject
 {
-    /** @var string */
-    public $title;
+    public string $title;
     
-    /** @var string */
-    public $body;
+    public string $body;
     
-    /** @var \Author */
-    public $author;
+    public Author $author;
 }
 ```
 
@@ -94,6 +96,9 @@ $postData->author_id;
 It's, of course, possible to add static constructors to `PostData`:
 
 ```php
+use App\Models\Author;
+use Spatie\DataTransferObject\DataTransferObject;
+
 class PostData extends DataTransferObject
 {
     // …
@@ -109,12 +114,49 @@ class PostData extends DataTransferObject
 }
 ```
 
-By adding doc blocks to our properties, their values will be validated against the given type; 
-and a `TypeError` will be thrown if the value doesn't comply with the given type.
-
-Here are the possible ways of declaring types:
+When defining typed properties, you can take advantage of the built-in types supported by PHP. These properties will be validated against the given type and a `TypeError` will be thrown if the value does not comply with it.
 
 ```php
+use App\Models\Author;
+use Iterator;
+use Spatie\DataTransferObject\DataTransferObject;
+
+class PostData extends DataTransferObject
+{
+    /**
+     * Built in types:
+     */
+    public string $property;
+
+    /**
+     * Imported class or fully qualified class name:
+     */
+    public Author $property;
+
+    /**
+     * Nullable types:
+     */
+    public ?string $property;
+    
+    /**
+     * Any iterator:
+     */
+    public Iterator $property;
+    
+    /**
+     * No type, which allows everything
+     */
+    public $property;
+}
+```
+
+By adding doc blocks to our properties we can enforce stricter typing. Below are the possible ways of declaring types with doc blocks.
+
+* **Attention**: When type casting to a class, your Docblock definition needs to be a Fully Qualified Class Name (`\App\Models\Author` instead of `Author` and a use statement at the top).
+
+```php
+use Spatie\DataTransferObject\DataTransferObject;
+
 class PostData extends DataTransferObject
 {
     /**
@@ -180,15 +222,14 @@ class PostData extends DataTransferObject
 }
 ```
 
-When PHP 7.4 introduces typed properties, you'll be able to simply remove the doc blocks and type the properties with the new, built-in syntax.
-
 ### Working with collections
 
 If you're working with collections of DTOs, you probably want auto completion and proper type validation on your collections too.
 This package adds a simple collection implementation, which you can extend from.
 
 ```php
-use \Spatie\DataTransferObject\DataTransferObjectCollection;
+use App\DataTransferObjects\PostData;
+use Spatie\DataTransferObject\DataTransferObjectCollection;
 
 class PostCollection extends DataTransferObjectCollection
 {
@@ -203,7 +244,7 @@ By overriding the `current` method, you'll get auto completion in your IDE.
 Alternatively you can also use a phpdoc for this:
 
 ```php
-use \Spatie\DataTransferObject\DataTransferObjectCollection;
+use Spatie\DataTransferObject\DataTransferObjectCollection;
 
 /**
  * @method \App\DTOs\PostData current
@@ -226,6 +267,9 @@ $postCollection[0]-> // … and also here.
 Of course you're free to implement your own static constructors:
 
 ```php
+use App\DataTransferObjects\PostData;
+use Spatie\DataTransferObject\DataTransferObjectCollection;
+
 class PostCollection extends DataTransferObjectCollection
 {
     public static function create(array $data): PostCollection
@@ -240,10 +284,12 @@ class PostCollection extends DataTransferObjectCollection
 If you've got nested DTO fields, data passed to the parent DTO will automatically be cast.
 
 ```php
+use App\DataTransferObjects\AuthorData;
+use Spatie\DataTransferObject\DataTransferObject;
+
 class PostData extends DataTransferObject
 {
-    /** @var \AuthorData */
-    public $author;
+    public AuthorData $author;
 }
 ```
 
@@ -259,18 +305,29 @@ $postData = new PostData([
 
 ### Automatic casting of nested array DTOs
 
-Similarly to above, nested array DTOs will automatically be cast.
+Similarly to above, nested array DTOs will automatically be cast. For example, we can define the following DTO:
 
 ```php
+namespace App\DataTransferObjects;
+
+use Spatie\DataTransferObject\DataTransferObject;
+
 class TagData extends DataTransferObject
 {
-    /** @var string */
-   public $name;
+   public string $name;
 }
+```
+
+By referencing this object in our `PostData` DTO, a `TagData` DTO will be automatically cast.
+
+```php
+namespace App\DataTransferObjects;
+
+use Spatie\DataTransferObject\DataTransferObject;
 
 class PostData extends DataTransferObject
 {
-    /** @var \TagData[] */
+    /** @var \App\DataTransferObjects\TagData[] */
    public $tags;
 }
 ```
@@ -285,7 +342,7 @@ $postData = new PostData([
     ]
 ]);
 ```
-**Attention**: For nested type casting to work your Docblock definition needs to be a Fully Qualified Class Name (`\App\DTOs\TagData[]` instead of `TagData[]` and an use statement at the top)
+**Attention**: Remember, for nested type casting to work, your Docblock definition needs to be a Fully Qualified Class Name (`\App\DataTransferObjects\TagData[]` instead of `TagData[]` and a use statement at the top).
 
 ### Immutability
 
@@ -345,10 +402,11 @@ with superfluous properties, a `DataTransferObjectError` will be throw.
 You can avoid this behaviour by instead extending from `FlexibleDataTransferObject`. For example:
 
 ```php
+use Spatie\DataTransferObject\FlexibleDataTransferObject;
+
 class PostData extends FlexibleDataTransferObject
 {
-    /** @var string */
-    public $content;
+    public string $content;
 }
 
 
@@ -362,6 +420,22 @@ $dto = new PostData([
 ]);
 
 $dto->toArray(); // ['content' => 'blah blah']
+```
+
+### PHPStan
+
+If you're using [phpstan](https://phpstan.org/) and set `checkUninitializedProperties: true`, phpstan by default doesn't understand that the DTO properties will always be correctly initialized.
+
+To help with that, this package provides a rule you can add to your `.neon` config file:
+```yaml
+services:
+  -
+    class: Spatie\DataTransferObject\PHPstan\PropertiesAreAlwaysInitializedExtension
+    tags:
+      - phpstan.properties.readWriteExtension
+#…
+parameters:
+  checkUninitializedProperties: true
 ```
 
 ### Testing
@@ -386,7 +460,7 @@ If you discover any security related issues, please email freek@spatie.be instea
 
 You're free to use this package, but if it makes it to your production environment we highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using.
 
-Our address is: Spatie, Samberstraat 69D, 2060 Antwerp, Belgium.
+Our address is: Spatie, Kruikstraat 22, 2018 Antwerp, Belgium.
 
 We publish all received postcards [on our company website](https://spatie.be/en/opensource/postcards).
 

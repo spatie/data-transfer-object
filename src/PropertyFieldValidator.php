@@ -21,6 +21,7 @@ class PropertyFieldValidator extends FieldValidator
         $this->isMixedArray = $this->resolveIsMixedArray($property);
         $this->allowedTypes = $this->resolveAllowedTypes($property);
         $this->allowedArrayTypes = $this->resolveAllowedArrayTypes($property);
+        $this->allowedArrayKeyTypes = [];
     }
 
     private function resolveAllowsNull(ReflectionProperty $property): bool
