@@ -9,10 +9,6 @@ use ReflectionProperty;
 
 abstract class DataTransferObject
 {
-    protected array $exceptKeys = [];
-
-    protected array $onlyKeys = [];
-
     /**
      * @param array $parameters
      *
@@ -113,45 +109,19 @@ abstract class DataTransferObject
         return $data;
     }
 
-    /**
-     * @param string ...$keys
-     *
-     * @return static
-     */
-    public function only(string ...$keys): DataTransferObject
+    public function only(string ...$keys): DataTransferObjectArray
     {
-        $dataTransferObject = clone $this;
-
-        $dataTransferObject->onlyKeys = [...$this->onlyKeys, ...$keys];
-
-        return $dataTransferObject;
+        return new DataTransferObjectArray(Arr::only($this->toArray(), $keys));
     }
 
-    /**
-     * @param string ...$keys
-     *
-     * @return static
-     */
-    public function except(string ...$keys): DataTransferObject
+    public function except(string ...$keys): DataTransferObjectArray
     {
-        $dataTransferObject = clone $this;
-
-        $dataTransferObject->exceptKeys = [...$this->exceptKeys, ...$keys];
-
-        return $dataTransferObject;
+        return new DataTransferObjectArray(Arr::except($this->toArray(), $keys));
     }
 
     public function toArray(): array
     {
-        if (count($this->onlyKeys)) {
-            $array = Arr::only($this->all(), $this->onlyKeys);
-        } else {
-            $array = Arr::except($this->all(), $this->exceptKeys);
-        }
-
-        $array = $this->parseArray($array);
-
-        return $array;
+        return $this->parseArray($this->all());
     }
 
     protected function parseArray(array $array): array
