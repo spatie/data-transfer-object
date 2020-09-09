@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace Spatie\DataTransferObject;
 
-use ReflectionClass;
-use ReflectionException;
 use ReflectionNamedType;
 use ReflectionProperty;
-use ReflectionType;
 
 class PropertyFieldValidator extends FieldValidator
 {
