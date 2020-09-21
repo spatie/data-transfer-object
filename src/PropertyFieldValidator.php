@@ -60,7 +60,7 @@ class PropertyFieldValidator extends FieldValidator
         // We cast to array to support future union types in PHP 8
         $types = [$property->getType()
             ? $property->getType()->getName()
-            : null];
+            : null, ];
 
         return $this->normaliseTypes(...$types);
     }
