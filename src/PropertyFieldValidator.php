@@ -58,7 +58,9 @@ class PropertyFieldValidator extends FieldValidator
     private function resolveAllowedTypes(ReflectionProperty $property): array
     {
         // We cast to array to support future union types in PHP 8
-        $types = [$property->getType() ? $property->getType()->getName() : null];
+        $types = [$property->getType()
+            ? $property->getType()->getName()
+            : null];
 
         return $this->normaliseTypes(...$types);
     }
@@ -66,7 +68,9 @@ class PropertyFieldValidator extends FieldValidator
     private function resolveAllowedArrayTypes(ReflectionProperty $property): array
     {
         // We cast to array to support future union types in PHP 8
-        $types = $property->getType() ? $this->resolveAllowedArrayTypesFromCollection($property->getType()->getName()) : [];
+        $types = $property->getType()
+            ? $this->resolveAllowedArrayTypesFromCollection($property->getType()->getName())
+            : [];
 
         return $this->normaliseTypes(...$types);
     }

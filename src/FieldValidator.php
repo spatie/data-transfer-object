@@ -166,7 +166,9 @@ abstract class FieldValidator
             $currentReturnTypes[] = $currentReturnType->getName();
         }
 
-        $docblockReturnTypes = $class->getDocComment() ? $this->getCurrentReturnTypesFromDocblock($class->getDocComment()) : [];
+        $docblockReturnTypes = $class->getDocComment()
+            ? $this->getCurrentReturnTypesFromDocblock($class->getDocComment())
+            : [];
 
         $types = [...$currentReturnTypes, ...$docblockReturnTypes];
 
