@@ -152,7 +152,7 @@ abstract class FieldValidator
 
     protected function resolveAllowedArrayTypesFromCollection(string $type): array
     {
-        if (! $type || ! class_exists($type) || ! is_subclass_of($type, DataTransferObjectCollection::class)) {
+        if (! is_subclass_of($type, DataTransferObjectCollection::class)) {
             return [];
         }
 
