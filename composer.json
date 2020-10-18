@@ -21,7 +21,7 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16",
         "larapack/dd": "^1.0",
-        "phpunit/phpunit": "^7.0"
+        "phpunit/phpunit": "^9.0"
     },
     "suggest": {
         "phpstan/phpstan": "Take advantage of checkUninitializedProperties with \\Spatie\\DataTransferObject\\PHPstan\\PropertiesAreAlwaysInitializedExtension"
