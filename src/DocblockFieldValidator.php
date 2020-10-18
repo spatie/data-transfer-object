@@ -88,6 +88,7 @@ REGEXP;
 
     private function resolveAllowedArrayTypes(string $definition): array
     {
+        // Iterators flatten the array for multiple return types from DataTransferObjectCollection::current
         return $this->normaliseTypes(...(new RecursiveIteratorIterator(new RecursiveArrayIterator(array_map(
             function (string $type) {
                 if (! $type) {
