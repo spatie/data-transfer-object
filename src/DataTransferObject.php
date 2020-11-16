@@ -42,9 +42,9 @@ abstract class DataTransferObject
 
     public function __construct(array $parameters = [])
     {
-        $validators = $this->getFieldValidators();
+        $validators = static::getFieldValidators();
 
-        $valueCaster = $this->getValueCaster();
+        $valueCaster = static::getValueCaster();
 
         /** string[] */
         $invalidTypes = [];
@@ -63,7 +63,7 @@ abstract class DataTransferObject
 
             $value = $parameters[$field] ?? $this->{$field} ?? null;
 
-            $value = $this->castValue($valueCaster, $validator, $value);
+            $value = static::castValue($valueCaster, $validator, $value);
 
             if (! $validator->isValidType($value)) {
                 $invalidTypes[] = DataTransferObjectError::invalidTypeMessage(
@@ -178,7 +178,7 @@ abstract class DataTransferObject
      *
      * @return \Spatie\DataTransferObject\FieldValidator[]
      */
-    protected function getFieldValidators(): array
+    protected static function getFieldValidators(): array
     {
         return DTOCache::resolve(static::class, function () {
             $class = new ReflectionClass(static::class);
@@ -207,7 +207,7 @@ abstract class DataTransferObject
      *
      * @return mixed
      */
-    protected function castValue(ValueCaster $valueCaster, FieldValidator $fieldValidator, $value)
+    protected static function castValue(ValueCaster $valueCaster, FieldValidator $fieldValidator, $value)
     {
         if (is_array($value)) {
             return $valueCaster->cast($value, $fieldValidator);
@@ -216,7 +216,7 @@ abstract class DataTransferObject
         return $value;
     }
 
-    protected function getValueCaster(): ValueCaster
+    protected static function getValueCaster(): ValueCaster
     {
         return new ValueCaster();
     }
