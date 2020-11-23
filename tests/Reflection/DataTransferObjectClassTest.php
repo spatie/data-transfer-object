@@ -11,8 +11,7 @@ class DataTransferObjectClassTest extends TestCase
     /** @test */
     public function test_public_properties()
     {
-        $dto = new class () extends DataTransferObject
-        {
+        $dto = new class() extends DataTransferObject {
             public $foo;
 
             public static $bar;
