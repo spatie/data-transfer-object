@@ -12,7 +12,7 @@ You can install the package via composer:
 composer require spatie/data-transfer-object
 ```
 
-* **Note**: This package requires PHP 7.4 so it can take full advantage of type casting in PHP.
+* **Note**: v3 of this package only supports `php:^8.0`. If you're looking for the older version, check out [v2](https://github.com/spatie/data-transfer-object/tree/v2).
 
 ## Support us
 
@@ -24,6 +24,191 @@ We highly appreciate you sending us a postcard from your hometown, mentioning wh
 
 ## Usage
 
+All type-checking functionality has been stripped from this package as of v3, in favour of PHP 8's type system. The goal of this package today is to make constructing objects from arrays of (serialized) data as easy as possible. Here's what a DTO looks like:
+
+```php
+use Spatie\DataTransferObject\DataTransferObject;
+
+class MyDTO extends DataTransferObject
+{
+    public OtherDTO $otherDTO;
+    
+    public OtherDTOCollection $collection;
+    
+    #[CastWith(ComplexObjectCaster::class)]
+    public ComplexObject $complexObject;
+    
+    public ComplexObjectWithCast $complexObjectWithCast;
+    
+    #[NumberBetween(1, 100)]
+    public int $a;
+}
+```
+
+You could construct this DTO like so:
+
+```php
+$dto = new MyDTO(
+    a: 5,
+    collection: [
+        ['id' => 1],
+        ['id' => 2],
+        ['id' => 3],
+    ],
+    complexObject: [
+        'name' => 'test',
+    ],
+    complexObjectWithCast: [
+        'name' => 'test',
+    ],
+    otherDTO: ['id' => 5],
+);
+```
+
+Let's discuss all possibilities one by one.
+
+## Named arguments
+
+Constructing a DTO can be done with named arguments now. It's also possible to still use the old array notation. This example is equivalent to the one above.
+
+```php
+$dto = new MyDTO([
+    'a' => 5,
+    'collection' => [
+        ['id' => 1],
+        ['id' => 2],
+        ['id' => 3],
+    ],
+    'complexObject' => [
+        'name' => 'test',
+    ],
+    'complexObjectWithCast' => [
+        'name' => 'test',
+    ],
+    'otherDTO' => ['id' => 5],
+]);
+```
+
+## Value casts
+
+If a DTO has a property that is another DTO or a DTO collection, the package will take care of automatically casting arrays of data to those DTOs:
+
+```php
+$dto = new MyDTO(
+    collection: [ // This will become an object of class OtherDTOCollection
+        ['id' => 1],
+        ['id' => 2], // Each ite will be an instance of OtherDTO
+        ['id' => 3],
+    ],
+    otherDTO: ['id' => 5], // This data will be cast to OtherDTO
+);
+```
+
+### Custom casters
+
+You can build your own caster classes, which will take whatever input they are given, and will cast that input to the desired result.
+
+Take a look at the `ComplexObject`:
+
+```php
+class ComplexObject
+{
+    public string $name;
+}
+```
+
+And its caster `ComplexObjectCaster`:
+
+```php
+use Spatie\DataTransferObject\Caster;
+
+class ComplexObjectCaster implements Caster
+{
+    /**
+     * @param array|mixed $value
+     *
+     * @return mixed
+     */
+    public function cast(mixed $value): ComplexObject
+    {
+        return new ComplexObject(
+            name: $value['name']
+        );
+    }
+}
+```
+
+### Class-specific casters
+
+Instead of specifying which caster should be used for each property, you can also define that caster on the target class itself:
+
+```php
+class MyDTO extends DataTransferObject
+{
+    public ComplexObjectWithCast $complexObjectWithCast;
+}
+```
+
+```php
+#[CastWith(ComplexObjectWithCastCaster::class)]
+class ComplexObjectWithCast
+{
+    public string $name;
+}
+```
+
+### General casters
+
+TODO
+
+```php
+#[
+    DefaultCast(DateTimeImmutable::class, DateTimeImmutableCaster::class),
+    DefaultCast(Enum::class, EnumCaster::class),
+]
+abstract class BaseDataTransferObject extends DataTransferObject
+{
+}
+```
+
+## Validation
+
+This package doesn't offer any specific validation functionality, but it does give you a way to build your own validation attributes. For example, `NumberBetween` is a user-implemented validation attribute:
+
+```php
+class MyDTO extends DataTransferObject
+{
+    #[NumberBetween(1, 100)]
+    public int $a;
+}
+```
+
+It works like this under the hood:
+
+```php
+#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+class NumberBetween implements Validator
+{
+    public function __construct(
+        private int $min,
+        private int $max
+    ) {
+    }
+
+    public function validate(mixed $value): ValidationResult
+    {
+        if ($value < $this->min) {
+            return new ValidationResult(false, "Value should be greater than or equal to {$this->min}");
+        }
+
+        if ($value > $this->max) {
+            return new ValidationResult(false, "Value should be less than or equal to {$this->max}");
+        }
+
+        return new ValidationResult(true);
+    }
+}
+```
 
 ### Testing
 
