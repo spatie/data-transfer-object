@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 2.6.0 - 2020-11-26
+
+- Support PHP 8
+
 ## 2.5.0 - 2020-08-28
 
 - Group type errors (#130)
