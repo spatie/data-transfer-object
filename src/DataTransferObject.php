@@ -154,10 +154,7 @@ abstract class DataTransferObject
     protected function parseArray(array $array): array
     {
         foreach ($array as $key => $value) {
-            if (
-                $value instanceof DataTransferObject
-                || $value instanceof DataTransferObjectCollection
-            ) {
+            if (is_object($value) && is_callable([$value, 'toArray'])) {
                 $array[$key] = $value->toArray();
 
                 continue;
