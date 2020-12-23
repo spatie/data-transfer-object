@@ -245,7 +245,7 @@ Alternatively you can also use a phpdoc for this:
 use Spatie\DataTransferObject\DataTransferObjectCollection;
 
 /**
- * @method \App\DTOs\PostData current
+ * @method \App\DataTransferObjects\PostData current
  */
 class PostCollection extends DataTransferObjectCollection
 {
