@@ -76,10 +76,7 @@ abstract class DataTransferObjectCollection implements
         $collection = $this->collection;
 
         foreach ($collection as $key => $item) {
-            if (
-                ! $item instanceof DataTransferObject
-                && ! $item instanceof DataTransferObjectCollection
-            ) {
+            if (is_object($item) === false || is_callable([$item, 'toArray']) === false) {
                 continue;
             }
 
