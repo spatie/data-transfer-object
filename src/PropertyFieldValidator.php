@@ -6,7 +6,6 @@ namespace Spatie\DataTransferObject;
 
 use ReflectionNamedType;
 use ReflectionProperty;
-use ReflectionType;
 
 class PropertyFieldValidator extends FieldValidator
 {
@@ -18,7 +17,7 @@ class PropertyFieldValidator extends FieldValidator
         $this->isMixed = $this->resolveIsMixed($property);
         $this->isMixedArray = $this->resolveIsMixedArray($property);
         $this->allowedTypes = $this->resolveAllowedTypes($property);
-        $this->allowedArrayTypes = [];
+        $this->allowedArrayTypes = $this->resolveAllowedArrayTypes($property);
         $this->allowedArrayKeyTypes = [];
     }
 
@@ -59,22 +58,20 @@ class PropertyFieldValidator extends FieldValidator
     private function resolveAllowedTypes(ReflectionProperty $property): array
     {
         // We cast to array to support future union types in PHP 8
-        $types = [$property->getType()];
+        $types = [$property->getType()
+            ? $property->getType()->getName()
+            : null, ];
 
         return $this->normaliseTypes(...$types);
     }
 
-    private function normaliseTypes(?ReflectionType ...$types): array
+    private function resolveAllowedArrayTypes(ReflectionProperty $property): array
     {
-        return array_filter(array_map(
-            function (?ReflectionType $type) {
-                if ($type instanceof ReflectionNamedType) {
-                    $type = $type->getName();
-                }
+        // We cast to array to support future union types in PHP 8
+        $types = $property->getType()
+            ? $this->resolveAllowedArrayTypesFromCollection($property->getType()->getName())
+            : [];
 
-                return self::$typeMapping[$type] ?? $type;
-            },
-            $types
-        ));
+        return $this->normaliseTypes(...$types);
     }
 }

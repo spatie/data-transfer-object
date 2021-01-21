@@ -64,4 +64,9 @@ class DataTransferObjectError extends TypeError
     {
         return new self("Cannot change the value of property {$property} on an immutable data transfer object");
     }
+
+    public static function untypedCollection(string $class): DataTransferObjectError
+    {
+        return new self("Collection class `{$class}` has no defined array type.");
+    }
 }

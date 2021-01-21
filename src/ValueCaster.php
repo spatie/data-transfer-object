@@ -6,9 +6,14 @@ class ValueCaster
 {
     public function cast($value, FieldValidator $validator)
     {
-        return $this->shouldBeCastToCollection($value)
-            ? $this->castCollection($value, $validator->allowedArrayTypes)
-            : $this->castValue($value, $validator->allowedTypes);
+        if (! $this->shouldBeCastToCollection($value)) {
+            return $this->castValue($value, $validator->allowedTypes);
+        }
+
+        $values = $this->castCollection($value, $validator->allowedArrayTypes);
+        $collectionType = $this->collectionType($validator->allowedTypes);
+
+        return $collectionType ? new $collectionType($values) : $values;
     }
 
     public function castValue($value, array $allowedTypes)
@@ -57,6 +62,17 @@ class ValueCaster
         }
 
         return $casts;
+    }
+
+    public function collectionType(array $types): string
+    {
+        foreach ($types as $type) {
+            if (is_subclass_of($type, DataTransferObjectCollection::class)) {
+                return $type;
+            }
+        }
+
+        return false;
     }
 
     public function shouldBeCastToCollection(array $values): bool

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spatie\DataTransferObject;
 
+use ReflectionClass;
 use ReflectionProperty;
 
 abstract class FieldValidator
@@ -147,5 +148,64 @@ abstract class FieldValidator
     private function assertValidType(string $type, $value): bool
     {
         return $value instanceof $type || gettype($value) === $type;
+    }
+
+    protected function resolveAllowedArrayTypesFromCollection(string $type): array
+    {
+        if (! is_subclass_of($type, DataTransferObjectCollection::class)) {
+            return [];
+        }
+
+        $class = new ReflectionClass($type);
+
+        $currentReturnType = $class->getMethod('current')->getReturnType();
+
+        // We cast to array to support future union types in PHP 8
+        $currentReturnTypes = [];
+        if ($currentReturnType) {
+            $currentReturnTypes[] = $currentReturnType->getName();
+        }
+
+        $docblockReturnTypes = $class->getDocComment()
+            ? $this->getCurrentReturnTypesFromDocblock($class->getDocComment())
+            : [];
+
+        $types = [...$currentReturnTypes, ...$docblockReturnTypes];
+
+        if (! $types) {
+            throw DataTransferObjectError::untypedCollection($type);
+        }
+
+        return $this->normaliseTypes(...$types);
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getCurrentReturnTypesFromDocblock(string $definition): array
+    {
+        $DOCBLOCK_REGEX = '/@method ((?:(?:[\w?|\\\\<>])+(?:\[])?)+) current/';
+
+        preg_match(
+            $DOCBLOCK_REGEX,
+            $definition,
+            $matches
+        );
+
+        $type = $matches[1] ?? null;
+
+        if (! $type) {
+            return null;
+        }
+
+        return explode('|', $type);
+    }
+
+    protected function normaliseTypes(?string ...$types): array
+    {
+        return array_filter(array_map(
+            fn (?string $type) => self::$typeMapping[$type] ?? $type,
+            $types
+        ));
     }
 }

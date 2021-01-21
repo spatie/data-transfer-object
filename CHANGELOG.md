@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 2.7.0 - 2021-01-21
+
+- Cast nested collections (#117)
+
 ## 2.6.0 - 2020-11-26
 
 - Support PHP 8
