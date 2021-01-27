@@ -2,7 +2,7 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
-## 2.9.0 - 2021-01-27
+## 2.8.0 - 2021-01-27
 
 - Allow the traversal of collections with string keys
 
