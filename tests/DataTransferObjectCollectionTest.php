@@ -78,4 +78,25 @@ class DataTransferObjectCollectionTest extends TestCase
             0 => [],
         ], $array);
     }
+
+    /** @test */
+    public function it_can_traverse_through_a_collection()
+    {
+        $objects = [
+            'a' => new TestDataTransferObject(['testProperty' => 1]),
+            'b' => new TestDataTransferObject(['testProperty' => 2]),
+            'c' => new TestDataTransferObject(['testProperty' => 3]),
+        ];
+
+        $list = new class($objects) extends DataTransferObjectCollection {
+        };
+
+        $traversed = [];
+
+        foreach ($list as $id => $item) {
+            $traversed[$id] = $item->testProperty;
+        }
+
+        $this->assertEquals(['a' => 1, 'b' => 2, 'c' => 3,], $traversed);
+    }
 }

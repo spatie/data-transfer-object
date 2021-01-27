@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Spatie\DataTransferObject;
 
 use ArrayAccess;
+use ArrayIterator;
 use Countable;
 use Iterator;
 
@@ -15,16 +16,17 @@ abstract class DataTransferObjectCollection implements
 {
     protected array $collection;
 
-    protected int $position = 0;
+    protected ArrayIterator $iterator;
 
     public function __construct(array $collection = [])
     {
         $this->collection = $collection;
+        $this->iterator = new ArrayIterator($this->collection);
     }
 
     public function current()
     {
-        return $this->collection[$this->position];
+        return $this->iterator->current();
     }
 
     public function offsetGet($offset)
@@ -53,22 +55,22 @@ abstract class DataTransferObjectCollection implements
 
     public function next()
     {
-        $this->position++;
+        $this->iterator->next();
     }
 
-    public function key(): int
+    public function key()
     {
-        return $this->position;
+        return $this->iterator->key();
     }
 
     public function valid(): bool
     {
-        return array_key_exists($this->position, $this->collection);
+        return $this->iterator->valid();
     }
 
     public function rewind()
     {
-        $this->position = 0;
+        $this->iterator->rewind();
     }
 
     public function toArray(): array
