@@ -14,19 +14,16 @@ abstract class DataTransferObjectCollection implements
     Iterator,
     Countable
 {
-    protected array $collection;
-
-    protected ArrayIterator $iterator;
+    protected ArrayIterator $collection;
 
     public function __construct(array $collection = [])
     {
-        $this->collection = $collection;
-        $this->iterator = new ArrayIterator($this->collection);
+        $this->collection = new ArrayIterator($collection);
     }
 
     public function current()
     {
-        return $this->iterator->current();
+        return $this->collection->current();
     }
 
     public function offsetGet($offset)
@@ -55,32 +52,32 @@ abstract class DataTransferObjectCollection implements
 
     public function next()
     {
-        $this->iterator->next();
+        $this->collection->next();
     }
 
     public function key()
     {
-        return $this->iterator->key();
+        return $this->collection->key();
     }
 
     public function valid(): bool
     {
-        return $this->iterator->valid();
+        return $this->collection->valid();
     }
 
     public function rewind()
     {
-        $this->iterator->rewind();
+        $this->collection->rewind();
     }
 
     public function toArray(): array
     {
-        $collection = $this->collection;
+        $collection = $this->collection->getArrayCopy();
 
         foreach ($collection as $key => $item) {
             if (
-                ! $item instanceof DataTransferObject
-                && ! $item instanceof DataTransferObjectCollection
+                !$item instanceof DataTransferObject
+                && !$item instanceof DataTransferObjectCollection
             ) {
                 continue;
             }
@@ -93,7 +90,7 @@ abstract class DataTransferObjectCollection implements
 
     public function items(): array
     {
-        return $this->collection;
+        return $this->collection->getArrayCopy();
     }
 
     public function count(): int
