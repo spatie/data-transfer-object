@@ -195,7 +195,7 @@ abstract class FieldValidator
         $type = $matches[1] ?? null;
 
         if (! $type) {
-            return null;
+            return [];
         }
 
         return explode('|', $type);
