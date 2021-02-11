@@ -2,6 +2,12 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 2.8.2 - 2021-02-11
+
+This might be a breaking change but it was required for a bugfix
+
+- Prevent DataTransferObjectCollection from iterating over array copy (#166)
+
 ## 2.8.1 - 2021-02-10
 
 - Fix for incorrect return type (#164)
