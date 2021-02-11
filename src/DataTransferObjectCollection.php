@@ -9,70 +9,78 @@ use ArrayIterator;
 use Countable;
 use Iterator;
 
+/** @property array $collection */
 abstract class DataTransferObjectCollection implements
     ArrayAccess,
     Iterator,
     Countable
 {
-    protected ArrayIterator $collection;
+    protected ArrayIterator $iterator;
 
     public function __construct(array $collection = [])
     {
-        $this->collection = new ArrayIterator($collection);
+        $this->iterator = new ArrayIterator($collection);
+    }
+
+    public function __get($name)
+    {
+        if ($name === 'collection') {
+            return $this->iterator->getArrayCopy();
+        }
     }
 
     public function current()
     {
-        return $this->collection->current();
+        return $this->iterator->current();
     }
 
     public function offsetGet($offset)
     {
-        return $this->collection[$offset] ?? null;
+        return $this->iterator[$offset] ?? null;
     }
 
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
-            $this->collection[] = $value;
+            $this->iterator[] = $value;
         } else {
-            $this->collection[$offset] = $value;
+            $this->iterator[$offset] = $value;
         }
     }
 
     public function offsetExists($offset): bool
     {
-        return array_key_exists($offset, $this->collection);
+        return $this->iterator->offsetExists($offset);
     }
 
     public function offsetUnset($offset)
     {
-        unset($this->collection[$offset]);
+        unset($this->iterator[$offset]);
     }
 
     public function next()
     {
-        $this->collection->next();
+        $this->iterator->next();
     }
 
     public function key()
     {
-        return $this->collection->key();
+        return $this->iterator->key();
     }
 
     public function valid(): bool
     {
-        return $this->collection->valid();
+        return $this->iterator->valid();
     }
 
     public function rewind()
     {
-        $this->collection->rewind();
+        $this->iterator->rewind();
     }
 
     public function toArray(): array
     {
-        $collection = $this->collection->getArrayCopy();
+        $collection = $this->iterator->getArrayCopy();
 
         foreach ($collection as $key => $item) {
             if (
@@ -90,11 +98,11 @@ abstract class DataTransferObjectCollection implements
 
     public function items(): array
     {
-        return $this->collection->getArrayCopy();
+        return $this->iterator->getArrayCopy();
     }
 
     public function count(): int
     {
-        return count($this->collection);
+        return count($this->iterator);
     }
 }
