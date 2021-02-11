@@ -76,8 +76,8 @@ abstract class DataTransferObjectCollection implements
 
         foreach ($collection as $key => $item) {
             if (
-                !$item instanceof DataTransferObject
-                && !$item instanceof DataTransferObjectCollection
+                ! $item instanceof DataTransferObject
+                && ! $item instanceof DataTransferObjectCollection
             ) {
                 continue;
             }
