@@ -99,4 +99,23 @@ class DataTransferObjectCollectionTest extends TestCase
 
         $this->assertEquals(['a' => 1, 'b' => 2, 'c' => 3,], $traversed);
     }
+
+    /** @test */
+    public function it_iterates_over_up_to_date_collection(): void
+    {
+        $list = new class() extends DataTransferObjectCollection {
+        };
+
+        $list[] = new TestDataTransferObject(['testProperty' => 1]);
+        $list[] = new TestDataTransferObject(['testProperty' => 2]);
+        $list[] = new TestDataTransferObject(['testProperty' => 3]);
+
+        $traversed = [];
+
+        foreach ($list as $id => $item) {
+            $traversed[$id] = $item->testProperty;
+        }
+
+        $this->assertEquals([0 => 1, 1 => 2, 2 => 3,], $traversed);
+    }
 }
