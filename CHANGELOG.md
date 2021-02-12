@@ -2,7 +2,7 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
-## 2.8.3 - 2021-02-11
+## 2.8.3 - 2021-02-12
 
 - Add support for using `collection` internally
 
