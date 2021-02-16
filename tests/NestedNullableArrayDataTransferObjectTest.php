@@ -46,6 +46,6 @@ class NestedNullableArrayDataTransferObjectTest extends TestCase
 
 class WrapperWithNullableArrayDtoPropertyType extends DataTransferObject
 {
-    /** @var \Spatie\DataTransferObject\Tests\NestedArrayDtoPropertyType[] */
+    /** @var \Spatie\DataTransferObject\Tests\NestedArrayDtoPropertyType[]|null */
     public ?array $arr;
 }

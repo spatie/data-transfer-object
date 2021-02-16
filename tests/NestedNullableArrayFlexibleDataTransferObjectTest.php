@@ -55,6 +55,6 @@ class NestedNullableArrayFlexibleDataTransferObjectTest extends TestCase
 
 class FlexibleWrapperWithNullableArrayDtoPropertyType extends FlexibleDataTransferObject
 {
-    /** @var \Spatie\DataTransferObject\Tests\NestedArrayDtoPropertyType[] */
+    /** @var \Spatie\DataTransferObject\Tests\NestedArrayDtoPropertyType[]|null */
     public ?array $arr;
 }
