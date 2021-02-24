@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Spatie\DataTransferObject\Tests;
 
-use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\FlexibleDataTransferObject;
 
 class NestedNullableArrayFlexibleDataTransferObjectTest extends TestCase
@@ -15,7 +14,7 @@ class NestedNullableArrayFlexibleDataTransferObjectTest extends TestCase
         $a = new FlexibleWrapperWithNullableArrayDtoPropertyType([
             'arr' => [
                 ['name' => 'test',],
-                ['name' => 'test2',]
+                ['name' => 'test2',],
             ],
         ]);
 

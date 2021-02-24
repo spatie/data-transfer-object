@@ -14,7 +14,7 @@ class NestedArrayDataTransferObjectTest extends TestCase
         $a = new WrapperDtoPropertyType([
             'arr' => [
                 ['name' => 'test',],
-                ['name' => 'test2',]
+                ['name' => 'test2',],
             ],
         ]);
 

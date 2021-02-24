@@ -14,7 +14,7 @@ class NestedNullableArrayDataTransferObjectTest extends TestCase
         $a = new WrapperWithNullableArrayDtoPropertyType([
             'arr' => [
                 ['name' => 'test',],
-                ['name' => 'test2',]
+                ['name' => 'test2',],
             ],
         ]);
 
