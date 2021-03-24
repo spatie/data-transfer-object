@@ -157,9 +157,9 @@ class ComplexObjectWithCast
 }
 ```
 
-### General casters
+### Default casters
 
-TODO
+It's possible to define default casters on a DTO class itself. These casters will be used whenever a property with a given type is encountered within the DTO class.
 
 ```php
 #[
@@ -168,6 +168,9 @@ TODO
 ]
 abstract class BaseDataTransferObject extends DataTransferObject
 {
+    public MyEnum $status; // EnumCaster will be used
+    
+    public DateTimeImmutable $date; // DateTimeImmutableCaster will be used
 }
 ```
 

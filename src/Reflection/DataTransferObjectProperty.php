@@ -7,6 +7,7 @@ use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
 use Spatie\DataTransferObject\Attributes\CastWith;
+use Spatie\DataTransferObject\Attributes\DefaultCast;
 use Spatie\DataTransferObject\Caster;
 use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\Validator;
@@ -54,7 +55,7 @@ class DataTransferObjectProperty
         );
 
         return array_map(
-            fn(ReflectionAttribute $attribute) => $attribute->newInstance(),
+            fn (ReflectionAttribute $attribute) => $attribute->newInstance(),
             $attributes
         );
     }
@@ -73,7 +74,7 @@ class DataTransferObjectProperty
         }
 
         if (! count($attributes)) {
-            return null;
+            return $this->resolveCasterFromDefaults();
         }
 
         /** @var \Spatie\DataTransferObject\Attributes\CastWith $attribute */
@@ -105,5 +106,25 @@ class DataTransferObjectProperty
         } while (! count($attributes) && $reflectionClass);
 
         return $attributes;
+    }
+
+    private function resolveCasterFromDefaults(): ?Caster
+    {
+        $defaultCastAttributes = $this->reflectionProperty->getDeclaringClass()->getAttributes(DefaultCast::class);
+
+        if (! count($defaultCastAttributes)) {
+            return null;
+        }
+
+        foreach ($defaultCastAttributes as $defaultCastAttribute) {
+            /** @var \Spatie\DataTransferObject\Attributes\DefaultCast $defaultCast */
+            $defaultCast = $defaultCastAttribute->newInstance();
+
+            if ($defaultCast->accepts($this->reflectionProperty)) {
+                return $defaultCast->resolveCaster();
+            }
+        }
+
+        dd($defaultCastAttributes);
     }
 }
