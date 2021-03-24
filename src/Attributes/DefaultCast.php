@@ -15,7 +15,6 @@ class DefaultCast
     public function __construct(
         #[Immutable]
         private string $targetClass,
-
         #[Immutable]
         private string $casterClass,
     ) {

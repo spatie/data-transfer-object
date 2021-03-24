@@ -25,7 +25,7 @@ class DtoWithDefaultCaster extends DataTransferObject
     public DateTimeImmutable $date;
 }
 
-#[Attribute(Attribute::TARGET_CLASS| Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
 class DateTimeImmutableCaster implements Caster
 {
     /**
