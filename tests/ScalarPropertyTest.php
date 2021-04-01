@@ -9,7 +9,9 @@ class ScalarPropertyTest extends TestCase
     /** @test */
     public function scalar_property_can_be_set()
     {
-        $dto = new class(foo: 1,) extends DataTransferObject {
+        $dto = new class(
+            foo: 1
+        ) extends DataTransferObject {
             public int $foo;
         };
 
