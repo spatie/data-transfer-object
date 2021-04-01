@@ -14,6 +14,7 @@ This package now focuses only on object creation by adding easy-to-use casting a
 - Added `#[DefaultCast]`
 - Added `#[CastWith]`
 - Added `Spatie\DataTransferObject\Caster`
+- Added `#[Strict]`
 
 ## 2.8.3 - 2021-02-12
 
