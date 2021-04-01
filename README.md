@@ -201,14 +201,14 @@ class NumberBetween implements Validator
     public function validate(mixed $value): ValidationResult
     {
         if ($value < $this->min) {
-            return new ValidationResult(false, "Value should be greater than or equal to {$this->min}");
+            return ValidationResult::invalid("Value should be greater than or equal to {$this->min}");
         }
 
         if ($value > $this->max) {
-            return new ValidationResult(false, "Value should be less than or equal to {$this->max}");
+            return ValidationResult::invalid("Value should be less than or equal to {$this->max}");
         }
 
-        return new ValidationResult(true);
+        return ValidationResult::valid();
     }
 }
 ```
