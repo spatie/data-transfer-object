@@ -4,6 +4,7 @@ namespace Spatie\DataTransferObject\Reflection;
 
 use ReflectionClass;
 use ReflectionProperty;
+use Spatie\DataTransferObject\Attributes\Strict;
 use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\Exceptions\ValidationException;
 
@@ -12,6 +13,8 @@ class DataTransferObjectClass
     private ReflectionClass $reflectionClass;
 
     private DataTransferObject $dataTransferObject;
+
+    private bool $isStrict;
 
     public function __construct(DataTransferObject $dataTransferObject)
     {
@@ -59,5 +62,10 @@ class DataTransferObjectClass
         if (count($validationErrors)) {
             throw new ValidationException($this->dataTransferObject, $validationErrors);
         }
+    }
+
+    public function isStrict(): bool
+    {
+        return $this->isStrict ??= ! empty($this->reflectionClass->getAttributes(Strict::class));
     }
 }

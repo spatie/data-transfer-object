@@ -213,7 +213,41 @@ class NumberBetween implements Validator
 }
 ```
 
-### Testing
+## Strict DTOs
+
+The previous version of this package added the `FlexibleDataTransferObject` class which allowed you to ignore properties that didn't exist on the DTO. This behaviour has been changed, all DTOs are flexible now by default, but you can make them strict by using the `#[Strict]` attribute:
+
+
+```php
+class NonStrictDto extends DataTransferObject
+{
+    public string $name;
+}
+
+// This works
+new NonStrictDto(
+    name: 'name',
+    unknown: 'unknown'
+);
+```
+
+```php
+use \Spatie\DataTransferObject\Attributes\Strict;
+
+#[Strict]
+class StrictDto extends DataTransferObject
+{
+    public string $name;
+}
+
+// This throws a \Spatie\DataTransferObject\Exceptions\UnknownProperties exception
+new StrictDto(
+    name: 'name',
+    unknown: 'unknown'
+);
+```
+
+## Testing
 
 ``` bash
 composer test

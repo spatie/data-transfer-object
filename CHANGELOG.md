@@ -2,6 +2,19 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 3.0.0 - ?
+
+This package now focuses only on object creation by adding easy-to-use casting and data validation functionality. All runtime type checks are gone in favour of the improved type system in PHP 8.
+
+- Removed all runtime type checking functionality, you should use typed properties and a static analysis tool like Psalm or PhpStan
+- Removed `Spatie\DataTransferObject\DataTransferObjectCollection`
+- Removed `Spatie\DataTransferObject\FlexibleDataTransferObject`, all DTOs are now considered flexible 
+- Added `Spatie\DataTransferObject\Validator`
+- Added `Spatie\DataTransferObject\Validation\ValidationResult`
+- Added `#[DefaultCast]`
+- Added `#[CastWith]`
+- Added `Spatie\DataTransferObject\Caster`
+
 ## 2.8.3 - 2021-02-12
 
 - Add support for using `collection` internally

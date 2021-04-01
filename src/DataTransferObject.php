@@ -4,6 +4,7 @@ namespace Spatie\DataTransferObject;
 
 use Spatie\DataTransferObject\Attributes\CastWith;
 use Spatie\DataTransferObject\Casters\DataTransferObjectCaster;
+use Spatie\DataTransferObject\Exceptions\UnknownProperties;
 use Spatie\DataTransferObject\Reflection\DataTransferObjectClass;
 
 #[CastWith(DataTransferObjectCaster::class)]
@@ -19,6 +20,12 @@ abstract class DataTransferObject
 
         foreach ($class->getProperties() as $property) {
             $property->setValue($args[$property->name] ?? null);
+
+            unset($args[$property->name]);
+        }
+
+        if ($class->isStrict() && count($args)) {
+            throw UnknownProperties::new(static::class, array_keys($args));
         }
 
         $class->validate();
