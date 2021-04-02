@@ -1,5 +1,0 @@
-parameters:
-    paths:
-      - .
-    level: 0
-    checkUninitializedProperties: true
