@@ -6,6 +6,7 @@ use JetBrains\PhpStorm\Immutable;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
+use Spatie\DataTransferObject\Arr;
 use Spatie\DataTransferObject\Attributes\CastWith;
 use Spatie\DataTransferObject\Attributes\DefaultCast;
 use Spatie\DataTransferObject\Caster;
@@ -100,7 +101,7 @@ class DataTransferObjectProperty
         $reflectionClass = new ReflectionClass($type->getName());
 
         do {
-            $attributes = $reflectionClass->getAttributes();
+            $attributes = $reflectionClass->getAttributes(CastWith::class);
 
             $reflectionClass = $reflectionClass->getParentClass();
         } while (! count($attributes) && $reflectionClass);
@@ -125,6 +126,6 @@ class DataTransferObjectProperty
             }
         }
 
-        dd($defaultCastAttributes);
+        return null;
     }
 }
