@@ -4,6 +4,7 @@ namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\Tests\Dummy\BasicDto;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDto;
+use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithNullableProperty;
 
 class DataTransferObjectTest extends TestCase
 {
@@ -33,6 +34,18 @@ class DataTransferObjectTest extends TestCase
 
         $this->assertEquals('a', $dto->name);
         $this->assertEquals('b', $dto->other->name);
+    }
+
+    /** @test */
+    public function create_with_null_nullable_nested_dto()
+    {
+        $dto = new ComplexDtoWithNullableProperty([
+            'name' => 'a',
+            'other' => null,
+        ]);
+
+        $this->assertEquals('a', $dto->name);
+        $this->assertNull($dto->other);
     }
 
     /** @test */
