@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 3.0.1 - 2021-04-02
+
+- Fix for null values with casters
+
 ## 3.0.0 - 2021-04-02
 
 This package now focuses only on object creation by adding easy-to-use casting and data validation functionality. All runtime type checks are gone in favour of the improved type system in PHP 8.
