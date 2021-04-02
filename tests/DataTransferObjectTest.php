@@ -2,7 +2,6 @@
 
 namespace Spatie\DataTransferObject\Tests;
 
-use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\Tests\Dummy\BasicDto;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDto;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithNullableProperty;
