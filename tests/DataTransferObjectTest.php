@@ -4,6 +4,7 @@ namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\Tests\Dummy\BasicDto;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDto;
+use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithCastedAttributeHavingCast;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithNullableProperty;
 
 class DataTransferObjectTest extends TestCase
@@ -60,6 +61,24 @@ class DataTransferObjectTest extends TestCase
 
         $this->assertEquals('a', $dto->name);
         $this->assertNull($dto->other);
+    }
+
+    /** @test */
+    public function create_with_nested_dto_having_cast()
+    {
+        $dto = new ComplexDtoWithCastedAttributeHavingCast([
+            'name' => 'a',
+            'other' => [
+                'name' => 'b',
+                'object' => [
+                    'name' => 'c',
+                ],
+            ],
+        ]);
+
+        $this->assertEquals('a', $dto->name);
+        $this->assertEquals('b', $dto->other->name);
+        $this->assertEquals('c', $dto->other->object->name);
     }
 
     /** @test */
