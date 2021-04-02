@@ -247,6 +247,35 @@ new StrictDto(
 );
 ```
 
+## Helper functions
+
+There are also some helper functions provided for working with multiple properties at once.
+
+```php
+$postData->all();
+
+$postData
+    ->only('title', 'body')
+    ->toArray();
+    
+$postData
+    ->except('author')
+    ->toArray();
+```
+
+Note that `all()` will simply return all properties, while `toArray()` will cast nested DTOs to arrays as well. 
+
+You can chain the `except()` and `only()` methods:
+
+```php
+$postData
+    ->except('title')
+    ->except('body')
+    ->toArray();
+```
+
+It's important to note that `except()` and `only()` are immutable, they won't change the original data transfer object.
+
 ## Testing
 
 ``` bash
