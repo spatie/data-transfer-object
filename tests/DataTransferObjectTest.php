@@ -2,6 +2,7 @@
 
 namespace Spatie\DataTransferObject\Tests;
 
+use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\Tests\Dummy\BasicDto;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDto;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithNullableProperty;
@@ -30,6 +31,20 @@ class DataTransferObjectTest extends TestCase
             'other' => [
                 'name' => 'b',
             ],
+        ]);
+
+        $this->assertEquals('a', $dto->name);
+        $this->assertEquals('b', $dto->other->name);
+    }
+
+    /** @test */
+    public function create_with_nested_dto_already_casted()
+    {
+        $dto = new ComplexDto([
+            'name' => 'a',
+            'other' => new BasicDto([
+                'name' => 'b',
+            ]),
         ]);
 
         $this->assertEquals('a', $dto->name);
