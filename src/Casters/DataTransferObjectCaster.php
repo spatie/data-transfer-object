@@ -14,6 +14,10 @@ class DataTransferObjectCaster implements Caster
 
     public function cast(mixed $value): DataTransferObject
     {
+        if ($value instanceof $this->className) {
+            return $value;
+        }
+
         return new $this->className(...$value);
     }
 }
