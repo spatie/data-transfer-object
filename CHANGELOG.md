@@ -10,6 +10,7 @@ This package now focuses only on object creation by adding easy-to-use casting a
 - Removed all runtime type checking functionality, you should use typed properties and a static analysis tool like Psalm or PhpStan
 - Removed `Spatie\DataTransferObject\DataTransferObjectCollection`
 - Removed `Spatie\DataTransferObject\FlexibleDataTransferObject`, all DTOs are now considered flexible 
+- Removed runtime immutable DTOs, you should use static analysis instead
 - Added `Spatie\DataTransferObject\Validator`
 - Added `Spatie\DataTransferObject\Validation\ValidationResult`
 - Added `#[DefaultCast]`

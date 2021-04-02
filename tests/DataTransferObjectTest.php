@@ -1,0 +1,101 @@
+<?php
+
+namespace Spatie\DataTransferObject\Tests;
+
+use Spatie\DataTransferObject\Tests\Dummy\BasicDto;
+use Spatie\DataTransferObject\Tests\Dummy\ComplexDto;
+
+class DataTransferObjectTest extends TestCase
+{
+    /** @test */
+    public function array_of()
+    {
+        $list = BasicDto::arrayOf([
+            ['name' => 'a'],
+            ['name' => 'b'],
+        ]);
+
+        $this->assertCount(2, $list);
+
+        $this->assertEquals('a', $list[0]->name);
+        $this->assertEquals('b', $list[1]->name);
+    }
+
+    /** @test */
+    public function create_with_nested_dto()
+    {
+        $dto = new ComplexDto([
+            'name' => 'a',
+            'other' => [
+                'name' => 'b',
+            ],
+        ]);
+
+        $this->assertEquals('a', $dto->name);
+        $this->assertEquals('b', $dto->other->name);
+    }
+
+    /** @test */
+    public function all_with_nested_dto()
+    {
+        $array = [
+            'name' => 'a',
+            'other' => [
+                'name' => 'b',
+            ],
+        ];
+
+        $dto = new ComplexDto($array);
+
+        $all = $dto->all();
+
+        $this->assertCount(2, $all);
+        $this->assertEquals('a', $all['name']);
+        $this->assertEquals('b', $all['other']->name);
+    }
+
+    /** @test */
+    public function to_array_with_nested_dto()
+    {
+        $array = [
+            'name' => 'a',
+            'other' => [
+                'name' => 'b',
+            ],
+        ];
+
+        $dto = new ComplexDto($array);
+
+        $this->assertEquals($array, $dto->toArray());
+    }
+
+    /** @test */
+    public function to_array_with_only()
+    {
+        $array = [
+            'name' => 'a',
+            'other' => [
+                'name' => 'b',
+            ],
+        ];
+
+        $dto = new ComplexDto($array);
+
+        $this->assertEquals(['name' => 'a'], $dto->only('name')->toArray());
+    }
+
+    /** @test */
+    public function to_array_with_except()
+    {
+        $array = [
+            'name' => 'a',
+            'other' => [
+                'name' => 'b',
+            ],
+        ];
+
+        $dto = new ComplexDto($array);
+
+        $this->assertEquals(['other' => ['name' => 'b']], $dto->except('name')->toArray());
+    }
+}

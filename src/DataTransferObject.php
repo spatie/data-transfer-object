@@ -2,6 +2,8 @@
 
 namespace Spatie\DataTransferObject;
 
+use ReflectionClass;
+use ReflectionProperty;
 use Spatie\DataTransferObject\Attributes\CastWith;
 use Spatie\DataTransferObject\Casters\DataTransferObjectCaster;
 use Spatie\DataTransferObject\Exceptions\UnknownProperties;
@@ -10,6 +12,10 @@ use Spatie\DataTransferObject\Reflection\DataTransferObjectClass;
 #[CastWith(DataTransferObjectCaster::class)]
 abstract class DataTransferObject
 {
+    protected array $exceptKeys = [];
+
+    protected array $onlyKeys = [];
+
     public function __construct(...$args)
     {
         if (is_array($args[0] ?? null)) {
@@ -29,5 +35,82 @@ abstract class DataTransferObject
         }
 
         $class->validate();
+    }
+
+    public static function arrayOf(array $arrayOfParameters): array
+    {
+        return array_map(
+            fn (mixed $parameters) => new static($parameters),
+            $arrayOfParameters
+        );
+    }
+
+    public function all(): array
+    {
+        $data = [];
+
+        $class = new ReflectionClass(static::class);
+
+        $properties = $class->getProperties(ReflectionProperty::IS_PUBLIC);
+
+        foreach ($properties as $property) {
+            if ($property->isStatic()) {
+                continue;
+            }
+
+            $data[$property->getName()] = $property->getValue($this);
+        }
+
+        return $data;
+    }
+
+    public function only(string ...$keys): static
+    {
+        $dataTransferObject = clone $this;
+
+        $dataTransferObject->onlyKeys = [...$this->onlyKeys, ...$keys];
+
+        return $dataTransferObject;
+    }
+
+    public function except(string ...$keys): static
+    {
+        $dataTransferObject = clone $this;
+
+        $dataTransferObject->exceptKeys = [...$this->exceptKeys, ...$keys];
+
+        return $dataTransferObject;
+    }
+
+    public function toArray(): array
+    {
+        if (count($this->onlyKeys)) {
+            $array = Arr::only($this->all(), $this->onlyKeys);
+        } else {
+            $array = Arr::except($this->all(), $this->exceptKeys);
+        }
+
+        $array = $this->parseArray($array);
+
+        return $array;
+    }
+
+    protected function parseArray(array $array): array
+    {
+        foreach ($array as $key => $value) {
+            if ($value instanceof DataTransferObject) {
+                $array[$key] = $value->toArray();
+
+                continue;
+            }
+
+            if (! is_array($value)) {
+                continue;
+            }
+
+            $array[$key] = $this->parseArray($value);
+        }
+
+        return $array;
     }
 }
