@@ -24,7 +24,7 @@ We highly appreciate you sending us a postcard from your hometown, mentioning wh
 
 ## Usage
 
-All type-checking functionality has been stripped from this package as of v3, in favour of PHP 8's type system. The goal of this package today is to make constructing objects from arrays of (serialized) data as easy as possible. Here's what a DTO looks like:
+The goal of this package is to make constructing objects from arrays of (serialized) data as easy as possible. Here's what a DTO looks like:
 
 ```php
 use Spatie\DataTransferObject\DataTransferObject;
@@ -69,7 +69,7 @@ Let's discuss all possibilities one by one.
 
 ## Named arguments
 
-Constructing a DTO can be done with named arguments now. It's also possible to still use the old array notation. This example is equivalent to the one above.
+Constructing a DTO can be done with named arguments. It's also possible to still use the old array notation. This example is equivalent to the one above.
 
 ```php
 $dto = new MyDTO([
