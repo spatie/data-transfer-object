@@ -6,7 +6,6 @@ use JetBrains\PhpStorm\Immutable;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
-use Spatie\DataTransferObject\Arr;
 use Spatie\DataTransferObject\Attributes\CastWith;
 use Spatie\DataTransferObject\Attributes\DefaultCast;
 use Spatie\DataTransferObject\Caster;
