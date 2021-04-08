@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 3.0.3 - 2021-05-08
+
+- Fix when nested DTO have casted field (#178)
+
 ## 3.0.2 - 2021-04-02
 
 - Allow valid DTOs to be passed to caster (#177)

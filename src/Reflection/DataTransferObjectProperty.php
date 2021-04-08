@@ -100,7 +100,7 @@ class DataTransferObjectProperty
         $reflectionClass = new ReflectionClass($type->getName());
 
         do {
-            $attributes = $reflectionClass->getAttributes();
+            $attributes = $reflectionClass->getAttributes(CastWith::class);
 
             $reflectionClass = $reflectionClass->getParentClass();
         } while (! count($attributes) && $reflectionClass);
@@ -125,6 +125,6 @@ class DataTransferObjectProperty
             }
         }
 
-        dd($defaultCastAttributes);
+        return null;
     }
 }
