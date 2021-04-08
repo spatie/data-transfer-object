@@ -97,7 +97,7 @@ If a DTO has a property that is another DTO or a DTO collection, the package wil
 $dto = new MyDTO(
     collection: [ // This will become an object of class OtherDTOCollection
         ['id' => 1],
-        ['id' => 2], // Each ite will be an instance of OtherDTO
+        ['id' => 2], // Each item will be an instance of OtherDTO
         ['id' => 3],
     ],
     otherDTO: ['id' => 5], // This data will be cast to OtherDTO
