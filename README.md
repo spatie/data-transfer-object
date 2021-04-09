@@ -276,6 +276,81 @@ $postData
 
 It's important to note that `except()` and `only()` are immutable, they won't change the original data transfer object.
 
+## Collections of DTOs
+
+This version removes the `DataTransferObjectCollection` class. Instead you can use simple casters and you own collection classes.
+
+Here's an example of casting a collection of DTOs to an array of DTOs:
+
+```php
+class Bar extends DataTransferObject
+{
+    /** @var \Spatie\DataTransferObject\Tests\Foo[] */
+    #[CastWith(FooArrayCaster::class)]
+    public array $collectionOfFoo;
+}
+
+class Foo extends DataTransferObject
+{
+    public string $name;
+}
+```
+
+```php
+class FooArrayCaster implements Caster
+{
+    public function cast(mixed $value): array
+    {
+        if (! is_array($value)) {
+            throw new Exception("Can only cast arrays to Foo");
+        }
+
+        return array_map(
+            fn (array $data) => new Foo(...$value),
+            $value
+        );
+    }
+}
+```
+
+If you don't want the redundant typehint, or want extended collection functionality; you could create your own collection classes using any collection implementation. In this example, we use Laravel's:
+
+```php
+class Bar extends DataTransferObject
+{
+    #[CastWith(FooCollectionCaster::class)]
+    public CollectionOfFoo $collectionOfFoo;
+}
+
+class Foo extends DataTransferObject
+{
+    public string $name;
+}
+```
+
+```php
+use Illuminate\Support\Collection;
+
+class CollectionOfFoo extends Collection
+{
+    // Add the correct return type here for static analyzers to know which type of array this is 
+    public function offsetGet($key): Foo
+    {
+        return parent::offsetGet($key);
+    }
+}
+```
+
+```php
+class FooCollectionCaster implements Caster
+{
+    public function cast(mixed $value): CollectionOfFoo
+    {
+        return new CollectionOfFoo($value);
+    }
+}
+```
+
 ## Testing
 
 ``` bash
