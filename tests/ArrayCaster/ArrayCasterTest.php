@@ -18,7 +18,7 @@ class ArrayCasterTest extends TestCase
                 ['name' => 'a'],
                 ['name' => 'b'],
                 ['name' => 'c'],
-            ]
+            ],
         ]);
 
         $this->assertCount(3, $bar->collectionOfFoo);
@@ -51,4 +51,3 @@ class FooArrayCaster implements Caster
         );
     }
 }
-

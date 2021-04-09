@@ -18,7 +18,7 @@ class CollectionCasterTest extends TestCase
                 ['name' => 'a'],
                 ['name' => 'b'],
                 ['name' => 'c'],
-            ]
+            ],
         ]);
 
         $this->assertCount(3, $bar->collectionOfFoo);
