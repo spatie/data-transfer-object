@@ -110,7 +110,15 @@ class DataTransferObjectProperty
 
     private function resolveCasterFromDefaults(): ?Caster
     {
-        $defaultCastAttributes = $this->reflectionProperty->getDeclaringClass()->getAttributes(DefaultCast::class);
+        $defaultCastAttributes = [];
+
+        $class = $this->reflectionProperty->getDeclaringClass();
+
+        do {
+            array_push($defaultCastAttributes, ...$class->getAttributes(DefaultCast::class));
+
+            $class = $class->getParentClass();
+        } while ($class !== false);
 
         if (! count($defaultCastAttributes)) {
             return null;
