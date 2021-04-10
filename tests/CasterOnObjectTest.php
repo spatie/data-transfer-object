@@ -16,4 +16,20 @@ class CasterOnObjectTest extends TestCase
 
         $this->assertEquals('test', $dto->complexObject->name);
     }
+
+    /** @test */
+    public function property_is_uncasted()
+    {
+        $array = [
+            'complexObject' => [
+                'name' => 'test',
+            ],
+        ];
+
+        $dto = new class(complexObject: [ 'name' => 'test' ]) extends DataTransferObject {
+            public ComplexObjectWithCaster $complexObject;
+        };
+
+        $this->assertEquals($array, $dto->toArray());
+    }
 }
