@@ -5,7 +5,9 @@ namespace Spatie\DataTransferObject\Reflection;
 use JetBrains\PhpStorm\Immutable;
 use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionNamedType;
 use ReflectionProperty;
+use ReflectionUnionType;
 use Spatie\DataTransferObject\Attributes\CastWith;
 use Spatie\DataTransferObject\Attributes\DefaultCast;
 use Spatie\DataTransferObject\Caster;
@@ -93,19 +95,32 @@ class DataTransferObjectProperty
             return [];
         }
 
-        if (! class_exists($type->getName())) {
-            return [];
+        /** @var ReflectionNamedType[]|null $types */
+        $types = match ($type::class) {
+            ReflectionNamedType::class => [$type],
+            ReflectionUnionType::class => $type->getTypes(),
+            default => null,
+        };
+
+        foreach ($types as $type) {
+            if (! class_exists($type->getName())) {
+                continue;
+            }
+
+            $reflectionClass = new ReflectionClass($type->getName());
+
+            do {
+                $attributes = $reflectionClass->getAttributes(CastWith::class);
+
+                $reflectionClass = $reflectionClass->getParentClass();
+            } while (! count($attributes) && $reflectionClass);
+
+            if (count($attributes) > 0) {
+                return $attributes;
+            }
         }
 
-        $reflectionClass = new ReflectionClass($type->getName());
-
-        do {
-            $attributes = $reflectionClass->getAttributes(CastWith::class);
-
-            $reflectionClass = $reflectionClass->getParentClass();
-        } while (! count($attributes) && $reflectionClass);
-
-        return $attributes;
+        return [];
     }
 
     private function resolveCasterFromDefaults(): ?Caster
