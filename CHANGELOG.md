@@ -6,6 +6,7 @@ All notable changes to `data-transfer-object` will be documented in this file
 
 - Support union types (#185)
 - Resolve default cast from parent classes (#189)
+- Support default values (#191)
 
 ## 3.0.3 - 2021-04-08
 
