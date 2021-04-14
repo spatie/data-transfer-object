@@ -2,7 +2,11 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
-## 3.0.3 - 2021-05-08
+## 3.0.4 - 2021-04-14
+
+- Support union types (#185)
+
+## 3.0.3 - 2021-04-08
 
 - Fix when nested DTO have casted field (#178)
 
