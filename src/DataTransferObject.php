@@ -25,7 +25,7 @@ abstract class DataTransferObject
         $class = new DataTransferObjectClass($this);
 
         foreach ($class->getProperties() as $property) {
-            $property->setValue($args[$property->name] ?? null);
+            $property->setValue($args[$property->name] ?? $this->{$property->name} ?? null);
 
             unset($args[$property->name]);
         }
