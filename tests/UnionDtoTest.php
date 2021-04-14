@@ -17,5 +17,5 @@ class UnionDtoTest extends TestCase
 
 class UnionDto extends DataTransferObject
 {
-    public string|int $foo;
+    public string | int $foo;
 }
