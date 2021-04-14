@@ -99,7 +99,6 @@ class DataTransferObjectProperty
         $types = match ($type::class) {
             ReflectionNamedType::class => [$type],
             ReflectionUnionType::class => $type->getTypes(),
-            default => null,
         };
 
         foreach ($types as $type) {
