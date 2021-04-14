@@ -5,6 +5,7 @@ All notable changes to `data-transfer-object` will be documented in this file
 ## 3.0.4 - 2021-04-14
 
 - Support union types (#185)
+- Resolve default cast from parent classes (#189)
 
 ## 3.0.3 - 2021-04-08
 
