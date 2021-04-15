@@ -164,7 +164,7 @@ It's possible to define default casters on a DTO class itself. These casters wil
 ```php
 #[
     DefaultCast(DateTimeImmutable::class, DateTimeImmutableCaster::class),
-    DefaultCast(Enum::class, EnumCaster::class),
+    DefaultCast(MyEnum::class, EnumCaster::class),
 ]
 abstract class BaseDataTransferObject extends DataTransferObject
 {
