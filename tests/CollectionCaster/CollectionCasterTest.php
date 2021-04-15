@@ -22,6 +22,7 @@ class CollectionCasterTest extends TestCase
         ]);
 
         $this->assertCount(3, $bar->collectionOfFoo);
+        $this->assertInstanceOf(Foo::class, $bar->collectionOfFoo[0]);
     }
 }
 
@@ -48,6 +49,9 @@ class FooCollectionCaster implements Caster
 {
     public function cast(mixed $value): CollectionOfFoo
     {
-        return new CollectionOfFoo($value);
+        return new CollectionOfFoo(array_map(
+            fn (array $data) => new Foo(...$data),
+            $value
+        ));
     }
 }
