@@ -2,8 +2,6 @@
 
 namespace Spatie\DataTransferObject;
 
-use ReflectionClass;
-use ReflectionProperty;
 use Spatie\DataTransferObject\Attributes\CastWith;
 use Spatie\DataTransferObject\Casters\DataTransferObjectCaster;
 use Spatie\DataTransferObject\Exceptions\UnknownProperties;
@@ -49,16 +47,12 @@ abstract class DataTransferObject
     {
         $data = [];
 
-        $class = new ReflectionClass(static::class);
+        $class = new DataTransferObjectClass($this);
 
-        $properties = $class->getProperties(ReflectionProperty::IS_PUBLIC);
+        $properties = $class->getProperties();
 
         foreach ($properties as $property) {
-            if ($property->isStatic()) {
-                continue;
-            }
-
-            $data[$property->getName()] = $property->getValue($this);
+            $data[$property->name] = $property->getValue($this);
         }
 
         return $data;

@@ -11,14 +11,22 @@ use Spatie\DataTransferObject\Exceptions\ValidationException;
 class DataTransferObjectClass
 {
     private ReflectionClass $reflectionClass;
-
+    
     private DataTransferObject $dataTransferObject;
-
+    
     private bool $isStrict;
+
+    private static array $classCache = [];
+
+    private static array $propertyCache = [];
 
     public function __construct(DataTransferObject $dataTransferObject)
     {
-        $this->reflectionClass = new ReflectionClass($dataTransferObject);
+        if (! isset(static::$classCache[$dataTransferObject::class])) {
+            static::$classCache[$dataTransferObject::class] = new ReflectionClass($dataTransferObject);
+        }
+        
+        $this->reflectionClass = static::$classCache[$dataTransferObject::class];
         $this->dataTransferObject = $dataTransferObject;
     }
 
@@ -27,17 +35,19 @@ class DataTransferObjectClass
      */
     public function getProperties(): array
     {
-        $publicProperties = array_filter(
-            $this->reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC),
-            fn (ReflectionProperty $property) => ! $property->isStatic()
-        );
+        if (! isset(static::$propertyCache[$this->dataTransferObject::class])) {
+            static::$propertyCache[$this->dataTransferObject::class] = array_filter(
+                $this->reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC),
+                fn (ReflectionProperty $property) => ! $property->isStatic()
+            );
+        }
 
         return array_map(
             fn (ReflectionProperty $property) => new DataTransferObjectProperty(
                 $this->dataTransferObject,
                 $property
             ),
-            $publicProperties
+            static::$propertyCache[$this->dataTransferObject::class]
         );
     }
 

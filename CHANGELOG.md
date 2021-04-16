@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## Unreleased
+
+- Support caching of reflection classes and properties (#190)
+
 ## 3.0.4 - 2021-04-14
 
 - Support union types (#185)
