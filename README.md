@@ -316,7 +316,7 @@ class FooArrayCaster implements Caster
         }
 
         return array_map(
-            fn (array $data) => new Foo(...$value),
+            fn (array $data) => new Foo(...$data),
             $value
         );
     }
