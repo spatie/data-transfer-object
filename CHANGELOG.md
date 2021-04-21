@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 3.1.0 - 2021-04-21
+
+- Add `DataTransferObject::clone(...$args)`
+
 ## 3.0.4 - 2021-04-14
 
 - Support union types (#185)

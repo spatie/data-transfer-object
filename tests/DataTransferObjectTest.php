@@ -161,4 +161,22 @@ class DataTransferObjectTest extends TestCase
 
         $this->assertEquals(['name' => 'Doe'], $dto->toArray());
     }
+
+    /** @test */
+    public function test_clone()
+    {
+        $array = [
+            'name' => 'a',
+            'other' => [
+                'name' => 'b',
+            ],
+        ];
+
+        $dto = new ComplexDto($array);
+
+        $clone = $dto->clone(other: ['name' => 'a']);
+
+        $this->assertEquals('a', $clone->name);
+        $this->assertEquals('a', $clone->other->name);
+    }
 }

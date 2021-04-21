@@ -82,6 +82,11 @@ abstract class DataTransferObject
         return $dataTransferObject;
     }
 
+    public function clone(...$args): static
+    {
+        return new static(...array_merge($this->toArray(), $args));
+    }
+
     public function toArray(): array
     {
         if (count($this->onlyKeys)) {
