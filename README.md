@@ -276,6 +276,16 @@ $postData
 
 It's important to note that `except()` and `only()` are immutable, they won't change the original data transfer object.
 
+## Immutable DTOs and cloning
+
+This package doesn't force immutable objects since PHP doesn't support them, but you're always encouraged to keep your DTOs immutable. To help you, there's a `clone` method on every DTO which accepts data to override:
+
+```php
+$clone = $original->clone(other: ['name' => 'a']);
+```
+
+Note that no data in `$original` is changed.
+
 ## Collections of DTOs
 
 This version removes the `DataTransferObjectCollection` class. Instead you can use simple casters and you own collection classes.
