@@ -174,6 +174,80 @@ abstract class BaseDataTransferObject extends DataTransferObject
 }
 ```
 
+### Custom uncasters
+
+You can build your own uncaster classes, which will take whatever input they are given, and will uncast that object to an array or scalar type.
+
+Take a look at the `ComplexObject`:
+
+```php
+class ComplexObject
+{
+    public string $name;
+}
+```
+
+And its uncaster `ComplexObjectUncaster`:
+
+```php
+use Spatie\DataTransferObject\Uncaster;
+
+class ComplexObjectUncaster implements Uncaster
+{
+    /**
+     * @param ComplexObject $value
+     *
+     * @return array
+     */
+    public function cast($value): array
+    {
+        if (! $value instanceof ComplexObject) {
+            throw new InvalidArgumentException('Cannot uncast an object that is not a ComplexObject');
+        }
+
+        return [
+            'name' => $value->name
+        ];
+    }
+}
+```
+
+### Class-specific uncasters
+
+Instead of specifying which caster should be used for each property, you can also define that caster on the target class itself:
+
+```php
+class MyDTO extends DataTransferObject
+{
+    public ComplexObjectWithUncast $complexObjectWithUncast;
+}
+```
+
+```php
+#[UncastWith(ComplexObjectWithUncastUncaster::class)]
+class ComplexObjectWithUncast
+{
+    public string $name;
+}
+```
+
+### Default uncasters
+
+It's possible to define default uncasters on a DTO class itself. These uncasters will be used whenever a property with a given type is encountered within the DTO class.
+
+```php
+#[
+    DefaultUncast(DateTimeImmutable::class, DateTimeImmutableUncaster::class),
+    DefaultUncast(Enum::class, EnumUncaster::class),
+]
+abstract class BaseDataTransferObject extends DataTransferObject
+{
+    public MyEnum $status; // EnumUncaster will be used
+    
+    public DateTimeImmutable $date; // DateTimeImmutableUncaster will be used
+}
+```
+
 ## Validation
 
 This package doesn't offer any specific validation functionality, but it does give you a way to build your own validation attributes. For example, `NumberBetween` is a user-implemented validation attribute:
