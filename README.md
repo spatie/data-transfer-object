@@ -393,7 +393,7 @@ We publish all received postcards [on our company website](https://spatie.be/en/
 ## External tools
 
 - [json2dto](https://json2dto.atymic.dev): a GUI to convert JSON objects to DTO classes (with nesting support). Also provides a [CLI tool](https://github.com/atymic/json2dto#cli-tool) for local usage.
-- [Data Transfer Object Factory](https://github.com/anteris-dev/data-transfer-object-factory): generates a DTO instance or collection with fake data based on its definition. Supports type casting and doc blocks.
+- [Data Transfer Object Factory](https://github.com/anteris-dev/data-transfer-object-factory): Intelligently generates a DTO instance using the correct content for your properties based on its name and type.
 
 ## Credits
 
