@@ -19,7 +19,7 @@ class ComplexObjectWithUncasterUncaster implements Uncaster
         }
 
         return [
-            'name' => $value->name
+            'name' => $value->name,
         ];
     }
 }

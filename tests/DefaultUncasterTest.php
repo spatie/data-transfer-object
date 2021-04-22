@@ -5,11 +5,9 @@ namespace Spatie\DataTransferObject\Tests;
 use Attribute;
 use DateTimeImmutable;
 use InvalidArgumentException;
-use Spatie\DataTransferObject\Caster;
-use Spatie\DataTransferObject\Uncaster;
-use Spatie\DataTransferObject\DataTransferObject;
-use Spatie\DataTransferObject\Attributes\DefaultCast;
 use Spatie\DataTransferObject\Attributes\DefaultUncast;
+use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\DataTransferObject\Uncaster;
 
 class DefaultUncasterTest extends TestCase
 {

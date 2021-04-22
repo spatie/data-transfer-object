@@ -3,7 +3,6 @@
 namespace Spatie\DataTransferObject\Exceptions;
 
 use Exception;
-use Spatie\DataTransferObject\Caster;
 use Spatie\DataTransferObject\Uncaster;
 
 class InvalidUncasterClass extends Exception

@@ -3,8 +3,8 @@
 namespace Spatie\DataTransferObject\Attributes;
 
 use Attribute;
-use Spatie\DataTransferObject\Uncaster;
 use Spatie\DataTransferObject\Exceptions\InvalidUncasterClass;
+use Spatie\DataTransferObject\Uncaster;
 
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_PROPERTY)]
 class UncastWith

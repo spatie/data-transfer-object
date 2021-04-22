@@ -5,10 +5,10 @@ namespace Spatie\DataTransferObject;
 use ReflectionClass;
 use ReflectionProperty;
 use Spatie\DataTransferObject\Attributes\CastWith;
-use Spatie\DataTransferObject\Attributes\UncastWith;
 use Spatie\DataTransferObject\Attributes\DefaultUncast;
-use Spatie\DataTransferObject\Exceptions\UnknownProperties;
+use Spatie\DataTransferObject\Attributes\UncastWith;
 use Spatie\DataTransferObject\Casters\DataTransferObjectCaster;
+use Spatie\DataTransferObject\Exceptions\UnknownProperties;
 use Spatie\DataTransferObject\Reflection\DataTransferObjectClass;
 
 #[CastWith(DataTransferObjectCaster::class)]

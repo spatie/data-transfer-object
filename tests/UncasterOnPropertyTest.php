@@ -2,11 +2,9 @@
 
 namespace Spatie\DataTransferObject\Tests;
 
-use Spatie\DataTransferObject\DataTransferObject;
-use Spatie\DataTransferObject\Attributes\CastWith;
 use Spatie\DataTransferObject\Attributes\UncastWith;
+use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexObject;
-use Spatie\DataTransferObject\Tests\Dummy\ComplexObjectCaster;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexObjectUncaster;
 
 class UncasterOnPropertyTest extends TestCase
