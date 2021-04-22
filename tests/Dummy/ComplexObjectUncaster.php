@@ -8,9 +8,9 @@ use Spatie\DataTransferObject\Uncaster;
 class ComplexObjectUncaster implements Uncaster
 {
     /**
-     * @param array|mixed $value
+     * @param ComplexObject $value
      *
-     * @return mixed
+     * @return array
      */
     public function uncast($value): array
     {
