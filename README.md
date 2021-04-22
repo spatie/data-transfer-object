@@ -199,7 +199,7 @@ class ComplexObjectUncaster implements Uncaster
      *
      * @return array
      */
-    public function cast($value): array
+    public function uncast($value): array
     {
         if (! $value instanceof ComplexObject) {
             throw new InvalidArgumentException('Cannot uncast an object that is not a ComplexObject');
@@ -245,6 +245,55 @@ abstract class BaseDataTransferObject extends DataTransferObject
     public MyEnum $status; // EnumUncaster will be used
     
     public DateTimeImmutable $date; // DateTimeImmutableUncaster will be used
+}
+```
+
+### Casting and Uncasting
+
+It's possible to cast and uncast using the same class if that class implements `Caster` and `Uncaster`.
+
+```php
+#[CastWith(ComplexObjectCaster::class)]
+#[UncastWith(ComplexObjectCaster::class)]
+class ComplexObject
+{
+    public string $name;
+}
+```
+
+```php
+use Spatie\DataTransferObject\Caster;
+use Spatie\DataTransferObject\Uncaster;
+
+class ComplexObjectCaster implements Caster, Uncaster
+{
+    /**
+     * @param array|mixed $value
+     *
+     * @return mixed
+     */
+    public function cast(mixed $value): ComplexObject
+    {
+        return new ComplexObject(
+            name: $value['name']
+        );
+    }
+
+    /**
+     * @param ComplexObject $value
+     *
+     * @return array
+     */
+    public function uncast($value): array
+    {
+        if (! $value instanceof ComplexObject) {
+            throw new InvalidArgumentException('Cannot uncast an object that is not a ComplexObject');
+        }
+
+        return [
+            'name' => $value->name
+        ];
+    }
 }
 ```
 
