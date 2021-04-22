@@ -42,7 +42,7 @@ abstract class DataTransferObject
         $class->validate();
     }
 
-    public static function arrayOf(array $arrayOfParameters) : array
+    public static function arrayOf(array $arrayOfParameters): array
     {
         return array_map(
             fn (mixed $parameters) => new static($parameters),
@@ -50,7 +50,7 @@ abstract class DataTransferObject
         );
     }
 
-    public function all() : array
+    public function all(): array
     {
         $data = [];
 
@@ -73,7 +73,7 @@ abstract class DataTransferObject
         return $data;
     }
 
-    public function only(string ...$keys) : static
+    public function only(string ...$keys): static
     {
         $dataTransferObject = clone $this;
 
@@ -82,7 +82,7 @@ abstract class DataTransferObject
         return $dataTransferObject;
     }
 
-    public function except(string ...$keys) : static
+    public function except(string ...$keys): static
     {
         $dataTransferObject = clone $this;
 
@@ -91,12 +91,12 @@ abstract class DataTransferObject
         return $dataTransferObject;
     }
 
-    public function clone(...$args) : static
+    public function clone(...$args): static
     {
         return new static(...array_merge($this->toArray(), $args));
     }
 
-    public function toArray() : array
+    public function toArray(): array
     {
         if (count($this->onlyKeys)) {
             $array = Arr::only($this->all(), $this->onlyKeys);
@@ -109,7 +109,7 @@ abstract class DataTransferObject
         return $array;
     }
 
-    protected function parseArray(array $array) : array
+    protected function parseArray(array $array): array
     {
         foreach ($array as $key => $value) {
             if ($value instanceof DataTransferObject) {
