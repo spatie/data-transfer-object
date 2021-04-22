@@ -364,6 +364,66 @@ class FooCollectionCaster implements Caster
 }
 ```
 
+### Using custom caster arguments
+
+It is also possible to pass custom arguments for your caster, one may use
+this feature to create a generic collection caster:
+
+```php
+class Bar extends DataTransferObject
+{
+    /** @var \Spatie\DataTransferObject\Tests\Foo[] */
+    #[CastWith(GenericArrayCaster::class, targetClass: Foo::class)]
+    public array $collectionOfFoo;
+
+    /** @var \Spatie\DataTransferObject\Tests\Baz[] */
+    #[CastWith(GenericArrayCaster::class, targetClass: Baz::class)]
+    public array $collectionOfBaz;
+}
+```
+
+```php
+class Foo extends DataTransferObject
+{
+    public string $name;
+}
+
+class Baz extends DataTransferObject
+{
+    public string $name;
+}
+```
+
+```php
+class GenericArrayCaster implements Caster
+{
+    public function __construct(
+        private string $type,
+        private array $args
+    ) {
+    }
+
+    public function cast(mixed $value): array
+    {
+        if ($this->type !== 'array') {
+            throw new Exception("Can only cast arrays");
+        }
+
+        if (! isset($this->args['targetClass'])) {
+            throw new Exception("targetClass argument is required");
+        }
+
+        return array_map(
+            fn (array $data) => new $this->args['targetClass'](...$data),
+            $value
+        );
+    }
+}
+```
+
+The first argument passed to the caster constructor is the type of the value being
+casted. The second is an array with all the arguments given to the `CastWith` attribute.
+
 ## Testing
 
 ``` bash
