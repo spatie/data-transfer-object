@@ -56,4 +56,3 @@ class NestedFoo extends DataTransferObject
     #[NumberBetween(1, 100)]
     public int $y;
 }
-

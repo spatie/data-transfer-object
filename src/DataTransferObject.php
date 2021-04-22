@@ -47,7 +47,7 @@ abstract class DataTransferObject
             $validationExceptions[] = $e;
         }
 
-        if (count ($validationExceptions)) {
+        if (count($validationExceptions)) {
             throw ValidationException::composite($this, ...$validationExceptions);
         }
     }
