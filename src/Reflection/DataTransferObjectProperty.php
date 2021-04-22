@@ -37,7 +37,7 @@ class DataTransferObjectProperty
         $this->caster = $this->resolveCaster();
     }
 
-    public function setValue(mixed $value): void
+    public function setValue(mixed $value) : void
     {
         if ($this->caster && $value !== null) {
             $value = $this->caster->cast($value);
@@ -49,7 +49,7 @@ class DataTransferObjectProperty
     /**
      * @return \Spatie\DataTransferObject\Validator[]
      */
-    public function getValidators(): array
+    public function getValidators() : array
     {
         $attributes = $this->reflectionProperty->getAttributes(
             Validator::class,
@@ -62,12 +62,22 @@ class DataTransferObjectProperty
         );
     }
 
-    public function getValue(): mixed
+    public function getValue() : mixed
     {
         return $this->reflectionProperty->getValue($this->dataTransferObject);
     }
 
-    private function resolveCaster(): ?Caster
+    public function hasDefaultValue() : bool
+    {
+        return $this->reflectionProperty->hasDefaultValue();
+    }
+
+    public function getDefaultValue() : mixed
+    {
+        return $this->reflectionProperty->getDefaultValue();
+    }
+
+    private function resolveCaster() : ?Caster
     {
         $attributes = $this->reflectionProperty->getAttributes(CastWith::class);
 
@@ -87,7 +97,7 @@ class DataTransferObjectProperty
         );
     }
 
-    private function resolveCasterFromType(): array
+    private function resolveCasterFromType() : array
     {
         $type = $this->reflectionProperty->getType();
 
@@ -122,7 +132,7 @@ class DataTransferObjectProperty
         return [];
     }
 
-    private function resolveCasterFromDefaults(): ?Caster
+    private function resolveCasterFromDefaults() : ?Caster
     {
         $defaultCastAttributes = [];
 

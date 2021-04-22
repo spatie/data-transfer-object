@@ -7,6 +7,7 @@ use Spatie\DataTransferObject\Tests\Dummy\ComplexDto;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithCastedAttributeHavingCast;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithNullableProperty;
 use Spatie\DataTransferObject\Tests\Dummy\WithDefaultValueDto;
+use Spatie\DataTransferObject\Tests\Dummy\WithOptionalPropertyDto;
 
 class DataTransferObjectTest extends TestCase
 {
@@ -178,5 +179,30 @@ class DataTransferObjectTest extends TestCase
 
         $this->assertEquals('a', $clone->name);
         $this->assertEquals('a', $clone->other->name);
+    }
+
+    /** @test */
+    public function test_optional()
+    {
+        $array = [
+
+        ];
+
+        $dto = new WithOptionalPropertyDto($array);
+        $this->assertEquals($array, $dto->toArray());
+
+        $array = [
+            'name' => null,
+        ];
+
+        $dto = new WithOptionalPropertyDto($array);
+        $this->assertEquals($array, $dto->toArray());
+
+        $array = [
+            'name' => 'a',
+        ];
+
+        $dto = new WithOptionalPropertyDto($array);
+        $this->assertEquals($array, $dto->toArray());
     }
 }
