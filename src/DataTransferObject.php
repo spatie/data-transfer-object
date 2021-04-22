@@ -28,10 +28,10 @@ abstract class DataTransferObject
             if (array_key_exists($property->name, $args)) {
                 $property->setValue($args[$property->name]);
                 unset($args[$property->name]);
-            } else {
-                if ($property->hasDefaultValue()) {
-                    $property->setValue($property->getDefaultValue());
-                }
+            } elseif ($property->hasDefaultValue()) {
+                $property->setValue($property->getDefaultValue());
+            } elseif (!$property->allowsNull()) {
+                throw new \InvalidArgumentException("No value provided for required property {$property->name}");
             }
         }
 

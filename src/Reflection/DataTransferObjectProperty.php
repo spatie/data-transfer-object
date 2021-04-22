@@ -77,6 +77,23 @@ class DataTransferObjectProperty
         return $this->reflectionProperty->getDefaultValue();
     }
 
+    public function allowsNull() : bool
+    {
+        $type = $this->reflectionProperty->getType();
+
+        if ($type instanceof \ReflectionUnionType) {
+            return count(array_filter($type->getTypes(), function($type){
+                return $type->allowsNull();
+            })) > 0;
+        }
+
+        if ($type instanceof \ReflectionNamedType) {
+            return $type->allowsNull();
+        }
+
+        throw new \UnexpectedValueException("Unhandled property type");
+    }
+
     private function resolveCaster(): ?Caster
     {
         $attributes = $this->reflectionProperty->getAttributes(CastWith::class);

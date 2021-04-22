@@ -181,7 +181,6 @@ class DataTransferObjectTest extends TestCase
         $this->assertEquals('a', $clone->other->name);
     }
 
-    /** @test */
     public function test_optional()
     {
         $array = [
@@ -204,5 +203,13 @@ class DataTransferObjectTest extends TestCase
 
         $dto = new WithOptionalPropertyDto($array);
         $this->assertEquals($array, $dto->toArray());
+    }
+
+    public function test_required_throws_exception()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $array = [];
+
+        $dto = new BasicDto($array);
     }
 }
