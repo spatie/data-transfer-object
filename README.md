@@ -176,7 +176,7 @@ abstract class BaseDataTransferObject extends DataTransferObject
 
 ### Custom uncasters
 
-You can build your own uncaster classes, which will take whatever input they are given, and will uncast that object to an array or scalar type.
+You can build your own uncaster classes, which will take whatever object they are given, and will uncast that object to an array or scalar type.
 
 Take a look at the `ComplexObject`:
 
