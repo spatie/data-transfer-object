@@ -7,6 +7,7 @@ use ReflectionProperty;
 use Spatie\DataTransferObject\Attributes\CastWith;
 use Spatie\DataTransferObject\Casters\DataTransferObjectCaster;
 use Spatie\DataTransferObject\Exceptions\UnknownProperties;
+use Spatie\DataTransferObject\Exceptions\ValidationException;
 use Spatie\DataTransferObject\Reflection\DataTransferObjectClass;
 
 #[CastWith(DataTransferObjectCaster::class)]
@@ -24,17 +25,31 @@ abstract class DataTransferObject
 
         $class = new DataTransferObjectClass($this);
 
-        foreach ($class->getProperties() as $property) {
-            $property->setValue($args[$property->name] ?? $this->{$property->name} ?? null);
+        $validationExceptions = [];
 
-            unset($args[$property->name]);
+        foreach ($class->getProperties() as $property) {
+            try {
+                $property->setValue($args[$property->name] ?? $this->{$property->name} ?? null);
+
+                unset($args[$property->name]);
+            } catch (ValidationException $e) {
+                $validationExceptions[] = $e;
+            }
         }
 
         if ($class->isStrict() && count($args)) {
             throw UnknownProperties::new(static::class, array_keys($args));
         }
 
-        $class->validate();
+        try {
+            $class->validate();
+        } catch (ValidationException $e) {
+            $validationExceptions[] = $e;
+        }
+
+        if (count ($validationExceptions)) {
+            throw ValidationException::composite($this, ...$validationExceptions);
+        }
     }
 
     public static function arrayOf(array $arrayOfParameters): array
