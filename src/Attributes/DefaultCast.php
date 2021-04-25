@@ -9,7 +9,7 @@ use ReflectionProperty;
 use ReflectionUnionType;
 use Spatie\DataTransferObject\Caster;
 
-#[Attribute(Attribute::TARGET_CLASS)]
+#[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 class DefaultCast
 {
     public function __construct(
