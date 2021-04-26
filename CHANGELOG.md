@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 3.1.1 - 2021-04-26
+
+- Make `DefaultCast` repeatable (#202)
+
 ## 3.1.0 - 2021-04-21
 
 - Add `DataTransferObject::clone(...$args)`
