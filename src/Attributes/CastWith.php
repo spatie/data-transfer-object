@@ -15,7 +15,7 @@ class CastWith
         public string $casterClass,
         mixed ...$args
     ) {
-        if (! class_implements($this->casterClass, Caster::class)) {
+        if (! class_implements($this->casterClass, true)) {
             throw new InvalidCasterClass($this->casterClass);
         }
 
