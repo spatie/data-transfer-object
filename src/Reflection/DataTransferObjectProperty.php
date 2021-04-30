@@ -84,7 +84,7 @@ class DataTransferObjectProperty
 
         return new $attribute->casterClass(
             $this->reflectionProperty->getType()?->getName(),
-            $attribute->args
+            ...$attribute->args,
         );
     }
 

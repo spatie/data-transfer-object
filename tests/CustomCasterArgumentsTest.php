@@ -2,9 +2,8 @@
 
 namespace Spatie\DataTransferObject\Tests;
 
-use Exception;
 use Spatie\DataTransferObject\Attributes\CastWith;
-use Spatie\DataTransferObject\Caster;
+use Spatie\DataTransferObject\Casters\ArrayCaster;
 use Spatie\DataTransferObject\DataTransferObject;
 
 class CustomCasterArgumentsTest extends TestCase
@@ -38,11 +37,11 @@ class CustomCasterArgumentsTest extends TestCase
 class Bar extends DataTransferObject
 {
     /** @var \Spatie\DataTransferObject\Tests\Foo[] */
-    #[CastWith(GenericArrayCaster::class, targetClass: Foo::class)]
+    #[CastWith(ArrayCaster::class, itemType: Foo::class)]
     public array $collectionOfFoo;
 
     /** @var \Spatie\DataTransferObject\Tests\Baz[] */
-    #[CastWith(GenericArrayCaster::class, targetClass: Baz::class)]
+    #[CastWith(ArrayCaster::class, itemType: Baz::class)]
     public array $collectionOfBaz;
 }
 
@@ -54,29 +53,4 @@ class Foo extends DataTransferObject
 class Baz extends DataTransferObject
 {
     public string $name;
-}
-
-class GenericArrayCaster implements Caster
-{
-    public function __construct(
-        private string $type,
-        private array $args
-    ) {
-    }
-
-    public function cast(mixed $value): array
-    {
-        if ($this->type !== 'array') {
-            throw new Exception("Can only cast arrays");
-        }
-
-        if (! isset($this->args['targetClass'])) {
-            throw new Exception("targetClass argument is required");
-        }
-
-        return array_map(
-            fn (array $data) => new $this->args['targetClass'](...$data),
-            $value
-        );
-    }
 }

@@ -364,42 +364,29 @@ class FooCollectionCaster implements Caster
 }
 ```
 
-### Using custom caster arguments
+## Simple arrays of DTOs
 
-It is also possible to pass custom arguments for your caster, one may use
-this feature to create a generic collection caster:
+If all you need is an array of DTOs and not a custom collection class, you can use the built-in `ArrayCaster`, which requires an item type to be provided:
 
 ```php
 class Bar extends DataTransferObject
 {
     /** @var \Spatie\DataTransferObject\Tests\Foo[] */
-    #[CastWith(GenericArrayCaster::class, targetClass: Foo::class)]
+    #[CastWith(ArrayCaster::class, itemType: Foo::class)]
     public array $collectionOfFoo;
-
-    /** @var \Spatie\DataTransferObject\Tests\Baz[] */
-    #[CastWith(GenericArrayCaster::class, targetClass: Baz::class)]
-    public array $collectionOfBaz;
 }
 ```
 
-```php
-class Foo extends DataTransferObject
-{
-    public string $name;
-}
+## Using custom caster arguments
 
-class Baz extends DataTransferObject
-{
-    public string $name;
-}
-```
+Any caster can be passed custom arguments, the `ArrayCaster` implementation is such an example:
 
 ```php
-class GenericArrayCaster implements Caster
+class ArrayCaster implements Caster
 {
     public function __construct(
         private string $type,
-        private array $args
+        private string $itemType,
     ) {
     }
 
@@ -409,20 +396,28 @@ class GenericArrayCaster implements Caster
             throw new Exception("Can only cast arrays");
         }
 
-        if (! isset($this->args['targetClass'])) {
-            throw new Exception("targetClass argument is required");
-        }
-
         return array_map(
-            fn (array $data) => new $this->args['targetClass'](...$data),
+            fn (array $data) => new $this->itemType(...$data),
             $value
         );
     }
 }
 ```
 
-The first argument passed to the caster constructor is the type of the value being
-casted. The second is an array with all the arguments given to the `CastWith` attribute.
+Note that you don't need to use named arguments to pass input as generic caster arguments, though they do make it more clear:
+
+```php
+    /** @var \Spatie\DataTransferObject\Tests\Foo[] */
+    #[CastWith(ArrayCaster::class, itemType: Foo::class)]
+    public array $collectionWithNamedArguments;
+    
+    /** @var \Spatie\DataTransferObject\Tests\Foo[] */
+    #[CastWith(ArrayCaster::class, Foo::class)]
+    public array $collectionWithoutNamedArguments;
+```
+
+Also note that the first argument passed to the caster constructor is always the type of the value being casted. 
+All other arguments will be the ones passed as extra arguments in the `CastWith` attribute.
 
 ## Testing
 
