@@ -174,6 +174,48 @@ abstract class BaseDataTransferObject extends DataTransferObject
 }
 ```
 
+### Using custom caster arguments
+
+Any caster can be passed custom arguments, the built-in `ArrayCaster` implementation is such an example:
+
+```php
+class ArrayCaster implements Caster
+{
+    public function __construct(
+        private string $type,
+        private string $itemType,
+    ) {
+    }
+
+    public function cast(mixed $value): array
+    {
+        if ($this->type !== 'array') {
+            throw new Exception("Can only cast arrays");
+        }
+
+        return array_map(
+            fn (array $data) => new $this->itemType(...$data),
+            $value
+        );
+    }
+}
+```
+
+Note that you don't need to use named arguments to pass input as generic caster arguments, though they do make it more clear:
+
+```php
+    /** @var \Spatie\DataTransferObject\Tests\Foo[] */
+    #[CastWith(ArrayCaster::class, itemType: Foo::class)]
+    public array $collectionWithNamedArguments;
+    
+    /** @var \Spatie\DataTransferObject\Tests\Foo[] */
+    #[CastWith(ArrayCaster::class, Foo::class)]
+    public array $collectionWithoutNamedArguments;
+```
+
+Also note that the first argument passed to the caster constructor is always the type of the value being casted.
+All other arguments will be the ones passed as extra arguments in the `CastWith` attribute.
+
 ## Validation
 
 This package doesn't offer any specific validation functionality, but it does give you a way to build your own validation attributes. For example, `NumberBetween` is a user-implemented validation attribute:
@@ -376,48 +418,6 @@ class Bar extends DataTransferObject
     public array $collectionOfFoo;
 }
 ```
-
-## Using custom caster arguments
-
-Any caster can be passed custom arguments, the `ArrayCaster` implementation is such an example:
-
-```php
-class ArrayCaster implements Caster
-{
-    public function __construct(
-        private string $type,
-        private string $itemType,
-    ) {
-    }
-
-    public function cast(mixed $value): array
-    {
-        if ($this->type !== 'array') {
-            throw new Exception("Can only cast arrays");
-        }
-
-        return array_map(
-            fn (array $data) => new $this->itemType(...$data),
-            $value
-        );
-    }
-}
-```
-
-Note that you don't need to use named arguments to pass input as generic caster arguments, though they do make it more clear:
-
-```php
-    /** @var \Spatie\DataTransferObject\Tests\Foo[] */
-    #[CastWith(ArrayCaster::class, itemType: Foo::class)]
-    public array $collectionWithNamedArguments;
-    
-    /** @var \Spatie\DataTransferObject\Tests\Foo[] */
-    #[CastWith(ArrayCaster::class, Foo::class)]
-    public array $collectionWithoutNamedArguments;
-```
-
-Also note that the first argument passed to the caster constructor is always the type of the value being casted. 
-All other arguments will be the ones passed as extra arguments in the `CastWith` attribute.
 
 ## Testing
 
