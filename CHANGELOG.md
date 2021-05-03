@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## Unreleased
+
+- Add casting of objects that implement `ArrayAccess` to the `ArrayCaster`.
+
 ## 3.2.0 - 2021-04-30 
 
 - Support generic casters (#199)
