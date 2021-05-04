@@ -187,16 +187,37 @@ class ArrayCaster implements Caster
     ) {
     }
 
-    public function cast(mixed $value): array
+    public function cast(mixed $value): array|ArrayAccess
     {
-        if ($this->type !== 'array') {
-            throw new Exception("Can only cast arrays");
+        if ($this->type == 'array') {
+            return $this->castArray($value);
         }
 
+        if (is_subclass_of($this->type, ArrayAccess::class)) {
+            return $this->castArrayAccess($value);
+        }
+
+        throw new LogicException("Caster [ArrayCaster] may only be used to cast arrays or objects that implement ArrayAccess.");
+    }
+
+    private function castArray(mixed $value): array
+    {
         return array_map(
-            fn (array $data) => new $this->itemType(...$data),
+            fn(array $data) => new $this->itemType(...$data),
             $value
         );
+    }
+
+    private function castArrayAccess(mixed $value): ArrayAccess
+    {
+        $arrayAccess = new $this->type();
+
+        array_walk(
+            $value,
+            fn(array $data) => $arrayAccess[] = new $this->itemType(...$data)
+        );
+
+        return $arrayAccess;
     }
 }
 ```
@@ -408,7 +429,7 @@ class FooCollectionCaster implements Caster
 
 ## Simple arrays of DTOs
 
-If all you need is an array of DTOs and not a custom collection class, you can use the built-in `ArrayCaster`, which requires an item type to be provided:
+For a simple array of DTOs, or an object that implements PHP's built-in `ArrayAccess`, consider using the `ArrayCaster` which requires an item type to be provided:
 
 ```php
 class Bar extends DataTransferObject
