@@ -14,7 +14,7 @@ class ArrayCaster implements Caster
     ) {
     }
 
-    public function cast(mixed $value): array|ArrayAccess
+    public function cast(mixed $value): array | ArrayAccess
     {
         if ($this->type == 'array') {
             return $this->castArray($value);
@@ -30,7 +30,7 @@ class ArrayCaster implements Caster
     private function castArray(mixed $value): array
     {
         return array_map(
-            fn(array $data) => new $this->itemType(...$data),
+            fn (array $data) => new $this->itemType(...$data),
             $value
         );
     }
@@ -41,7 +41,7 @@ class ArrayCaster implements Caster
 
         array_walk(
             $value,
-            fn(array $data) => $arrayAccess[] = new $this->itemType(...$data)
+            fn (array $data) => $arrayAccess[] = new $this->itemType(...$data)
         );
 
         return $arrayAccess;
