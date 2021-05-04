@@ -15,7 +15,7 @@ class CastWith
         public string $casterClass,
         mixed ...$args
     ) {
-        if (! class_implements($this->casterClass, Caster::class)) {
+        if (! is_subclass_of($this->casterClass, Caster::class)) {
             throw new InvalidCasterClass($this->casterClass);
         }
 
