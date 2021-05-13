@@ -82,27 +82,17 @@ class DataTransferObjectProperty
         /** @var \Spatie\DataTransferObject\Attributes\CastWith $attribute */
         $attribute = $attributes[0]->newInstance();
 
+        $typeNames = array_map(fn ($type) => $type->getName(), $this->extractTypes());
+
         return new $attribute->casterClass(
-            $this->reflectionProperty->getType()?->getName(),
+            implode('|', $typeNames),
             ...$attribute->args,
         );
     }
 
     private function resolveCasterFromType(): array
     {
-        $type = $this->reflectionProperty->getType();
-
-        if (! $type) {
-            return [];
-        }
-
-        /** @var ReflectionNamedType[]|null $types */
-        $types = match ($type::class) {
-            ReflectionNamedType::class => [$type],
-            ReflectionUnionType::class => $type->getTypes(),
-        };
-
-        foreach ($types as $type) {
+        foreach ($this->extractTypes() as $type) {
             if (! class_exists($type->getName())) {
                 continue;
             }
@@ -149,5 +139,22 @@ class DataTransferObjectProperty
         }
 
         return null;
+    }
+
+    /**
+     * @return ReflectionNamedType[]
+     */
+    private function extractTypes(): array
+    {
+        $type = $this->reflectionProperty->getType();
+
+        if (! $type) {
+            return [];
+        }
+
+        return match ($type::class) {
+            ReflectionNamedType::class => [$type],
+            ReflectionUnionType::class => $type->getTypes(),
+        };
     }
 }
