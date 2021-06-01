@@ -3,5 +3,6 @@ composer.lock
 docs
 vendor
 coverage
+.idea
 .php_cs.cache
 .phpunit.result.cache
