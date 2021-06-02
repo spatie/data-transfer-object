@@ -82,11 +82,9 @@ class DataTransferObjectProperty
         /** @var \Spatie\DataTransferObject\Attributes\CastWith $attribute */
         $attribute = $attributes[0]->newInstance();
 
-        $typeNames = array_map(fn ($type) => $type->getName(), $this->extractTypes());
-
         return new $attribute->casterClass(
-            implode('|', $typeNames),
-            ...$attribute->args,
+            array_map(fn ($type) => $type->getName(), $this->extractTypes()),
+            ...$attribute->args
         );
     }
 
