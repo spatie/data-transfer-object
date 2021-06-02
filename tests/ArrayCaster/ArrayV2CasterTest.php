@@ -20,7 +20,7 @@ class ArrayV2CasterTest extends TestCase
             ]
         );
 
-        $this->assertEquals('dummy-1@gmail.com',$bar->order_confirmation->admin->email);
+        $this->assertEquals('dummy-1@gmail.com', $bar->order_confirmation->admin->email);
     }
 }
 
