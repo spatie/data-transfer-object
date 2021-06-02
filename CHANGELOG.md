@@ -2,15 +2,16 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
-## Unreleased
+## 3.3.0 - 2021-06-01
 
-- Add casting of objects that implement `ArrayAccess` to the `ArrayCaster` (#206)
-- Fix for caster subclass check (#204)
+- Expose DTO and validation error array in ValidationException (#213)
 
-## 3.2.0 - 2021-04-30 
+## 3.2.0 - 2021-05-31 
 
 - Support generic casters (#199)
 - Add `ArrayCaster`
+- Add casting of objects that implement `ArrayAccess` to the `ArrayCaster` (#206)
+- Fix for caster subclass check (#204)
 
 ## 3.1.1 - 2021-04-26
 
