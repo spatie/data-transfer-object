@@ -11,7 +11,7 @@ use Spatie\DataTransferObject\DataTransferObject;
 class DefaultCasterTest extends TestCase
 {
     /** @test */
-    public function property_with_default_caster_is_casted()
+    public function property_is_casted()
     {
         $dto = new DtoWithDefaultCaster(date: '2020-01-01');
 
@@ -19,9 +19,9 @@ class DefaultCasterTest extends TestCase
     }
 
     /** @test */
-    public function property_with_out_default_caster_is_casted()
+    public function child_property_is_casted()
     {
-        $dto = new DtoWithOutDefaultCaster(date: '2020-01-01');
+        $dto = new ChildDto(date: '2020-01-01');
 
         $this->markTestSucceeded();
     }
@@ -38,7 +38,7 @@ abstract class AbstractWithDefaultCaster extends DataTransferObject
 {
 }
 
-class DtoWithOutDefaultCaster extends AbstractWithDefaultCaster
+class ChildDto extends AbstractWithDefaultCaster
 {
     public DateTimeImmutable $date;
 }
