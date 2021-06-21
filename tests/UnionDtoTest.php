@@ -40,7 +40,7 @@ class UnionDtoTest extends TestCase
             'baz' => ['value' => 3],
         ]);
 
-        $this->assertInstanceOf(DtoA::class, $dto->baz);
+        $this->assertInstanceOf(Dto1::class, $dto->baz);
         $this->assertEquals(3, $dto->baz->value);
     }
 
@@ -48,10 +48,10 @@ class UnionDtoTest extends TestCase
     public function complex_union_types_force()
     {
         $dto = new ComplexUnionDto(
-            baz: new DtoB(value: 3),
+            baz: new Dto2(value: 3),
         );
 
-        $this->assertInstanceOf(DtoB::class, $dto->baz);
+        $this->assertInstanceOf(Dto2::class, $dto->baz);
         $this->assertEquals(3, $dto->baz->value);
     }
 }
@@ -69,15 +69,15 @@ class UnionDtoWithCast extends DataTransferObject
 
 class ComplexUnionDto extends DataTransferObject
 {
-    public DtoA | DtoB $baz;
+    public Dto1 | Dto2 $baz;
 }
 
-class DtoA extends DataTransferObject
+class Dto1 extends DataTransferObject
 {
     public int $value = 1;
 }
 
-class DtoB extends DataTransferObject
+class Dto2 extends DataTransferObject
 {
     public int $value = 2;
 }
