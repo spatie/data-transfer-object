@@ -2,7 +2,7 @@
 
 namespace Spatie\DataTransferObject\Tests;
 
-use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\DataTransferObject\Tests\Dummy\UnionDto;
 
 class UnionDtoTest extends TestCase
 {
@@ -13,9 +13,4 @@ class UnionDtoTest extends TestCase
 
         $this->assertEquals(1, $dto->foo);
     }
-}
-
-class UnionDto extends DataTransferObject
-{
-    public string | int $foo;
 }

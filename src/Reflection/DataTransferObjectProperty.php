@@ -2,6 +2,8 @@
 
 namespace Spatie\DataTransferObject\Reflection;
 
+use Faker\Factory;
+use Faker\Generator;
 use JetBrains\PhpStorm\Immutable;
 use ReflectionAttribute;
 use ReflectionClass;
@@ -25,6 +27,8 @@ class DataTransferObjectProperty
 
     private ?Caster $caster;
 
+    private static ?Generator $faker = null;
+
     public function __construct(
         DataTransferObject $dataTransferObject,
         ReflectionProperty $reflectionProperty
@@ -35,6 +39,66 @@ class DataTransferObjectProperty
         $this->name = $this->reflectionProperty->name;
 
         $this->caster = $this->resolveCaster();
+    }
+
+    public static function withFaker( $faker): void
+    {
+        static::$faker = $faker;
+    }
+
+    protected static function faker(): Generator
+    {
+        if (static::$faker === null) {
+            static::withFaker(Factory::create());
+        }
+
+        return static::$faker;
+    }
+
+    public function fake(): mixed
+    {
+        if ($this->reflectionProperty->hasDefaultValue()) {
+            return $this->reflectionProperty->getDefaultValue();
+        }
+
+        $faker = static::faker();
+        $type = $this->reflectionProperty->getType();
+
+        if (! $type) {
+            return $faker->word;
+        }
+
+        /** @var ReflectionNamedType[] $types */
+        $types = match ($type::class) {
+            ReflectionNamedType::class => [$type],
+            ReflectionUnionType::class => $type->getTypes(),
+        };
+
+        usort($types, fn(ReflectionNamedType $a, ReflectionNamedType $b) => $b->isBuiltin() - $a->isBuiltin());
+
+        foreach ($types as $type) {
+            $name = $type->getName();
+
+            if ($type->isBuiltin()) {
+                return match ($name) {
+                    'float' => $faker->randomFloat(),
+                    'int' => $faker->randomNumber(),
+                    'string' => $faker->word,
+                    'bool' => $faker->boolean,
+                    'array' => [],
+                };
+            }
+
+            if (class_exists($name)) {
+                if (is_subclass_of($name, DataTransferObject::class)) {
+                    return $name::fake();
+                }
+
+                return new $name;
+            }
+        }
+
+        return null;
     }
 
     public function setValue(mixed $value): void

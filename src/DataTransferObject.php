@@ -37,6 +37,23 @@ abstract class DataTransferObject
         $class->validate();
     }
 
+    public static function fake(...$args): static
+    {
+        if (is_array($args[0] ?? null)) {
+            $args = $args[0];
+        }
+
+        /** @var DataTransferObject $instance */
+        $instance = (new ReflectionClass(static::class))->newInstanceWithoutConstructor();
+        $class = new DataTransferObjectClass($instance);
+
+        foreach ($class->getProperties() as $property) {
+            $property->setValue($args[$property->name] ?? $property->fake());
+        }
+
+        return $instance;
+    }
+
     public static function arrayOf(array $arrayOfParameters): array
     {
         return array_map(

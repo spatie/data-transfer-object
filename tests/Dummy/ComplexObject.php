@@ -5,7 +5,7 @@ namespace Spatie\DataTransferObject\Tests\Dummy;
 class ComplexObject
 {
     public function __construct(
-        public string $name,
+        public string $name = 'name',
     ) {
     }
 }

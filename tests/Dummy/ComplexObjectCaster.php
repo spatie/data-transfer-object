@@ -13,6 +13,10 @@ class ComplexObjectCaster implements Caster
      */
     public function cast(mixed $value): ComplexObject
     {
+        if ($value instanceof ComplexObject) {
+            return $value;
+        }
+
         return new ComplexObject(
             name: $value['name']
         );
