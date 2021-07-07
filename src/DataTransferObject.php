@@ -8,6 +8,7 @@ use Spatie\DataTransferObject\Attributes\CastWith;
 use Spatie\DataTransferObject\Casters\DataTransferObjectCaster;
 use Spatie\DataTransferObject\Exceptions\UnknownProperties;
 use Spatie\DataTransferObject\Reflection\DataTransferObjectClass;
+use Spatie\DataTransferObject\Support\Str;
 
 #[CastWith(DataTransferObjectCaster::class)]
 abstract class DataTransferObject
@@ -15,6 +16,10 @@ abstract class DataTransferObject
     protected array $exceptKeys = [];
 
     protected array $onlyKeys = [];
+
+    const CAMEL = "camelCase";
+    const SNAKE = "snake_case";
+    const STUDLY = "StudlyCase";
 
     public function __construct(...$args)
     {
@@ -87,7 +92,7 @@ abstract class DataTransferObject
         return new static(...array_merge($this->toArray(), $args));
     }
 
-    public function toArray(): array
+    public function toArray(string $type = ""): array
     {
         if (count($this->onlyKeys)) {
             $array = Arr::only($this->all(), $this->onlyKeys);
@@ -95,27 +100,58 @@ abstract class DataTransferObject
             $array = Arr::except($this->all(), $this->exceptKeys);
         }
 
-        $array = $this->parseArray($array);
+        $array = $this->parseArray($array, $type);
 
         return $array;
     }
 
-    protected function parseArray(array $array): array
+    public function toArraySnakeCase(): array
     {
+        return $this->toArray(self::SNAKE);
+    }
+
+    public function toArrayCamelCase(): array
+    {
+        return $this->toArray(self::CAMEL);
+    }
+
+    public function toArrayStudlyCase(): array
+    {
+        return $this->toArray(self::STUDLY);
+    }
+
+    protected function parseArray(array $array, string $type = ""): array
+    {
+        $arrayTransformed = [];
+
         foreach ($array as $key => $value) {
+            switch ($type) {
+                case self::CAMEL:
+                    $key = Str::camel($key);
+                    break;
+                case self::SNAKE:
+                    $key = Str::snake($key);
+                    break;
+                case self::STUDLY:
+                    $key = Str::studly($key);
+                    break;
+            }
+
             if ($value instanceof DataTransferObject) {
-                $array[$key] = $value->toArray();
+                $arrayTransformed[$key] = $value->toArray($type);
 
                 continue;
             }
 
-            if (! is_array($value)) {
+            if (!is_array($value)) {
+                $arrayTransformed[$key] = $value;
+
                 continue;
             }
 
-            $array[$key] = $this->parseArray($value);
+            $arrayTransformed[$key] = $this->parseArray($value, $type);
         }
 
-        return $array;
+        return $arrayTransformed;
     }
 }

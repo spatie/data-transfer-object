@@ -6,6 +6,8 @@ use Spatie\DataTransferObject\Tests\Dummy\BasicDto;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDto;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithCastedAttributeHavingCast;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithNullableProperty;
+use Spatie\DataTransferObject\Tests\Dummy\ComplexCamelCaseDto;
+use Spatie\DataTransferObject\Tests\Dummy\ComplexSnakeCaseDto;
 use Spatie\DataTransferObject\Tests\Dummy\WithDefaultValueDto;
 
 class DataTransferObjectTest extends TestCase
@@ -144,6 +146,72 @@ class DataTransferObjectTest extends TestCase
         $dto = new ComplexDto($array);
 
         $this->assertEquals(['other' => ['name' => 'b']], $dto->except('name')->toArray());
+    }
+
+    /** @test */
+    public function to_array_snake_case_with_nested_dto()
+    {
+        $array = [
+            'namePersonal' => 'a',
+            'otherField' => [
+                'nameField' => 'b',
+            ],
+        ];
+
+        $arraySnakeCase = [
+            'name_personal' => 'a',
+             'other_field' => [
+                'name_field' => 'b',
+            ],
+        ];
+
+        $dto = new ComplexCamelCaseDto($array);
+
+        $this->assertEquals($arraySnakeCase, $dto->toArraySnakeCase());
+    }
+
+    /** @test */
+    public function to_array_camel_case_with_nested_dto()
+    {
+        $array = [
+            'name_personal' => 'a',
+            'other_field' => [
+                'name_field' => 'b',
+            ],
+        ];
+
+        $arrayCamelCase = [
+            'namePersonal' => 'a',
+             'otherField' => [
+                'nameField' => 'b',
+            ],
+        ];
+
+        $dto = new ComplexSnakeCaseDto($array);
+
+        $this->assertEquals($arrayCamelCase, $dto->toArrayCamelCase());
+    }
+
+    /** @test */
+    public function to_array_studly_case_with_nested_dto()
+    {
+        $array = [
+            'name_personal' => 'a',
+            'other_field' => [
+                'name_field' => 'b',
+            ],
+        ];
+
+        $arrayStudlyCase = [
+            'NamePersonal' => 'a',
+             'OtherField' => [
+                'NameField' => 'b',
+            ],
+        ];
+
+        $dto = new ComplexSnakeCaseDto($array);
+
+        $this->assertEquals($arrayStudlyCase, $dto->toArrayStudlyCase());
     }
 
     /** @test */
