@@ -5,9 +5,7 @@ namespace Spatie\DataTransferObject\Tests\Dummy;
 
 use Spatie\DataTransferObject\DataTransferObject;
 
-class ComplexDto extends DataTransferObject
+class BasicIntegerDto extends DataTransferObject
 {
-    public string $name;
-
-    public BasicDto $other;
+    public int $field;
 }
