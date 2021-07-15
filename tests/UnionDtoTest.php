@@ -29,7 +29,7 @@ class UnionDtoTest extends TestCase
     {
         $dto = new UnionDtoWithCast(bar: 123);
 
-        $this->assertIsFloat($dto->bar);
+        $this->assertIsInt($dto->bar);
         $this->assertEquals(123, $dto->bar);
     }
 
