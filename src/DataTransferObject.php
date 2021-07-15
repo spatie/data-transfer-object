@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Spatie\DataTransferObject;
 
@@ -29,8 +30,10 @@ abstract class DataTransferObject
 
         $class = new DataTransferObjectClass($this);
 
+        $isStricType = $class->isStrictType();
+
         foreach ($class->getProperties() as $property) {
-            $property->setValue($args[$property->name] ?? $this->{$property->name} ?? null);
+            $property->setValue($args[$property->name] ?? $this->{$property->name} ?? null, $property->name, $isStricType);
 
             unset($args[$property->name]);
         }

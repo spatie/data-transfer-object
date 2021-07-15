@@ -1,10 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace Spatie\DataTransferObject\Reflection;
 
 use ReflectionClass;
 use ReflectionProperty;
 use Spatie\DataTransferObject\Attributes\Strict;
+use Spatie\DataTransferObject\Attributes\StrictType;
 use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\Exceptions\ValidationException;
 
@@ -15,6 +17,8 @@ class DataTransferObjectClass
     private DataTransferObject $dataTransferObject;
 
     private bool $isStrict;
+
+    private bool $isStrictType;
 
     public function __construct(DataTransferObject $dataTransferObject)
     {
@@ -67,5 +71,10 @@ class DataTransferObjectClass
     public function isStrict(): bool
     {
         return $this->isStrict ??= ! empty($this->reflectionClass->getAttributes(Strict::class));
+    }
+
+    public function isStrictType(): bool
+    {
+        return $this->isStrictType ??= ! empty($this->reflectionClass->getAttributes(StrictType::class));
     }
 }

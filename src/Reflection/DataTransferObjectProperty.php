@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Spatie\DataTransferObject\Reflection;
 
@@ -37,13 +38,19 @@ class DataTransferObjectProperty
         $this->caster = $this->resolveCaster();
     }
 
-    public function setValue(mixed $value): void
+    public function setValue(mixed $value, string $nameProperty, bool $isStrictType): void
     {
         if ($this->caster && $value !== null) {
             $value = $this->caster->cast($value);
         }
 
-        $this->reflectionProperty->setValue($this->dataTransferObject, $value);
+        if ($isStrictType) {
+            $this->dataTransferObject->{$nameProperty} = $value;
+        }
+
+        if (!$isStrictType) {
+            $this->reflectionProperty->setValue($this->dataTransferObject, $value);
+        }
     }
 
     /**
