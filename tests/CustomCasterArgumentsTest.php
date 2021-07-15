@@ -17,12 +17,12 @@ class CustomCasterArgumentsTest extends TestCase
             [
                 'collectionOfFoo' => [
                     ['name' => 'a'],
-                    ['name' => 'b'],
+                    new Foo(name: 'b'),
                     ['name' => 'c'],
                 ],
                 'collectionOfBaz' => [
                     ['name' => 'a'],
-                    ['name' => 'b'],
+                    new Baz(name: 'b'),
                     ['name' => 'c'],
                 ],
             ]
@@ -43,12 +43,12 @@ class CustomCasterArgumentsTest extends TestCase
             [
                 'collectionOfFoo' => [
                     ['name' => 'a'],
-                    ['name' => 'b'],
+                    new Foo(name: 'b'),
                     ['name' => 'c'],
                 ],
                 'collectionOfBaz' => [
                     ['name' => 'a'],
-                    ['name' => 'b'],
+                    new Baz(name: 'b'),
                     ['name' => 'c'],
                 ],
             ]
