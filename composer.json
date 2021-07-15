@@ -1,11 +1,11 @@
 {
-    "name": "spatie/data-transfer-object",
+    "name": "roke22/data-transfer-object",
     "description": "Data transfer objects with batteries included",
     "keywords": [
-        "spatie",
+        "roke22",
         "data-transfer-object"
     ],
-    "homepage": "https://github.com/spatie/data-transfer-object",
+    "homepage": "https://github.com/roke22/data-transfer-object",
     "license": "MIT",
     "authors": [
         {
