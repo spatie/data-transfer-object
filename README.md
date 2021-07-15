@@ -187,7 +187,7 @@ class ArrayCaster implements Caster
     ) {
     }
 
-    public function cast(mixed $value): array|ArrayAccess
+    public function cast(mixed $value): array | ArrayAccess
     {
         if ($this->type == 'array') {
             return $this->castArray($value);
@@ -200,24 +200,35 @@ class ArrayCaster implements Caster
         throw new LogicException("Caster [ArrayCaster] may only be used to cast arrays or objects that implement ArrayAccess.");
     }
 
-    private function castArray(mixed $value): array
+    private function castArray(array $value): array
     {
-        return array_map(
-            fn(array $data) => new $this->itemType(...$data),
-            $value
-        );
+        return array_map([$this, 'makeItem'], $value);
     }
 
-    private function castArrayAccess(mixed $value): ArrayAccess
+    private function castArrayAccess(array $value): ArrayAccess
     {
         $arrayAccess = new $this->type();
 
-        array_walk(
-            $value,
-            fn(array $data) => $arrayAccess[] = new $this->itemType(...$data)
-        );
+        foreach ($this->castArray($value) as $item) {
+            $arrayAccess[] = $item;
+        }
 
         return $arrayAccess;
+    }
+
+    private function makeItem(mixed $data): mixed
+    {
+        if ($data instanceof $this->itemType) {
+            return $data;
+        }
+
+        if (is_array($data)) {
+            return new $this->itemType(...$data);
+        }
+
+        throw new LogicException(
+            'Caster [ArrayCaster] requires each item to be either an array or an instance of the specified class.'
+        );
     }
 }
 ```
