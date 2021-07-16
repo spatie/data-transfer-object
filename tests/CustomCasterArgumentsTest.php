@@ -320,7 +320,7 @@ class ArrayAccessImplementation implements ArrayAccess
 
     public function offsetSet($offset, $value)
     {
-        if (!empty($offset)) {
+        if (! empty($offset)) {
             $this->state[$offset] = $value;
         } else {
             $this->state[] = $value;
