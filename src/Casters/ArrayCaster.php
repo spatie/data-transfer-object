@@ -39,7 +39,6 @@ class ArrayCaster implements Caster
             throw new LogicException("Caster [ArrayCaster] may only be used to cast ArrayAccess objects that are traversable.");
         }
 
-<<<<<<< HEAD
         return $this->mapInto(destination: new $this->type(), items: $value);
     }
 
@@ -62,12 +61,6 @@ class ArrayCaster implements Caster
     {
         foreach ($items as $key => $item) {
             $destination[$key] = $this->castItem($item);
-=======
-        $arrayAccess = new $this->type();
-
-        foreach ($value as $key => $data) {
-            $arrayAccess[$key] = new $this->itemType(...(array) $data);
->>>>>>> 7e064acdd2afc392badb0aa348566fd91493fa7c
         }
 
         return $destination;

@@ -178,59 +178,7 @@ abstract class BaseDataTransferObject extends DataTransferObject
 
 Any caster can be passed custom arguments, the built-in `ArrayCaster` [implementation](https://github.com/spatie/data-transfer-object/blob/master/src/Casters/ArrayCaster.php) is a good example of how this may be used.
 
-<<<<<<< HEAD
 Using named arguments when passing input to your caster will help make your code more clear, but they are not required. For example:
-=======
-```php
-<?php
-class ArrayCaster implements Caster
-{
-    public function __construct(
-        private string $type,
-        private string $itemType,
-    ) {
-    }
-
-    public function cast(mixed $value): array | ArrayAccess
-    {
-        if ($this->type == 'array') {
-            return $this->castArray($value);
-        }
-
-        if (is_subclass_of($this->type, ArrayAccess::class)) {
-            return $this->castArrayAccess($value);
-        }
-
-        throw new LogicException("Caster [ArrayCaster] may only be used to cast arrays or objects that implement ArrayAccess.");
-    }
-
-    private function castArray(mixed $value): array
-    {
-        return array_map(
-            fn (array $data) => new $this->itemType(...$data),
-            $value
-        );
-    }
-
-    private function castArrayAccess(mixed $value): ArrayAccess
-    {
-        if (! is_subclass_of($this->type, Traversable::class)) {
-            throw new LogicException('Caster [ArrayCaster] may only be used to cast ArrayAccess objects that are traversable.');
-        }
-
-        $arrayAccess = new $this->type();
-
-        foreach ($value as $key => $data) {
-            $arrayAccess[$key] = new $this->itemType(...(array) $data);
-        }
-
-        return $arrayAccess;
-    }
-}
-```
-
-Note that you don't need to use named arguments to pass input as generic caster arguments, though they do make it more clear:
->>>>>>> 7e064acdd2afc392badb0aa348566fd91493fa7c
 
 ```php
     /** @var \Spatie\DataTransferObject\Tests\Foo[] */

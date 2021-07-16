@@ -48,7 +48,6 @@ class CustomCasterArgumentsTest extends TestCase
         $this->expectExceptionMessage('Caster [ArrayCaster] may only be used to cast arrays or objects that implement ArrayAccess.');
 
         new BarIllogical(
-<<<<<<< HEAD
             [
                 'collectionOfFoo' => [
                     ['name' => 'a'],
@@ -87,8 +86,6 @@ class CustomCasterArgumentsTest extends TestCase
         $this->expectExceptionMessage('Caster [ArrayCaster] may only be used to cast ArrayAccess objects that are traversable.');
 
         new DTOWithArrayAccessImplementation(
-=======
->>>>>>> 7e064acdd2afc392badb0aa348566fd91493fa7c
             [
                 'collectionOfFoo' => [
                     ['name' => 'a'],
@@ -104,7 +101,6 @@ class CustomCasterArgumentsTest extends TestCase
         );
     }
 
-<<<<<<< HEAD
     public function test_it_can_cast_iterator_aggregate()
     {
         $object = new DTOWithArrayAccessIteratorAggregate(
@@ -198,53 +194,6 @@ class CustomCasterArgumentsTest extends TestCase
                 'collectionOfFoo' => [
                     ['name' => 'a'],
                     1,
-=======
-    /**
-     * @see https://github.com/spatie/data-transfer-object/issues/216
-     */
-    public function test_casting_an_empty_array_object_will_not_add_ghost_value()
-    {
-        $object = new BarJr([
-            'collectionOfFoo' => new Collection(),
-            'collectionOfBaz' => new Collection(),
-        ]);
-
-        $this->assertInstanceOf(Collection::class, $object->collectionOfFoo);
-        $this->assertEmpty($object->collectionOfFoo);
-
-        $this->assertInstanceOf(Collection::class, $object->collectionOfBaz);
-        $this->assertEmpty($object->collectionOfBaz);
-    }
-
-    public function test_it_cannot_cast_array_access_without_traversable()
-    {
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('Caster [ArrayCaster] may only be used to cast ArrayAccess objects that are traversable.');
-
-        new DTOWithArrayAccessImplementation(
-            [
-                'collectionOfFoo' => [
-                    ['name' => 'a'],
-                    ['name' => 'b'],
-                    ['name' => 'c'],
-                ],
-                'collectionOfBaz' => [
-                    ['name' => 'a'],
-                    ['name' => 'b'],
-                    ['name' => 'c'],
-                ],
-            ]
-        );
-    }
-
-    public function test_it_can_cast_iterator_aggregate()
-    {
-        $object = new DTOWithArrayAccessIteratorAggregate(
-            [
-                'collectionOfFoo' => [
-                    ['name' => 'a'],
-                    ['name' => 'b'],
->>>>>>> 7e064acdd2afc392badb0aa348566fd91493fa7c
                     ['name' => 'c'],
                 ],
                 'collectionOfBaz' => [
@@ -255,27 +204,11 @@ class CustomCasterArgumentsTest extends TestCase
                 ],
             ]
         );
-<<<<<<< HEAD
     }
 
     public function test_that_array_keys_get_cast()
     {
         $object = new Bar(
-=======
-
-        $this->assertInstanceOf(ArrayAccessIteratorAggregate::class, $object->collectionOfFoo);
-        $this->assertContainsOnlyInstancesOf(Foo::class, $object->collectionOfFoo);
-        $this->assertCount(3, $object->collectionOfFoo);
-
-        $this->assertInstanceOf(ArrayAccessIteratorAggregate::class, $object->collectionOfBaz);
-        $this->assertContainsOnlyInstancesOf(Baz::class, $object->collectionOfBaz);
-        $this->assertCount(4, $object->collectionOfBaz);
-    }
-
-    public function test_it_can_cast_iterator()
-    {
-        $object = new DTOWithArrayAccessIterator(
->>>>>>> 7e064acdd2afc392badb0aa348566fd91493fa7c
             [
                 'collectionOfFoo' => [
                     'one' => ['name' => 'a'],
@@ -317,49 +250,12 @@ class CustomCasterArgumentsTest extends TestCase
             ]
         );
 
-<<<<<<< HEAD
         $this->assertArrayHasKey('one', $object->collectionOfFoo);
         $this->assertArrayHasKey('two', $object->collectionOfFoo);
         $this->assertArrayHasKey('three', $object->collectionOfFoo);
         $this->assertInstanceOf(Foo::class, $object->collectionOfFoo['one']);
         $this->assertInstanceOf(Foo::class, $object->collectionOfFoo['two']);
         $this->assertInstanceOf(Foo::class, $object->collectionOfFoo['three']);
-=======
-        $this->assertInstanceOf(ArrayAccessIterator::class, $object->collectionOfFoo);
-        $this->assertContainsOnlyInstancesOf(Foo::class, $object->collectionOfFoo);
-        $this->assertCount(3, $object->collectionOfFoo);
-
-        $this->assertInstanceOf(ArrayAccessIterator::class, $object->collectionOfBaz);
-        $this->assertContainsOnlyInstancesOf(Baz::class, $object->collectionOfBaz);
-        $this->assertCount(4, $object->collectionOfBaz);
-    }
-
-    public function test_it_can_cast_array_object()
-    {
-        $object = new DTOWithArrayObject(
-            [
-                'collectionOfFoo' => [
-                    ['name' => 'a'],
-                    ['name' => 'b'],
-                    ['name' => 'c'],
-                ],
-                'collectionOfBaz' => [
-                    ['name' => 'a'],
-                    ['name' => 'b'],
-                    ['name' => 'c'],
-                    ['name' => 'd'],
-                ],
-            ]
-        );
-
-        $this->assertInstanceOf(ArrayObject::class, $object->collectionOfFoo);
-        $this->assertContainsOnlyInstancesOf(Foo::class, $object->collectionOfFoo);
-        $this->assertCount(3, $object->collectionOfFoo);
-
-        $this->assertInstanceOf(ArrayObject::class, $object->collectionOfBaz);
-        $this->assertContainsOnlyInstancesOf(Baz::class, $object->collectionOfBaz);
-        $this->assertCount(4, $object->collectionOfBaz);
->>>>>>> 7e064acdd2afc392badb0aa348566fd91493fa7c
     }
 }
 
@@ -409,7 +305,8 @@ class Baz extends DataTransferObject
 class ArrayAccessImplementation implements ArrayAccess
 {
     public function __construct(protected array $state = [])
-    {}
+    {
+    }
 
     public function offsetExists($offset)
     {
@@ -423,7 +320,7 @@ class ArrayAccessImplementation implements ArrayAccess
 
     public function offsetSet($offset, $value)
     {
-        if (! empty($offset)) {
+        if (!empty($offset)) {
             $this->state[$offset] = $value;
         } else {
             $this->state[] = $value;
@@ -515,5 +412,3 @@ class DTOWithArrayObject extends DataTransferObject
     #[CastWith(ArrayCaster::class, itemType: Baz::class)]
     public ArrayObject $collectionOfBaz;
 }
-
-
