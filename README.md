@@ -176,9 +176,11 @@ abstract class BaseDataTransferObject extends DataTransferObject
 
 ### Using custom caster arguments
 
-Any caster can be passed custom arguments, the built-in `ArrayCaster` [implementation](https://github.com/spatie/data-transfer-object/blob/master/src/Casters/ArrayCaster.php) is a good example of how this may be used.
+Any caster can be passed custom arguments, the built-in [`ArrayCaster` implementation](https://github.com/spatie/data-transfer-object/blob/master/src/Casters/ArrayCaster.php) is a good example of how this may be used.
 
-Using named arguments when passing input to your caster will help make your code more clear, but they are not required. For example:
+Using named arguments when passing input to your caster will help make your code more clear, but they are not required.
+
+For example:
 
 ```php
     /** @var \Spatie\DataTransferObject\Tests\Foo[] */
