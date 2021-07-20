@@ -18,28 +18,37 @@ class ArrayCaster implements Caster
     public function cast(mixed $value): array | ArrayAccess
     {
         if ($this->type == 'array') {
-            return $this->castArray($value);
+            return $this->mapInto(
+                destination: [],
+                items: $value
+            );
         }
 
         if (is_subclass_of($this->type, ArrayAccess::class)) {
-            return $this->castArrayAccess($value);
+            return $this->mapInto(
+                destination: new $this->type(),
+                items: $value
+            );
         }
 
-        throw new LogicException("Caster [ArrayCaster] may only be used to cast arrays or objects that implement ArrayAccess.");
+        throw new LogicException(
+            "Caster [ArrayCaster] may only be used to cast arrays or objects that implement ArrayAccess."
+        );
     }
 
-    private function castArray(mixed $value): array
+    private function mapInto(array | ArrayAccess $destination, mixed $items): array | ArrayAccess
     {
-        return $this->mapInto(destination: [], items: $value);
-    }
-
-    private function castArrayAccess(mixed $value): ArrayAccess
-    {
-        if (! is_subclass_of($this->type, Traversable::class)) {
-            throw new LogicException("Caster [ArrayCaster] may only be used to cast ArrayAccess objects that are traversable.");
+        if ($destination instanceof ArrayAccess && ! is_subclass_of($destination, Traversable::class)) {
+            throw new LogicException(
+                "Caster [ArrayCaster] may only be used to cast ArrayAccess objects that are traversable."
+            );
         }
 
-        return $this->mapInto(destination: new $this->type(), items: $value);
+        foreach ($items as $key => $item) {
+            $destination[$key] = $this->castItem($item);
+        }
+
+        return $destination;
     }
 
     private function castItem(mixed $data)
@@ -55,14 +64,5 @@ class ArrayCaster implements Caster
         throw new LogicException(
             "Caster [ArrayCaster] each item must be an array or an instance of the specified item type [{$this->itemType}]."
         );
-    }
-
-    private function mapInto(array | Traversable $destination, mixed $items): array | ArrayAccess
-    {
-        foreach ($items as $key => $item) {
-            $destination[$key] = $this->castItem($item);
-        }
-
-        return $destination;
     }
 }
