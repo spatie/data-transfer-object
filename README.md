@@ -43,7 +43,7 @@ class MyDTO extends DataTransferObject
     #[NumberBetween(1, 100)]
     public int $a;
     
-    #[MapFrom('cityName')]
+    #[MapFrom('address.city')]
     public string $city;
 }
 ```
@@ -294,17 +294,23 @@ class NumberBetween implements Validator
 
 You can map a DTO property from an source property with a different name using the `#[MapFrom()]` attribute.
 
-It works with a property name or an index.
+It works with a "dot" notation property name or an index.
 
 ```php
 class PostDTO extends DataTransferObject
 {
     #[MapFrom('postTitle')]
     public string $title;
+    
+    #[MapFrom('user.name')]
+    public string $author;
 }
 
 $dto = new PostDTO([
     'postTitle' => 'Hello world',
+    'user' => [
+        'name' => 'John Doe'
+    ]
 ]);
 ```
 

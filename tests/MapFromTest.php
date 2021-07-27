@@ -29,4 +29,15 @@ class MapFromTest extends TestCase
 
         $this->assertEquals('Doe', $dto->lastName);
     }
+
+    /** @test */
+    public function property_is_mapped_from_dot_notation()
+    {
+        $dto = new class(['address' => ['city' => 'London']]) extends DataTransferObject {
+            #[MapFrom('address.city')]
+            public string $city;
+        };
+
+        $this->assertEquals('London', $dto->city);
+    }
 }
