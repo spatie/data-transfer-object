@@ -152,7 +152,7 @@ class DataTransferObjectProperty
         return null;
     }
 
-    private function resolveMappedProperty(): mixed
+    private function resolveMappedProperty(): string | int
     {
         $attributes = $this->reflectionProperty->getAttributes(MapFrom::class);
 

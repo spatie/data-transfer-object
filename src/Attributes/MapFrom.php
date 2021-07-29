@@ -10,7 +10,7 @@ use Spatie\DataTransferObject\Exceptions\InvalidCasterClass;
 class MapFrom
 {
     public function __construct(
-        protected mixed $attribute,
+        protected string | int $attribute,
     ) {
     }
 }
