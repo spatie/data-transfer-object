@@ -292,7 +292,7 @@ class NumberBetween implements Validator
 
 ## Mapping
 
-You can map a DTO property from an source property with a different name using the `#[MapFrom()]` attribute.
+You can map a DTO property from a source property with a different name using the `#[MapFrom]` attribute.
 
 It works with a "dot" notation property name or an index.
 
