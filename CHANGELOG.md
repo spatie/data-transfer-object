@@ -2,7 +2,7 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
-## Unreleased
+## 3.4.0 - 2021-08-10
 
 - Fix for an empty value being created when casting `ArrayAccess` objects (#216)
 - Add logic exception when attempting to cast `ArrayAccess` objects that are not traversable (#216)
