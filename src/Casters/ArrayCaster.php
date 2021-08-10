@@ -5,6 +5,7 @@ namespace Spatie\DataTransferObject\Casters;
 use ArrayAccess;
 use LogicException;
 use Spatie\DataTransferObject\Caster;
+use Traversable;
 
 class ArrayCaster implements Caster
 {
@@ -17,33 +18,40 @@ class ArrayCaster implements Caster
     public function cast(mixed $value): array | ArrayAccess
     {
         if ($this->type == 'array') {
-            return $this->castArray($value);
+            return $this->mapInto(
+                destination: [],
+                items: $value
+            );
         }
 
         if (is_subclass_of($this->type, ArrayAccess::class)) {
-            return $this->castArrayAccess($value);
+            return $this->mapInto(
+                destination: new $this->type(),
+                items: $value
+            );
         }
 
-        throw new LogicException("Caster [ArrayCaster] may only be used to cast arrays or objects that implement ArrayAccess.");
+        throw new LogicException(
+            "Caster [ArrayCaster] may only be used to cast arrays or objects that implement ArrayAccess."
+        );
     }
 
-    private function castArray(array $value): array
+    private function mapInto(array | ArrayAccess $destination, mixed $items): array | ArrayAccess
     {
-        return array_map([$this, 'makeItem'], $value);
-    }
-
-    private function castArrayAccess(array $value): ArrayAccess
-    {
-        $arrayAccess = new $this->type();
-
-        foreach ($this->castArray($value) as $item) {
-            $arrayAccess[] = $item;
+        if ($destination instanceof ArrayAccess && ! is_subclass_of($destination, Traversable::class)) {
+            throw new LogicException(
+                "Caster [ArrayCaster] may only be used to cast ArrayAccess objects that are traversable."
+            );
         }
 
-        return $arrayAccess;
+        foreach ($items as $key => $item) {
+            $destination[$key] = $this->castItem($item);
+        }
+
+        return $destination;
     }
 
-    private function makeItem(mixed $data): mixed
+    private function castItem(mixed $data)
     {
         if ($data instanceof $this->itemType) {
             return $data;
@@ -54,7 +62,7 @@ class ArrayCaster implements Caster
         }
 
         throw new LogicException(
-            'Caster [ArrayCaster] requires each item to be either an array or an instance of the specified class.'
+            "Caster [ArrayCaster] each item must be an array or an instance of the specified item type [{$this->itemType}]."
         );
     }
 }
