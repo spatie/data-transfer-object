@@ -10,25 +10,27 @@ use Traversable;
 class ArrayCaster implements Caster
 {
     public function __construct(
-        private string $type,
+        private array $types,
         private string $itemType,
     ) {
     }
 
     public function cast(mixed $value): array | ArrayAccess
     {
-        if ($this->type == 'array') {
-            return $this->mapInto(
-                destination: [],
-                items: $value
-            );
-        }
+        foreach ($this->types as $type) {
+            if ($type == 'array') {
+                return $this->mapInto(
+                    destination: [],
+                    items: $value
+                );
+            }
 
-        if (is_subclass_of($this->type, ArrayAccess::class)) {
-            return $this->mapInto(
-                destination: new $this->type(),
-                items: $value
-            );
+            if (is_subclass_of($type, ArrayAccess::class)) {
+                return $this->mapInto(
+                    destination: new $type(),
+                    items: $value
+                );
+            }
         }
 
         throw new LogicException(

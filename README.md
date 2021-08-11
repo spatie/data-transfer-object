@@ -192,7 +192,7 @@ For example:
     public array $collectionWithoutNamedArguments;
 ```
 
-Note that the first argument passed to the caster constructor is always the type of the value being casted.
+Note that the first argument passed to the caster constructor is always the array with type(s) of the value being casted.
 All other arguments will be the ones passed as extra arguments in the `CastWith` attribute.
 
 ## Validation
