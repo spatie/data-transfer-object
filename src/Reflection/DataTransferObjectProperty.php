@@ -160,6 +160,6 @@ class DataTransferObjectProperty
             return $this->reflectionProperty->name;
         }
 
-        return $attributes[0]->getArguments()[0];
+        return $attributes[0]->newInstance()->name;
     }
 }
