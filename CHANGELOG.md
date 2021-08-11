@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 3.5.0 - 2021-08-11
+
+- Support union types in casters (#210)
+
 ## 3.4.0 - 2021-08-10
 
 - Fix for an empty value being created when casting `ArrayAccess` objects (#216)
