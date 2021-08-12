@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 3.6.0 - 2021-08-12
+
+- Support mapped properties (#224)
+
 ## 3.5.0 - 2021-08-11
 
 - Support union types in casters (#210)
