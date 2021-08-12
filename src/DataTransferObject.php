@@ -25,9 +25,9 @@ abstract class DataTransferObject
         $class = new DataTransferObjectClass($this);
 
         foreach ($class->getProperties() as $property) {
-            $property->setValue($args[$property->name] ?? $this->{$property->name} ?? null);
+            $property->setValue(Arr::get($args, $property->name) ?? $this->{$property->name} ?? null);
 
-            unset($args[$property->name]);
+            Arr::forget($args, $property->name);
         }
 
         if ($class->isStrict() && count($args)) {

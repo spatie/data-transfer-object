@@ -10,6 +10,7 @@ use ReflectionProperty;
 use ReflectionUnionType;
 use Spatie\DataTransferObject\Attributes\CastWith;
 use Spatie\DataTransferObject\Attributes\DefaultCast;
+use Spatie\DataTransferObject\Attributes\MapFrom;
 use Spatie\DataTransferObject\Caster;
 use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\Validator;
@@ -32,7 +33,7 @@ class DataTransferObjectProperty
         $this->dataTransferObject = $dataTransferObject;
         $this->reflectionProperty = $reflectionProperty;
 
-        $this->name = $this->reflectionProperty->name;
+        $this->name = $this->resolveMappedProperty();
 
         $this->caster = $this->resolveCaster();
     }
@@ -137,6 +138,17 @@ class DataTransferObjectProperty
         }
 
         return null;
+    }
+
+    private function resolveMappedProperty(): string | int
+    {
+        $attributes = $this->reflectionProperty->getAttributes(MapFrom::class);
+
+        if (! count($attributes)) {
+            return $this->reflectionProperty->name;
+        }
+
+        return $attributes[0]->newInstance()->name;
     }
 
     /**
