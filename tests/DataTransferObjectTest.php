@@ -4,8 +4,10 @@ namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\Tests\Dummy\BasicDto;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDto;
+use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithCastedAttributeHavingArrayCast;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithCastedAttributeHavingCast;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithNullableProperty;
+use Spatie\DataTransferObject\Tests\Dummy\ComplexStrictDto;
 use Spatie\DataTransferObject\Tests\Dummy\WithDefaultValueDto;
 
 class DataTransferObjectTest extends TestCase
@@ -42,6 +44,34 @@ class DataTransferObjectTest extends TestCase
     public function create_with_nested_dto_already_casted()
     {
         $dto = new ComplexDto([
+            'name' => 'a',
+            'other' => new BasicDto([
+                'name' => 'b',
+            ]),
+        ]);
+
+        $this->assertEquals('a', $dto->name);
+        $this->assertEquals('b', $dto->other->name);
+    }
+
+    /** @test */
+    public function create_strict_with_nested_dto()
+    {
+        $dto = new ComplexStrictDto([
+            'name' => 'a',
+            'other' => [
+                'name' => 'b',
+            ],
+        ]);
+
+        $this->assertEquals('a', $dto->name);
+        $this->assertEquals('b', $dto->other->name);
+    }
+
+    /** @test */
+    public function create_strict_with_nested_dto_already_casted()
+    {
+        $dto = new ComplexStrictDto([
             'name' => 'a',
             'other' => new BasicDto([
                 'name' => 'b',
