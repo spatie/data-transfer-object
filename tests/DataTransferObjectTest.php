@@ -4,7 +4,6 @@ namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\Tests\Dummy\BasicDto;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDto;
-use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithCastedAttributeHavingArrayCast;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithCastedAttributeHavingCast;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithNullableProperty;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexStrictDto;
