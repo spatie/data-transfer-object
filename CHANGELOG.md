@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 3.6.1 - 2021-08-17
+
+- Fix array assignment bug with strict dto's (#225)
+
 ## 3.6.0 - 2021-08-12
 
 - Support mapped properties (#224)
