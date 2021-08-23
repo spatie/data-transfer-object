@@ -39,4 +39,35 @@ class MapFromTest extends TestCase
 
         $this->assertEquals('London', $dto->city);
     }
+
+    /** @test */
+    public function dto_can_have_mapped_and_regular_properties()
+    {
+        $data = [
+              'title' => 'Hello world',
+              'user' => [
+                  'name' => 'John Doe'
+              ],
+              'date' => '2021-01-01',
+              'category' => [
+                  'name' => 'News'
+              ]
+          ];
+        $dto = new class($data) extends DataTransferObject {
+            public string $title;
+
+            #[MapFrom('user.name')]
+            public string $username;
+
+            public string $date;
+
+            #[MapFrom('category.name')]
+            public string $categoryName;
+        };
+
+        $this->assertEquals('Hello world', $dto->title);
+        $this->assertEquals('John Doe', $dto->username);
+        $this->assertEquals('2021-01-01', $dto->date);
+        $this->assertEquals('News', $dto->categoryName);
+    }
 }

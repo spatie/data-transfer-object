@@ -13,19 +13,23 @@ class Arr
 
     public static function except($array, $keys): array
     {
-        return static::forget($array, $keys);
+        static::forget($array, $keys);
+
+        return $array;
     }
 
-    public static function forget($array, $keys): array
+    public static function forget(&$array, $keys): void
     {
+        $original = &$array;
+
         $keys = (array) $keys;
 
         if (count($keys) === 0) {
-            return $array;
+            return;
         }
 
         foreach ($keys as $key) {
-            // If the exact key exists in the top-level, remove it
+            // if the exact key exists in the top-level, remove it
             if (static::exists($array, $key)) {
                 unset($array[$key]);
 
@@ -33,6 +37,9 @@ class Arr
             }
 
             $parts = explode('.', $key);
+
+            // clean up before each pass
+            $array = &$original;
 
             while (count($parts) > 1) {
                 $part = array_shift($parts);
@@ -46,8 +53,6 @@ class Arr
 
             unset($array[array_shift($parts)]);
         }
-
-        return $array;
     }
 
     public static function get($array, $key, $default = null)
