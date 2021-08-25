@@ -32,19 +32,22 @@ class Arr
                 continue;
             }
 
-            $parts = explode('.', $key);
-
-            while (count($parts) > 1) {
-                $part = array_shift($parts);
-
-                if (isset($array[$part]) && is_array($array[$part])) {
-                    $array = &$array[$part];
-                } else {
-                    continue 2;
-                }
+            // Check if the key is using dot-notation
+            if (! str_contains($key, '.')) {
+                continue;
             }
 
-            unset($array[array_shift($parts)]);
+            // If we are dealing with dot-notation, recursively handle i
+            $parts = explode('.', $key);
+            $key = array_shift($parts);
+
+            if (static::exists($array, $key) && static::accessible($array[$key])) {
+                $array[$key] = static::forget($array[$key], implode('.', $parts));
+
+                if (count($array[$key]) === 0) {
+                    unset($array[$key]);
+                }
+            }
         }
 
         return $array;
