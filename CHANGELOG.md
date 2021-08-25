@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 3.6.2 - 2021-08-25
+
+- Correct behavior of Arr::forget with dot keys (#231)
+
 ## 3.6.1 - 2021-08-17
 
 - Fix array assignment bug with strict dto's (#225)
