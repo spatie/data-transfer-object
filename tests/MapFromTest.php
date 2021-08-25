@@ -52,7 +52,7 @@ class MapFromTest extends TestCase
             'date' => '2021-01-01',
             'category' => [
                 'name' => 'News',
-            ]
+            ],
         ];
 
         $dto = new class($data) extends DataTransferObject {
