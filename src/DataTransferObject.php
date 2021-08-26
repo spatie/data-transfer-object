@@ -41,7 +41,7 @@ abstract class DataTransferObject
     public static function arrayOf(array $arrayOfParameters): array
     {
         return array_map(
-            fn(mixed $parameters) => new static($parameters),
+            fn (mixed $parameters) => new static($parameters),
             $arrayOfParameters
         );
     }
@@ -113,7 +113,7 @@ abstract class DataTransferObject
                 continue;
             }
 
-            if (!is_array($value)) {
+            if (! is_array($value)) {
                 continue;
             }
 
