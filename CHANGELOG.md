@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 3.7.0 - 2021-08-26
+
+- Add `#[MapTo]` support (#233)
+
 ## 3.6.2 - 2021-08-25
 
 - Correct behavior of Arr::forget with dot keys (#231)
