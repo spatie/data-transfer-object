@@ -11,7 +11,7 @@ use Spatie\DataTransferObject\Exceptions\UnknownProperties;
 use Spatie\DataTransferObject\Reflection\DataTransferObjectClass;
 
 #[CastWith(DataTransferObjectCaster::class)]
-abstract class  DataTransferObject
+abstract class DataTransferObject
 {
     protected array $exceptKeys = [];
 
@@ -60,7 +60,7 @@ abstract class  DataTransferObject
             }
 
             $mapToAttribute = $property->getAttributes(MapTo::class);
-            $name = !count($mapToAttribute) ? $property->getName() : $mapToAttribute[0]->newInstance()->name;
+            $name = count($mapToAttribute) ? $mapToAttribute[0]->newInstance()->name : $property->getName();
 
             $data[$name] = $property->getValue($this);
         }

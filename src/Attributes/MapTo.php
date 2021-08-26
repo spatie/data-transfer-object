@@ -8,7 +8,7 @@ use Attribute;
 class MapTo
 {
     public function __construct(
-        public string | int $name,
+        public string $name,
     ) {
     }
 }
