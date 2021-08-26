@@ -275,6 +275,28 @@ class UserDTO extends DataTransferObject
 $dto = new UserDTO(['John', 'Doe']);
 ```
 
+Sometimes you also want to map them during the transformation to Array. 
+A typical usecase would be transformation from camel case to snake case. 
+For that you can use the `#[MapFrom]` attribute.
+
+```php
+class UserDTO extends DataTransferObject
+{
+
+    #[MapFrom(0)]
+    #[MapTo('first_name')]
+    public string $firstName;
+    
+    #[MapFrom(1)]
+    #[MapTo('last_name')]
+    public string $lastName;
+}
+
+$dto = new UserDTO(['John', 'Doe']);
+$dto->toArray() // ['first_name' => 'John', 'last_name'=> 'Doe'];
+$dto->only('first_name')->toArray() // ['first_name' => 'John'];
+```
+
 ## Strict DTOs
 
 The previous version of this package added the `FlexibleDataTransferObject` class which allowed you to ignore properties that didn't exist on the DTO. This behaviour has been changed, all DTOs are flexible now by default, but you can make them strict by using the `#[Strict]` attribute:

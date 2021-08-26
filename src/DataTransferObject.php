@@ -5,6 +5,7 @@ namespace Spatie\DataTransferObject;
 use ReflectionClass;
 use ReflectionProperty;
 use Spatie\DataTransferObject\Attributes\CastWith;
+use Spatie\DataTransferObject\Attributes\MapTo;
 use Spatie\DataTransferObject\Casters\DataTransferObjectCaster;
 use Spatie\DataTransferObject\Exceptions\UnknownProperties;
 use Spatie\DataTransferObject\Reflection\DataTransferObjectClass;
@@ -58,7 +59,10 @@ abstract class DataTransferObject
                 continue;
             }
 
-            $data[$property->getName()] = $property->getValue($this);
+            $mapToAttribute = $property->getAttributes(MapTo::class);
+            $name = count($mapToAttribute) ? $mapToAttribute[0]->newInstance()->name : $property->getName();
+
+            $data[$name] = $property->getValue($this);
         }
 
         return $data;
