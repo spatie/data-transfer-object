@@ -2,6 +2,9 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 1.14.0 - 2021-08-31
+
+- Support PHP ^8.0
 
 ## 1.13.3 - 2020-01-29
 
