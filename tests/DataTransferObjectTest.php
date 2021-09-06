@@ -6,6 +6,8 @@ use Spatie\DataTransferObject\Tests\Dummy\BasicDto;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDto;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithCastedAttributeHavingCast;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithNullableProperty;
+use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithParent;
+use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithSelf;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexStrictDto;
 use Spatie\DataTransferObject\Tests\Dummy\WithDefaultValueDto;
 
@@ -207,5 +209,35 @@ class DataTransferObjectTest extends TestCase
 
         $this->assertEquals('a', $clone->name);
         $this->assertEquals('a', $clone->other->name);
+    }
+
+    /** @test */
+    public function create_with_nested_self()
+    {
+        $dto = new ComplexDtoWithSelf([
+            'name' => 'a',
+            'other' => [
+                'name' => 'b',
+            ],
+        ]);
+
+        $this->assertEquals('a', $dto->name);
+        $this->assertEquals('b', $dto->other->name);
+        $this->assertNull($dto->other->other);
+    }
+
+    /** @test */
+    public function create_with_nested_parent()
+    {
+        $dto = new ComplexDtoWithParent([
+            'name' => 'a',
+            'other' => [
+                'name' => 'b',
+            ],
+        ]);
+
+        $this->assertEquals('a', $dto->name);
+        $this->assertEquals('b', $dto->other->name);
+        $this->assertNull($dto->other->other);
     }
 }
