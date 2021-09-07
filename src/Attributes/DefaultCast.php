@@ -48,6 +48,6 @@ class DefaultCast
 
     public function resolveCaster(): Caster
     {
-        return new $this->casterClass;
+        return new $this->casterClass();
     }
 }
