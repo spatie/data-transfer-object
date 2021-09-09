@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 3.7.1 - 2021-09-09
+
+- Cast properties with self or parent type (#236)
+
 ## 3.7.0 - 2021-08-26
 
 - Add `#[MapTo]` support (#233)
