@@ -7,6 +7,7 @@ use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionProperty;
+use ReflectionType;
 use ReflectionUnionType;
 use Spatie\DataTransferObject\Attributes\CastWith;
 use Spatie\DataTransferObject\Attributes\DefaultCast;
@@ -84,7 +85,7 @@ class DataTransferObjectProperty
         $attribute = $attributes[0]->newInstance();
 
         return new $attribute->casterClass(
-            array_map(fn ($type) => $type->getName(), $this->extractTypes()),
+            array_map(fn ($type) => $this->resolveTypeName($type), $this->extractTypes()),
             ...$attribute->args
         );
     }
@@ -92,11 +93,13 @@ class DataTransferObjectProperty
     private function resolveCasterFromType(): array
     {
         foreach ($this->extractTypes() as $type) {
-            if (! class_exists($type->getName())) {
+            $name = $this->resolveTypeName($type);
+
+            if (! class_exists($name)) {
                 continue;
             }
 
-            $reflectionClass = new ReflectionClass($type->getName());
+            $reflectionClass = new ReflectionClass($name);
 
             do {
                 $attributes = $reflectionClass->getAttributes(CastWith::class);
@@ -165,6 +168,15 @@ class DataTransferObjectProperty
         return match ($type::class) {
             ReflectionNamedType::class => [$type],
             ReflectionUnionType::class => $type->getTypes(),
+        };
+    }
+
+    private function resolveTypeName(ReflectionType $type): string
+    {
+        return match ($type->getName()) {
+            'self' => $this->dataTransferObject::class,
+            'parent' => get_parent_class($this->dataTransferObject),
+            default => $type->getName(),
         };
     }
 }
