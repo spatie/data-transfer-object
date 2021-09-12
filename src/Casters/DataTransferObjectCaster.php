@@ -2,6 +2,7 @@
 
 namespace Spatie\DataTransferObject\Casters;
 
+use Spatie\DataTransferObject\Arr;
 use Spatie\DataTransferObject\Caster;
 use Spatie\DataTransferObject\DataTransferObject;
 
@@ -20,6 +21,6 @@ class DataTransferObjectCaster implements Caster
             }
         }
 
-        return new $this->classNames[0](...$value);
+        return new $this->classNames[0](...Arr::wrap($value));
     }
 }

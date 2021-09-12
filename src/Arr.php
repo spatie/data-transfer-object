@@ -95,4 +95,13 @@ class Arr
 
         return array_key_exists($key, $array);
     }
+
+    public static function wrap($value): array
+    {
+        if (is_null($value)) {
+            return [];
+        }
+
+        return is_array($value) ? $value : [$value];
+    }
 }
