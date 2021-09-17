@@ -2,7 +2,6 @@
 
 namespace Spatie\DataTransferObject\Reflection;
 
-use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
 use Spatie\DataTransferObject\Attributes\Strict;
@@ -67,7 +66,7 @@ class DataTransferObjectClass
 
     public function isStrict(): bool
     {
-        if (!isset($this->isStrict)) {
+        if (! isset($this->isStrict)) {
             $attribute = null;
 
             $reflectionClass = $this->reflectionClass;

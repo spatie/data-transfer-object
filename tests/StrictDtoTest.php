@@ -48,7 +48,9 @@ class StrictDto extends DataTransferObject
     public string $name;
 }
 
-final class ChildStrictDto extends StrictDto {}
+final class ChildStrictDto extends StrictDto
+{
+}
 
 
 class NonStrictDto extends DataTransferObject
