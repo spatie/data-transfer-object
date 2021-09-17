@@ -2,7 +2,7 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
-## Unreleased
+## 3.7.2 - 2021-09-17
 
 - `#[Strict]` is passed down the inheritance chain so children are strict when parent is strict (#239)
 
