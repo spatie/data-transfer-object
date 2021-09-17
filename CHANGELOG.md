@@ -2,6 +2,10 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## Unreleased
+
+- `#[Strict]` is passed down the inheritance chain so children are strict when parent is strict (#239)
+
 ## 3.7.1 - 2021-09-09
 
 - Cast properties with self or parent type (#236)
