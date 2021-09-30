@@ -17,13 +17,13 @@ class MapFromResolver
     public function mapArguments(array $arguments): array
     {
         foreach ($this->descriptor->getProperties() as $property) {
-            $arguments = $this->mapAttribute($arguments, $property);
+            $arguments = $this->mapArgument($arguments, $property);
         }
 
         return $arguments;
     }
 
-    private function mapAttribute(array $arguments, PropertyDescriptor $property): array
+    private function mapArgument(array $arguments, PropertyDescriptor $property): array
     {
         $attributes = $property->getReflection()->getAttributes(MapFrom::class);
 
@@ -31,13 +31,13 @@ class MapFromResolver
             return $arguments;
         }
 
-        $mappedFromName = $attributes[0]->newInstance()->name;
+        $mapFromName = $attributes[0]->newInstance()->name;
 
         $arguments[$property->getName()] = (
-            Arr::get($arguments, $mappedFromName) ??
+            Arr::get($arguments, $mapFromName) ??
             $property->getReflection()->getDefaultValue()
         );
 
-        return Arr::forget($arguments, $mappedFromName);
+        return Arr::forget($arguments, $mapFromName);
     }
 }
