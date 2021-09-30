@@ -44,7 +44,7 @@ class PropertyDescriptor
     public function getTypeNames(): array
     {
         return array_map(
-            fn($type) => $type->getName(),
+            fn ($type) => $type->getName(),
             $this->getTypes()
         );
     }

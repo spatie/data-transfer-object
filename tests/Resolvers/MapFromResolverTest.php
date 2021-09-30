@@ -20,7 +20,7 @@ class MapFromResolverTest extends TestCase
             'attributeName' => 'Just an attribute',
             'array' => [
                 'attribute' => 'Look, an array!',
-            ]
+            ],
         ]);
 
         $this->assertEqualsCanonicalizing([

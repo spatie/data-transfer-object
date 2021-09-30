@@ -40,7 +40,7 @@ class ClassDescriptor
     public function getPropertyByName(string $name): PropertyDescriptor
     {
         $property = array_values(
-            array_filter($this->getProperties(), fn($property) => $property->getName() === $name)
+            array_filter($this->getProperties(), fn ($property) => $property->getName() === $name)
         )[0] ?? null;
 
         if ($property === null) {

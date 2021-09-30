@@ -3,7 +3,6 @@
 namespace Spatie\DataTransferObject\Tests\Stubs\DataTransferObjects;
 
 use ArrayAccess;
-use Spatie\DataTransferObject\Attributes\MapFrom;
 use Spatie\DataTransferObject\DataTransferObject;
 
 class PersonData extends DataTransferObject

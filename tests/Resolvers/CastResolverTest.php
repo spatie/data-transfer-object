@@ -21,7 +21,7 @@ class CastResolverTest extends TestCase
         ]);
 
         $this->assertEqualsCanonicalizing([
-            'date' => new DateTime('2021-09-30')
+            'date' => new DateTime('2021-09-30'),
         ], $arguments);
     }
 }
