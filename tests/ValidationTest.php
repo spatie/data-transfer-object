@@ -2,6 +2,7 @@
 
 namespace Spatie\DataTransferObject\Tests;
 
+use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\Exceptions\ValidationException;
 use Spatie\DataTransferObject\Tests\Dummy\NumberBetween;
 
