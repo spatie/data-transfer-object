@@ -19,4 +19,3 @@ class CasterOnPropertyTest extends TestCase
         $this->assertEquals('test', $dto->complexObject->name);
     }
 }
-
