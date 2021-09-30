@@ -11,7 +11,7 @@ class UnionDtoTest extends TestCase
     /** @test */
     public function union_types_are_allowed()
     {
-        $dto = new UnionDto(foo: 1);
+        $dto = UnionDto::new(foo: 1);
 
         $this->assertEquals(1, $dto->foo);
     }
@@ -19,7 +19,7 @@ class UnionDtoTest extends TestCase
     /** @test */
     public function union_types_rounding_float()
     {
-        $dto = new UnionDtoWithCast(bar: 123.456);
+        $dto = UnionDtoWithCast::new(bar: 123.456);
 
         $this->assertEquals(123.46, $dto->bar);
     }
@@ -27,7 +27,7 @@ class UnionDtoTest extends TestCase
     /** @test */
     public function union_types_rounding_integer()
     {
-        $dto = new UnionDtoWithCast(bar: 123);
+        $dto = UnionDtoWithCast::new(bar: 123);
 
         $this->assertIsInt($dto->bar);
         $this->assertEquals(123, $dto->bar);
@@ -36,7 +36,7 @@ class UnionDtoTest extends TestCase
     /** @test */
     public function complex_union_types_fallback()
     {
-        $dto = new ComplexUnionDto([
+        $dto = ComplexUnionDto::new([
             'baz' => ['value' => 3],
         ]);
 
@@ -47,8 +47,8 @@ class UnionDtoTest extends TestCase
     /** @test */
     public function complex_union_types_force()
     {
-        $dto = new ComplexUnionDto(
-            baz: new Dto2(value: 3),
+        $dto = ComplexUnionDto::new(
+            baz: Dto2::new(value: 3),
         );
 
         $this->assertInstanceOf(Dto2::class, $dto->baz);

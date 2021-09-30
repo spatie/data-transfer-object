@@ -30,7 +30,7 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function create_with_nested_dto()
     {
-        $dto = new ComplexDto([
+        $dto = ComplexDto::new([
             'name' => 'a',
             'other' => [
                 'name' => 'b',
@@ -44,9 +44,9 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function create_with_nested_dto_already_casted()
     {
-        $dto = new ComplexDto([
+        $dto = ComplexDto::new([
             'name' => 'a',
-            'other' => new BasicDto([
+            'other' => BasicDto::new([
                 'name' => 'b',
             ]),
         ]);
@@ -58,7 +58,7 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function create_strict_with_nested_dto()
     {
-        $dto = new ComplexStrictDto([
+        $dto = ComplexStrictDto::new([
             'name' => 'a',
             'other' => [
                 'name' => 'b',
@@ -72,9 +72,9 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function create_strict_with_nested_dto_already_casted()
     {
-        $dto = new ComplexStrictDto([
+        $dto = ComplexStrictDto::new([
             'name' => 'a',
-            'other' => new BasicDto([
+            'other' => BasicDto::new([
                 'name' => 'b',
             ]),
         ]);
@@ -86,7 +86,7 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function create_with_null_nullable_nested_dto()
     {
-        $dto = new ComplexDtoWithNullableProperty([
+        $dto = ComplexDtoWithNullableProperty::new([
             'name' => 'a',
             'other' => null,
         ]);
@@ -98,7 +98,7 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function create_with_nested_dto_having_cast()
     {
-        $dto = new ComplexDtoWithCastedAttributeHavingCast([
+        $dto = ComplexDtoWithCastedAttributeHavingCast::new([
             'name' => 'a',
             'other' => [
                 'name' => 'b',
@@ -123,7 +123,7 @@ class DataTransferObjectTest extends TestCase
             ],
         ];
 
-        $dto = new ComplexDto($array);
+        $dto = ComplexDto::new($array);
 
         $all = $dto->all();
 
@@ -142,7 +142,7 @@ class DataTransferObjectTest extends TestCase
             ],
         ];
 
-        $dto = new ComplexDto($array);
+        $dto = ComplexDto::new($array);
 
         $this->assertEquals($array, $dto->toArray());
     }
@@ -157,7 +157,7 @@ class DataTransferObjectTest extends TestCase
             ],
         ];
 
-        $dto = new ComplexDto($array);
+        $dto = ComplexDto::new($array);
 
         $this->assertEquals(['name' => 'a'], $dto->only('name')->toArray());
     }
@@ -172,7 +172,7 @@ class DataTransferObjectTest extends TestCase
             ],
         ];
 
-        $dto = new ComplexDto($array);
+        $dto = ComplexDto::new($array);
 
         $this->assertEquals(['other' => ['name' => 'b']], $dto->except('name')->toArray());
     }
@@ -180,7 +180,7 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function create_with_default_value()
     {
-        $dto = new WithDefaultValueDto();
+        $dto = WithDefaultValueDto::new();
 
         $this->assertEquals(['name' => 'John'], $dto->toArray());
     }
@@ -188,7 +188,7 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function create_with_overriden_default_value()
     {
-        $dto = new WithDefaultValueDto(name: 'Doe');
+        $dto = WithDefaultValueDto::new(name: 'Doe');
 
         $this->assertEquals(['name' => 'Doe'], $dto->toArray());
     }
@@ -203,7 +203,7 @@ class DataTransferObjectTest extends TestCase
             ],
         ];
 
-        $dto = new ComplexDto($array);
+        $dto = ComplexDto::new($array);
 
         $clone = $dto->clone(other: ['name' => 'a']);
 
@@ -214,7 +214,7 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function create_with_nested_self()
     {
-        $dto = new ComplexDtoWithSelf([
+        $dto = ComplexDtoWithSelf::new([
             'name' => 'a',
             'other' => [
                 'name' => 'b',
@@ -229,7 +229,7 @@ class DataTransferObjectTest extends TestCase
     /** @test */
     public function create_with_nested_parent()
     {
-        $dto = new ComplexDtoWithParent([
+        $dto = ComplexDtoWithParent::new([
             'name' => 'a',
             'other' => [
                 'name' => 'b',

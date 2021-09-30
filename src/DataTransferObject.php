@@ -17,13 +17,26 @@ abstract class DataTransferObject
 
     protected array $onlyKeys = [];
 
-    public function __construct(...$args)
+    public static function new(...$args): static
+    {
+        $dataTransferObject = new static();
+
+        $class = new DataTransferObjectClass($dataTransferObject);
+
+        return $dataTransferObject
+            ->setUp($class, ...$args)
+            ->validate($class);
+    }
+
+    private function __construct()
+    {
+    }
+
+    protected function setUp(DataTransferObjectClass $class, ...$args): static
     {
         if (is_array($args[0] ?? null)) {
             $args = $args[0];
         }
-
-        $class = new DataTransferObjectClass($this);
 
         foreach ($class->getProperties() as $property) {
             $property->setValue(Arr::get($args, $property->name) ?? $this->{$property->name} ?? null);
@@ -35,13 +48,20 @@ abstract class DataTransferObject
             throw UnknownProperties::new(static::class, array_keys($args));
         }
 
+        return $this;
+    }
+
+    protected function validate(DataTransferObjectClass $class): static
+    {
         $class->validate();
+
+        return $this;
     }
 
     public static function arrayOf(array $arrayOfParameters): array
     {
         return array_map(
-            fn (mixed $parameters) => new static($parameters),
+            fn (mixed $parameters) => static::new($parameters),
             $arrayOfParameters
         );
     }
@@ -88,7 +108,7 @@ abstract class DataTransferObject
 
     public function clone(...$args): static
     {
-        return new static(...array_merge($this->toArray(), $args));
+        return static::new(...array_merge($this->toArray(), $args));
     }
 
     public function toArray(): array

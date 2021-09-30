@@ -11,7 +11,7 @@ class StrictDtoTest extends TestCase
     /** @test */
     public function non_strict_test()
     {
-        $dto = new NonStrictDto(
+        $dto = NonStrictDto::new(
             name: 'name',
             unknown: 'unknown'
         );
@@ -24,7 +24,7 @@ class StrictDtoTest extends TestCase
     {
         $this->expectException(UnknownProperties::class);
 
-        $dto = new StrictDto(
+        $dto = StrictDto::new(
             name:    'name',
             unknown: 'unknown'
         );
@@ -35,7 +35,7 @@ class StrictDtoTest extends TestCase
     {
         $this->expectException(UnknownProperties::class);
 
-        $dto = new ChildStrictDto(
+        $dto = ChildStrictDto::new(
             name: 'name',
             unknown: 'unknown'
         );

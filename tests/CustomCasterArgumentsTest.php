@@ -18,16 +18,16 @@ class CustomCasterArgumentsTest extends TestCase
     /** @test */
     public function test_generic_array_caster_on_array_type()
     {
-        $bar = new Bar(
+        $bar = Bar::new(
             [
                 'collectionOfFoo' => [
                     ['name' => 'a'],
-                    new Foo(name: 'b'),
+                    Foo::new(name: 'b'),
                     ['name' => 'c'],
                 ],
                 'collectionOfBaz' => [
                     ['name' => 'a'],
-                    new Baz(name: 'b'),
+                    Baz::new(name: 'b'),
                     ['name' => 'c'],
                 ],
             ]
@@ -47,16 +47,16 @@ class CustomCasterArgumentsTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Caster [ArrayCaster] may only be used to cast arrays or objects that implement ArrayAccess.');
 
-        new BarIllogical(
+        BarIllogical::new(
             [
                 'collectionOfFoo' => [
                     ['name' => 'a'],
-                    new Foo(name: 'b'),
+                    Foo::new(name: 'b'),
                     ['name' => 'c'],
                 ],
                 'collectionOfBaz' => [
                     ['name' => 'a'],
-                    new Baz(name: 'b'),
+                    Baz::new(name: 'b'),
                     ['name' => 'c'],
                 ],
             ]
@@ -68,7 +68,7 @@ class CustomCasterArgumentsTest extends TestCase
      */
     public function test_casting_an_empty_array_object_will_not_add_ghost_value()
     {
-        $object = new BarJr([
+        $object = BarJr::new([
             'collectionOfFoo' => new Collection(),
             'collectionOfBaz' => new Collection(),
         ]);
@@ -85,7 +85,7 @@ class CustomCasterArgumentsTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Caster [ArrayCaster] may only be used to cast ArrayAccess objects that are traversable.');
 
-        new DTOWithArrayAccessImplementation(
+        DTOWithArrayAccessImplementation::new(
             [
                 'collectionOfFoo' => [
                     ['name' => 'a'],
@@ -103,7 +103,7 @@ class CustomCasterArgumentsTest extends TestCase
 
     public function test_it_can_cast_iterator_aggregate()
     {
-        $object = new DTOWithArrayAccessIteratorAggregate(
+        $object = DTOWithArrayAccessIteratorAggregate::new(
             [
                 'collectionOfFoo' => [
                     ['name' => 'a'],
@@ -130,7 +130,7 @@ class CustomCasterArgumentsTest extends TestCase
 
     public function test_it_can_cast_iterator()
     {
-        $object = new DTOWithArrayAccessIterator(
+        $object = DTOWithArrayAccessIterator::new(
             [
                 'collectionOfFoo' => [
                     ['name' => 'a'],
@@ -157,7 +157,7 @@ class CustomCasterArgumentsTest extends TestCase
 
     public function test_it_can_cast_array_object()
     {
-        $object = new DTOWithArrayObject(
+        $object = DTOWithArrayObject::new(
             [
                 'collectionOfFoo' => [
                     ['name' => 'a'],
@@ -189,7 +189,7 @@ class CustomCasterArgumentsTest extends TestCase
             "Caster [ArrayCaster] each item must be an array or an instance of the specified item type [Spatie\DataTransferObject\Tests\Foo]."
         );
 
-        new DTOWithArrayObject(
+        DTOWithArrayObject::new(
             [
                 'collectionOfFoo' => [
                     ['name' => 'a'],
@@ -208,7 +208,7 @@ class CustomCasterArgumentsTest extends TestCase
 
     public function test_that_array_keys_get_cast()
     {
-        $object = new Bar(
+        $object = Bar::new(
             [
                 'collectionOfFoo' => [
                     'one' => ['name' => 'a'],
@@ -234,7 +234,7 @@ class CustomCasterArgumentsTest extends TestCase
 
     public function test_that_array_object_keys_get_cast()
     {
-        $object = new DTOWithArrayObject(
+        $object = DTOWithArrayObject::new(
             [
                 'collectionOfFoo' => [
                     'one' => ['name' => 'a'],

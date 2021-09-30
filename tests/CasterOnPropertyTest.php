@@ -3,7 +3,6 @@
 namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\Attributes\CastWith;
-use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexObject;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexObjectCaster;
 
@@ -12,7 +11,7 @@ class CasterOnPropertyTest extends TestCase
     /** @test */
     public function property_is_casted()
     {
-        $dto = new class(complexObject: [ 'name' => 'test' ]) extends DataTransferObject {
+        $dto = new class(complexObject: [ 'name' => 'test' ]) extends AnonymousDataTransferObject {
             #[CastWith(ComplexObjectCaster::class)]
             public ComplexObject $complexObject;
         };
@@ -20,3 +19,4 @@ class CasterOnPropertyTest extends TestCase
         $this->assertEquals('test', $dto->complexObject->name);
     }
 }
+

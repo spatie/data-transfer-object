@@ -70,6 +70,7 @@ class DataTransferObjectClass
             $attribute = null;
 
             $reflectionClass = $this->reflectionClass;
+
             while ($attribute === null && $reflectionClass !== false) {
                 $attribute = $reflectionClass->getAttributes(Strict::class)[0] ?? null;
 

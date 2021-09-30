@@ -60,7 +60,7 @@ class ArrayCaster implements Caster
         }
 
         if (is_array($data)) {
-            return new $this->itemType(...$data);
+            return call_user_func_array("{$this->itemType}::new", $data);
         }
 
         throw new LogicException(

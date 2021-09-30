@@ -5,14 +5,13 @@ namespace Spatie\DataTransferObject\Tests;
 use Spatie\DataTransferObject\Arr;
 use Spatie\DataTransferObject\Attributes\MapFrom;
 use Spatie\DataTransferObject\Attributes\MapTo;
-use Spatie\DataTransferObject\DataTransferObject;
 
 class MapToTest extends TestCase
 {
     /** @test */
     public function property_is_mapped_to_attribute_name()
     {
-        $dto = new class(originalCount: 42) extends DataTransferObject {
+        $dto = new class(originalCount: 42) extends AnonymousDataTransferObject {
             #[MapTo('count')]
             public int $originalCount;
         };
@@ -32,7 +31,7 @@ class MapToTest extends TestCase
             ],
         ];
 
-        $dto = new class($data) extends DataTransferObject {
+        $dto = new class($data) extends AnonymousDataTransferObject {
             public string $title;
 
             #[MapTo('author')]
@@ -66,7 +65,7 @@ class MapToTest extends TestCase
             ],
         ];
 
-        $dto = new class($data) extends DataTransferObject {
+        $dto = new class($data) extends AnonymousDataTransferObject {
             public string $title;
 
             #[MapFrom('user.name')]
@@ -93,7 +92,7 @@ class MapToTest extends TestCase
     /** @test */
     public function mapped_property_can_be_except()
     {
-        $dto = new class(originalCount: 42, villain: 'Johnny Lawrence') extends DataTransferObject {
+        $dto = new class(originalCount: 42, villain: 'Johnny Lawrence') extends AnonymousDataTransferObject {
             #[MapTo('count')]
             public int $originalCount;
 
@@ -109,7 +108,7 @@ class MapToTest extends TestCase
     /** @test */
     public function mapped_property_can_be_only_exported()
     {
-        $dto = new class(originalCount: 42, villain: 'Johnny Lawrence') extends DataTransferObject {
+        $dto = new class(originalCount: 42, villain: 'Johnny Lawrence') extends AnonymousDataTransferObject {
             #[MapTo('count')]
             public int $originalCount;
 

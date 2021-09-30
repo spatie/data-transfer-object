@@ -9,7 +9,7 @@ class CasterWithDataTransferObjectsTest extends TestCase
     /** @test */
     public function test_with_nested_dtos()
     {
-        $dtoA = new DtoA([
+        $dtoA = DtoA::new([
             'dtoB' => [
                 'dtoC' => [
                     'name' => 'test',

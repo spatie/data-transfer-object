@@ -2,8 +2,8 @@
 
 namespace Spatie\DataTransferObject\Tests\Reflection;
 
-use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\Reflection\DataTransferObjectClass;
+use Spatie\DataTransferObject\Tests\AnonymousDataTransferObject;
 use Spatie\DataTransferObject\Tests\TestCase;
 
 class DataTransferObjectClassTest extends TestCase
@@ -11,7 +11,7 @@ class DataTransferObjectClassTest extends TestCase
     /** @test */
     public function test_public_properties()
     {
-        $dto = new class() extends DataTransferObject {
+        $dto = new class() extends AnonymousDataTransferObject {
             public $foo;
 
             public static $bar;

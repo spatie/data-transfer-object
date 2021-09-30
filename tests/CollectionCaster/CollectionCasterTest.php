@@ -13,7 +13,7 @@ class CollectionCasterTest extends TestCase
     /** @test */
     public function test_collection_caster()
     {
-        $bar = new Bar([
+        $bar = Bar::new([
             'collectionOfFoo' => [
                 ['name' => 'a'],
                 ['name' => 'b'],
@@ -50,7 +50,7 @@ class FooCollectionCaster implements Caster
     public function cast(mixed $value): CollectionOfFoo
     {
         return new CollectionOfFoo(array_map(
-            fn (array $data) => new Foo(...$data),
+            fn (array $data) => Foo::new(...$data),
             $value
         ));
     }

@@ -13,7 +13,7 @@ class ArrayCasterTest extends TestCase
     /** @test */
     public function test_collection_caster()
     {
-        $bar = new Bar([
+        $bar = Bar::new([
             'collectionOfFoo' => [
                 ['name' => 'a'],
                 ['name' => 'b'],
@@ -46,7 +46,7 @@ class FooArrayCaster implements Caster
         }
 
         return array_map(
-            fn (array $data) => new Foo(...$value),
+            fn (array $data) => Foo::new(...$value),
             $value
         );
     }

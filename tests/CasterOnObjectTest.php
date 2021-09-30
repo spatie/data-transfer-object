@@ -10,10 +10,13 @@ class CasterOnObjectTest extends TestCase
     /** @test */
     public function property_is_casted()
     {
-        $dto = new class(complexObject: [ 'name' => 'test' ]) extends DataTransferObject {
-            public ComplexObjectWithCaster $complexObject;
-        };
+        $dto = CasterOnObjectTestDTO::new(complexObject: ['name' => 'test']);
 
         $this->assertEquals('test', $dto->complexObject->name);
     }
+}
+
+class CasterOnObjectTestDTO extends DataTransferObject
+{
+    public ComplexObjectWithCaster $complexObject;
 }

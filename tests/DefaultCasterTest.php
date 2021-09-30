@@ -13,7 +13,7 @@ class DefaultCasterTest extends TestCase
     /** @test */
     public function property_is_casted()
     {
-        $dto = new DtoWithDefaultCaster(date: '2020-01-01');
+        $dto = DtoWithDefaultCaster::new(date: '2020-01-01');
 
         $this->markTestSucceeded();
     }
@@ -21,7 +21,7 @@ class DefaultCasterTest extends TestCase
     /** @test */
     public function child_property_is_casted()
     {
-        $dto = new ChildDto(date: '2020-01-01');
+        $dto = ChildDto::new(date: '2020-01-01');
 
         $this->markTestSucceeded();
     }

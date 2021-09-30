@@ -10,7 +10,7 @@ class MapFromTest extends TestCase
     /** @test */
     public function property_is_mapped_from_attribute_name()
     {
-        $dto = new class(count: 42) extends DataTransferObject {
+        $dto = new class(count: 42) extends AnonymousDataTransferObject {
             #[MapFrom('count')]
             public int $originalCount;
         };
@@ -21,7 +21,7 @@ class MapFromTest extends TestCase
     /** @test */
     public function property_is_mapped_from_index()
     {
-        $dto = new class(['John', 'Doe']) extends DataTransferObject {
+        $dto = new class(['John', 'Doe']) extends AnonymousDataTransferObject {
             #[MapFrom(1)]
             public string $lastName;
         };
@@ -32,7 +32,7 @@ class MapFromTest extends TestCase
     /** @test */
     public function property_is_mapped_from_dot_notation()
     {
-        $dto = new class(['address' => ['city' => 'London']]) extends DataTransferObject {
+        $dto = new class(['address' => ['city' => 'London']]) extends AnonymousDataTransferObject {
             #[MapFrom('address.city')]
             public string $city;
         };
@@ -55,7 +55,7 @@ class MapFromTest extends TestCase
             ],
         ];
 
-        $dto = new class($data) extends DataTransferObject {
+        $dto = new class($data) extends AnonymousDataTransferObject {
             public string $title;
 
             #[MapFrom('user.name')]
