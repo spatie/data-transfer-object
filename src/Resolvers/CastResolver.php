@@ -16,7 +16,7 @@ class CastResolver
     public function castArguments(array $arguments): array
     {
         foreach ($arguments as $argument => $value) {
-            $arguments[$argument] = $this->castAttribute(
+            $arguments[$argument] = $this->castArgument(
                 $this->descriptor->getPropertyByName($argument),
                 $value
             );
@@ -25,19 +25,19 @@ class CastResolver
         return $arguments;
     }
 
-    protected function castAttribute(PropertyDescriptor $property, mixed $value): mixed
+    protected function castArgument(PropertyDescriptor $property, mixed $value): mixed
     {
-        $castAttributes = $property->getReflection()->getAttributes(CastWith::class);
+        $attributes = $property->getReflection()->getAttributes(CastWith::class);
 
-        if (! count($castAttributes)) {
+        if (! count($attributes)) {
             return $value;
         }
 
-        /** @var \Spatie\DataTransferObject\Attributes\CastWith $castAttribute */
-        $castAttribute = $castAttributes[0]->newInstance();
+        /** @var \Spatie\DataTransferObject\Attributes\CastWith $attribute */
+        $attribute = $attributes[0]->newInstance();
 
         /** @var \Spatie\DataTransferObject\Casters\Caster $caster */
-        $caster = new $castAttribute->casterClass($property, ...$castAttribute->args);
+        $caster = new $attribute->casterClass($property, ...$attribute->args);
 
         return $caster->cast($value);
     }
