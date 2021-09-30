@@ -5,7 +5,6 @@ namespace Spatie\DataTransferObject\Casters;
 use ArrayAccess;
 use LogicException;
 use Spatie\DataTransferObject\Caster;
-use Spatie\DataTransferObject\DataTransferObject;
 use Traversable;
 
 class ArrayCaster implements Caster
@@ -60,8 +59,8 @@ class ArrayCaster implements Caster
             return $data;
         }
 
-        if (is_array($data) && $this->itemType instanceof DataTransferObject) {
-            return $this->itemType::newWithoutValidation($data);
+        if (is_array($data)) {
+            return call_user_func_array("{$this->itemType}::new", $data);
         }
 
         throw new LogicException(
