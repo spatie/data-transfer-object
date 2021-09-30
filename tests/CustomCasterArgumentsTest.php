@@ -308,17 +308,17 @@ class ArrayAccessImplementation implements ArrayAccess
     {
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return key_exists($offset, $this->state);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->state[$offset];
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         if (! empty($offset)) {
             $this->state[$offset] = $value;
@@ -327,7 +327,7 @@ class ArrayAccessImplementation implements ArrayAccess
         }
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->state[$offset]);
     }
@@ -335,7 +335,7 @@ class ArrayAccessImplementation implements ArrayAccess
 
 class ArrayAccessIteratorAggregate extends ArrayAccessImplementation implements IteratorAggregate
 {
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->state);
     }
@@ -343,27 +343,27 @@ class ArrayAccessIteratorAggregate extends ArrayAccessImplementation implements 
 
 class ArrayAccessIterator extends ArrayAccessImplementation implements Iterator
 {
-    public function current()
+    public function current(): mixed
     {
         return current($this->state);
     }
 
-    public function key()
+    public function key(): mixed
     {
         return key($this->state);
     }
 
-    public function next()
+    public function next(): void
     {
-        return next($this->state);
+        next($this->state);
     }
 
-    public function rewind()
+    public function rewind(): void
     {
-        return reset($this->state);
+        reset($this->state);
     }
 
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->state[$this->key()]);
     }
