@@ -7,12 +7,17 @@ use ReflectionProperty;
 use Spatie\DataTransferObject\Attributes\CastWith;
 use Spatie\DataTransferObject\Attributes\MapTo;
 use Spatie\DataTransferObject\Casters\DataTransferObjectCaster;
+use Spatie\DataTransferObject\Descriptors\ClassDescriptor;
 use Spatie\DataTransferObject\Exceptions\UnknownProperties;
 use Spatie\DataTransferObject\Reflection\DataTransferObjectClass;
+use Spatie\DataTransferObject\Resolvers\CastResolver;
+use Spatie\DataTransferObject\Resolvers\MapFromResolver;
 
 #[CastWith(DataTransferObjectCaster::class)]
 abstract class DataTransferObject
 {
+    private static ClassDescriptor $description;
+
     protected array $exceptKeys = [];
 
     protected array $onlyKeys = [];
@@ -28,8 +33,39 @@ abstract class DataTransferObject
             ->validate($class);
     }
 
-    private function __construct()
+    public static function newWithoutValidation(...$args): static
     {
+        $dataTransferObject = new static();
+
+        if (is_array($args[0] ?? null)) {
+            $args = $args[0];
+        }
+
+        $properties = (new MapFromResolver(
+            static::describe()
+        ))->mapArguments($args);
+
+        $properties = (new CastResolver(
+            static::describe()
+        ))->castArguments($properties);
+
+        return new static($properties);
+    }
+
+    private static function describe(): ClassDescriptor
+    {
+        if (! isset(static::$description)) {
+            static::$description = new ClassDescriptor(static::class);
+        }
+
+        return static::$description;
+    }
+
+    private function __construct(array $properties = [])
+    {
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 
     protected function setUp(DataTransferObjectClass $class, ...$args): static
