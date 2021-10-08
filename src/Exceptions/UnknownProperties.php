@@ -2,14 +2,18 @@
 
 namespace Spatie\DataTransferObject\Exceptions;
 
-use Exception;
+use Illuminate\Support\Collection;
+use LogicException;
+use Spatie\DataTransferObject\Descriptors\ClassDescriptor;
 
-class UnknownProperties extends Exception
+class UnknownProperties extends LogicException
 {
-    public static function new(string $dtoClass, array $fields): self
+    public static function new(ClassDescriptor $class, Collection $unknownProperties): static
     {
-        $properties = json_encode($fields);
+        $properties = $unknownProperties->count() > 1 ? 'properties' : 'property';
 
-        return new self("Unknown properties provided to `{$dtoClass}`: {$properties}");
+        return new static(
+            "Data Transfer Object [{$class->getFqdn()}] does not have the referenced {$properties}: {$unknownProperties->toJson()}."
+        );
     }
 }

@@ -2,66 +2,57 @@
 
 namespace Spatie\DataTransferObject\Tests\Descriptors;
 
-use PHPUnit\Framework\TestCase;
-use ReflectionProperty;
-use ReflectionType;
-use Spatie\DataTransferObject\Descriptors\PropertyDescriptor;
-use Spatie\DataTransferObject\Tests\Stubs\DataTransferObjects\PersonData;
+use Illuminate\Support\Collection;
+use Spatie\DataTransferObject\Attributes\MapFrom;
+use Spatie\DataTransferObject\Tests\Stubs\MappedDataTransferObject;
+use Spatie\DataTransferObject\Tests\Stubs\SimpleDataTransferObject;
+use Spatie\DataTransferObject\Tests\TestCase;
 
 class PropertyDescriptorTest extends TestCase
 {
-    public function test_single_property_type()
+    public function test_it_can_get_attributes(): void
     {
-        $descriptor = new PropertyDescriptor(
-            new ReflectionProperty(PersonData::class, 'name')
-        );
+        $classDescriptor = $this->getDescriptor(MappedDataTransferObject::class);
+        $propertyDescriptor = $classDescriptor->getProperty('mappedFromAttribute');
 
-        $this->assertSame('name', $descriptor->getName());
-        $this->assertInstanceOf(ReflectionProperty::class, $descriptor->getReflection());
-
-        $this->assertContainsOnlyInstancesOf(ReflectionType::class, $descriptor->getTypes());
-        $this->assertCount(1, $descriptor->getTypes());
-
-        $this->assertSame(['string'], $descriptor->getTypeNames());
-
-        $this->assertTrue($descriptor->hasType('string'));
-        $this->assertFalse($descriptor->hasType('int'));
-
-        $this->assertFalse($descriptor->isOptional());
+        $this->assertNotNull($propertyDescriptor);
+        $this->assertInstanceOf(Collection::class, $propertyDescriptor->getAttributes());
+        $this->assertContainsOnlyInstancesOf(MapFrom::class, $propertyDescriptor->getAttributes());
+        $this->assertCount(1, $propertyDescriptor->getAttributes());
     }
 
-    public function test_union_property_type()
+    public function test_it_can_get_specific_attribute(): void
     {
-        $descriptor = new PropertyDescriptor(
-            new ReflectionProperty(PersonData::class, 'money')
-        );
+        $classDescriptor = $this->getDescriptor(MappedDataTransferObject::class);
+        $propertyDescriptor = $classDescriptor->getProperty('mappedFromAttribute');
+        $attribute = $propertyDescriptor->getAttribute(MapFrom::class);
 
-        $this->assertContainsOnlyInstancesOf(ReflectionType::class, $descriptor->getTypes());
-        $this->assertCount(2, $descriptor->getTypes());
-
-        $this->assertEqualsCanonicalizing(['int', 'float'], $descriptor->getTypeNames());
-
-        $this->assertTrue($descriptor->hasType('int'));
-        $this->assertTrue($descriptor->hasType('float'));
-        $this->assertFalse($descriptor->hasType('string'));
-
-        $this->assertFalse($descriptor->isOptional());
+        $this->assertInstanceOf(MapFrom::class, $attribute);
     }
 
-    public function test_optional_properties()
+    public function test_it_can_get_name(): void
     {
-        $spouseDescriptor = new PropertyDescriptor(
-            new ReflectionProperty(PersonData::class, 'spouse')
-        );
+        $classDescriptor = $this->getDescriptor(MappedDataTransferObject::class);
 
-        $childrenDescriptor = new PropertyDescriptor(
-            new ReflectionProperty(PersonData::class, 'children')
-        );
+        $this->assertSame('mappedFromKey', $classDescriptor->getProperty('mappedFromKey')->getName());
+        $this->assertSame('mappedFromAttribute', $classDescriptor->getProperty('mappedFromAttribute')->getName());
+        $this->assertSame('mappedFromNested', $classDescriptor->getProperty('mappedFromNested')->getName());
+    }
 
-        $this->assertCount(1, $spouseDescriptor->getTypes());
-        $this->assertTrue($spouseDescriptor->isOptional());
+    public function test_it_can_manipulate_values(): void
+    {
+        $classDescriptor = $this->getDescriptor(SimpleDataTransferObject::class);
+        $dataTransferObject = $classDescriptor->getDataTransferObject();
 
-        $this->assertCount(3, $childrenDescriptor->getTypes());
-        $this->assertTrue($childrenDescriptor->isOptional());
+        $firstNameProperty = $classDescriptor->getProperty('firstName');
+        $lastNameProperty = $classDescriptor->getProperty('lastName');
+
+        $firstNameProperty->setValue('James');
+        $this->assertSame('James', $firstNameProperty->getValue());
+        $this->assertSame('James', $dataTransferObject->firstName);
+
+        $lastNameProperty->setValue('Johnson');
+        $this->assertSame('Johnson', $lastNameProperty->getValue());
+        $this->assertSame('Johnson', $dataTransferObject->lastName);
     }
 }

@@ -16,13 +16,12 @@
         }
     ],
     "require": {
-        "php": "^8.1"
+        "php": "^8.1",
+        "illuminate/collections": "^8.63"
     },
     "require-dev": {
-        "illuminate/collections": "^8.36",
         "larapack/dd": "^1.1",
-        "phpunit/phpunit": "^9.0",
-        "jetbrains/phpstorm-attributes": "^1.0"
+        "phpunit/phpunit": "^9.0"
     },
     "suggest": {
         "phpstan/phpstan": "Take advantage of checkUninitializedProperties with \\Spatie\\DataTransferObject\\PHPstan\\PropertiesAreAlwaysInitializedExtension"

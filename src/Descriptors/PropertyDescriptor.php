@@ -2,16 +2,34 @@
 
 namespace Spatie\DataTransferObject\Descriptors;
 
-use ReflectionNamedType;
+use Illuminate\Support\Collection;
+use ReflectionAttribute;
 use ReflectionProperty;
-use ReflectionType;
-use ReflectionUnionType;
 
-class PropertyDescriptor
+final class PropertyDescriptor
 {
-    public function __construct(private ReflectionProperty $property)
+    private Collection $attributes;
+
+    public function __construct(private ClassDescriptor $class, private ReflectionProperty $property)
     {
-        //
+        $this->resolveAttributes();
+    }
+
+    public function getAttributes(): Collection
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * @template InputAttributeType
+     *
+     * @param class-string<InputAttributeType> $attribute
+     *
+     * @return null|InputAttributeType
+     */
+    public function getAttribute(string $attribute): ?Object
+    {
+        return $this->attributes->whereInstanceOf($attribute)->first();
     }
 
     public function getName(): string
@@ -19,47 +37,23 @@ class PropertyDescriptor
         return $this->property->getName();
     }
 
-    public function getReflection(): ReflectionProperty
+    public function getValue(): mixed
     {
-        return $this->property;
+        return $this->property->getValue($this->class->getDataTransferObject());
     }
 
-    /**
-     * @return array<ReflectionType>
-     */
-    public function getTypes(): array
+    public function setValue(mixed $value): self
     {
-        $type = $this->property->getType();
+        $this->property->setValue($this->class->getDataTransferObject(), $value);
 
-        if (! $type) {
-            return [];
-        }
-
-        return match ($type::class) {
-            ReflectionNamedType::class => [$type],
-            ReflectionUnionType::class => $type->getTypes(),
-        };
+        return $this;
     }
 
-    public function getTypeNames(): array
+    private function resolveAttributes(): void
     {
-        return array_map(
-            fn ($type) => $type->getName(),
-            $this->getTypes()
-        );
-    }
-
-    public function hasType(string $type): bool
-    {
-        return in_array($type, $this->getTypeNames());
-    }
-
-    public function isOptional(): bool
-    {
-        if ($this->getTypes()[0]?->allowsNull() || $this->hasType('null')) {
-            return true;
-        }
-
-        return false;
+        $this->attributes = Collection::make($this->property->getAttributes())
+            ->map(
+                fn(ReflectionAttribute $attribute) => $attribute->newInstance()
+            );
     }
 }
