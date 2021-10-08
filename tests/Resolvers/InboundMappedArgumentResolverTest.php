@@ -35,8 +35,8 @@ class InboundMappedArgumentResolverTest extends TestCase
             'I was mapped from a key.',
             'attribute' => 'I was mapped from an attribute!',
             'nested' => [
-                'attribute' => 'But I was mapped from a nested attribute. 😎'
-            ]
+                'attribute' => 'But I was mapped from a nested attribute. 😎',
+            ],
         ]);
 
         $resolver = new InboundMappedArgumentResolver();
@@ -46,7 +46,7 @@ class InboundMappedArgumentResolverTest extends TestCase
             new Collection([
                 'mappedFromKey' => 'I was mapped from a key.',
                 'mappedFromAttribute' => 'I was mapped from an attribute!',
-                'mappedFromNested' => 'But I was mapped from a nested attribute. 😎'
+                'mappedFromNested' => 'But I was mapped from a nested attribute. 😎',
             ]),
             $descriptor->getArguments()
         );

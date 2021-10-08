@@ -18,7 +18,7 @@ class InboundPropertyValueResolver implements InboundResolver
     public function resolve(ClassDescriptor $descriptor): void
     {
         $descriptor->getArguments()->each(
-            fn($value, $argument) => $this->resolveArgumentToProperty($descriptor, $argument, $value)
+            fn ($value, $argument) => $this->resolveArgumentToProperty($descriptor, $argument, $value)
         );
 
         if ($descriptor->isStrict() && $this->unknownProperties->isNotEmpty()) {

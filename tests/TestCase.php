@@ -41,7 +41,8 @@ class TestCase extends BaseTestCase
 
         // It's cheating, but it works!
         call_user_func_array(
-            $reflection->getMethod('__construct')->getClosure($class), $arguments
+            $reflection->getMethod('__construct')->getClosure($class),
+            $arguments
         );
 
         return $class;

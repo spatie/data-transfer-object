@@ -20,8 +20,8 @@ abstract class DataTransferObject
     public static function newWithoutValidation(...$arguments): static
     {
         return (new static(...$arguments))
-            ->resolve(new InboundMappedArgumentResolver)
-            ->resolve(new InboundPropertyValueResolver);
+            ->resolve(new InboundMappedArgumentResolver())
+            ->resolve(new InboundPropertyValueResolver());
     }
 
     private function __construct(...$arguments)

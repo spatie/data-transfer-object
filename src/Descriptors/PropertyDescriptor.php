@@ -53,7 +53,7 @@ final class PropertyDescriptor
     {
         $this->attributes = Collection::make($this->property->getAttributes())
             ->map(
-                fn(ReflectionAttribute $attribute) => $attribute->newInstance()
+                fn (ReflectionAttribute $attribute) => $attribute->newInstance()
             );
     }
 }

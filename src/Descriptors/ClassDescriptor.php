@@ -78,7 +78,7 @@ final class ClassDescriptor
     public function getProperty(string $name): ?PropertyDescriptor
     {
         return $this->properties->filter(
-            fn($property) => $property->getName() === $name
+            fn ($property) => $property->getName() === $name
         )->first();
     }
 
@@ -96,7 +96,7 @@ final class ClassDescriptor
     {
         $this->attributes = Collection::make($this->reflectionClass->getAttributes())
             ->map(
-                fn(ReflectionAttribute $attribute) => $attribute->newInstance()
+                fn (ReflectionAttribute $attribute) => $attribute->newInstance()
             );
     }
 
@@ -107,7 +107,7 @@ final class ClassDescriptor
         )->filter(
             fn (ReflectionProperty $property) => $property->isReadOnly() && $property->isStatic() === false
         )->map(
-            fn(ReflectionProperty $property) => new PropertyDescriptor($this, $property)
+            fn (ReflectionProperty $property) => new PropertyDescriptor($this, $property)
         );
     }
 }
