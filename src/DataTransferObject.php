@@ -4,6 +4,7 @@ namespace Spatie\DataTransferObject;
 
 use Spatie\DataTransferObject\Descriptors\ClassDescriptor;
 use Spatie\DataTransferObject\Resolvers\InboundMappedArgumentResolver;
+use Spatie\DataTransferObject\Resolvers\InboundPropertyCastResolver;
 use Spatie\DataTransferObject\Resolvers\InboundPropertyValueResolver;
 use Spatie\DataTransferObject\Resolvers\InboundResolver;
 use Spatie\DataTransferObject\Resolvers\OutboundResolver;
@@ -21,6 +22,7 @@ abstract class DataTransferObject
     {
         return (new static(...$arguments))
             ->resolve(new InboundMappedArgumentResolver())
+            ->resolve(new InboundPropertyCastResolver())
             ->resolve(new InboundPropertyValueResolver());
     }
 

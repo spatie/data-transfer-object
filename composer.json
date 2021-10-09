@@ -15,9 +15,10 @@
             "role": "Developer"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
         "php": "^8.1",
-        "illuminate/collections": "^8.63"
+        "illuminate/collections": "dev-master"
     },
     "require-dev": {
         "larapack/dd": "^1.1",

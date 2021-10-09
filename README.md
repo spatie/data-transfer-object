@@ -123,7 +123,7 @@ class ComplexObject
 And its caster `ComplexObjectCaster`:
 
 ```php
-use Spatie\DataTransferObject\Caster;
+use Spatie\DataTransferObject\Casters;
 
 class ComplexObjectCaster implements Caster
 {

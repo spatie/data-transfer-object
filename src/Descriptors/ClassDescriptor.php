@@ -31,9 +31,21 @@ final class ClassDescriptor
         $this->resolveProperties();
     }
 
+    public function getArgument(string $name): mixed
+    {
+        return $this->arguments->get($name, null);
+    }
+
     public function getArguments(): Collection
     {
         return $this->arguments;
+    }
+
+    public function setArgument(string $name, mixed $value): self
+    {
+        $this->arguments->offsetSet($name, $value);
+
+        return $this;
     }
 
     public function setArguments(Collection $arguments): self
