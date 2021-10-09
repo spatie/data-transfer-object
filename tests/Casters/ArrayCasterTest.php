@@ -22,7 +22,7 @@ class ArrayCasterTest extends TestCase
         );
 
         $descriptor = $this->getDescriptor(InvalidArrayCastedDataTransferObject::class, [
-            'array' => ['one', 'two', 'three']
+            'array' => ['one', 'two', 'three'],
         ]);
 
         $caster = new ArrayCaster(itemType: 'string');
@@ -40,7 +40,7 @@ class ArrayCasterTest extends TestCase
         );
 
         $descriptor = $this->getDescriptor(InvalidArrayCastedDataTransferObject::class, [
-            'anotherArray' => ['one', 'two', 'three']
+            'anotherArray' => ['one', 'two', 'three'],
         ]);
 
         $caster = new ArrayCaster(itemType: 'string');
@@ -57,7 +57,7 @@ class ArrayCasterTest extends TestCase
                 100,
                 2000.50,
                 '51000',
-            ]
+            ],
         ]);
 
         $intCaster = new ArrayCaster('int');
@@ -97,7 +97,7 @@ class ArrayCasterTest extends TestCase
             'array' => [
                 [ 'hi', 'ho' ],
                 [ 'yo', 'lo' ],
-            ]
+            ],
         ]);
 
         $caster = new ArrayCaster('array');
@@ -107,7 +107,8 @@ class ArrayCasterTest extends TestCase
         );
 
         $this->assertSame(
-            [[ 'hi', 'ho' ], [ 'yo', 'lo' ]], $result
+            [[ 'hi', 'ho' ], [ 'yo', 'lo' ]],
+            $result
         );
     }
 
@@ -116,8 +117,8 @@ class ArrayCasterTest extends TestCase
         $descriptor = $this->getDescriptor(ArrayCastedDataTransferObject::class, [
             'personArray' => [
                 [ 'firstName' => 'Clark', 'lastName' => 'Kent' ],
-                SimpleDataTransferObject::new(firstName: 'Tony', lastName: 'Stark')
-            ]
+                SimpleDataTransferObject::new(firstName: 'Tony', lastName: 'Stark'),
+            ],
         ]);
 
         $caster = new ArrayCaster(SimpleDataTransferObject::class);
@@ -138,7 +139,7 @@ class ArrayCasterTest extends TestCase
     public function test_it_can_cast_arrays_with_single_paramter_classes_as_the_item_type()
     {
         $descriptor = $this->getDescriptor(ArrayCastedDataTransferObject::class, [
-            'dates' => [ '2021-01-01', '2021-01-02', '2021-01-03' ]
+            'dates' => [ '2021-01-01', '2021-01-02', '2021-01-03' ],
         ]);
 
         $caster = new ArrayCaster(DateTime::class);
@@ -157,8 +158,8 @@ class ArrayCasterTest extends TestCase
             'dates' => [
                 ['2021-01-01', new DateTimeZone('Africa/Abidjan')],
                 ['2021-01-02', new DateTimeZone('Antarctica/Casey')],
-                ['2021-01-03', new DateTimeZone('Australia/Eucla')]
-            ]
+                ['2021-01-03', new DateTimeZone('Australia/Eucla')],
+            ],
         ]);
 
         $caster = new ArrayCaster(DateTime::class);
@@ -180,8 +181,8 @@ class ArrayCasterTest extends TestCase
         $descriptor = $this->getDescriptor(ArrayCastedDataTransferObject::class, [
             'otherPersonData' => [
                 ['firstName' => 'Steve', 'lastName' => 'Rogers'],
-                SimpleDataTransferObject::new(firstName: 'Bucky', lastName: 'Barnes')
-            ]
+                SimpleDataTransferObject::new(firstName: 'Bucky', lastName: 'Barnes'),
+            ],
         ]);
 
         $caster = new ArrayCaster(SimpleDataTransferObject::class);

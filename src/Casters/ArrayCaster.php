@@ -50,12 +50,15 @@ class ArrayCaster implements Caster
         switch ($this->itemType) {
             case 'string':
                 return (string) $item;
+
             break;
             case 'float':
                 return (float) $item;
+
             break;
             case 'int':
                 return (int) $item;
+
             break;
             case 'array':
                 return (array) $item;

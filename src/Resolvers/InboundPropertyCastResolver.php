@@ -11,7 +11,7 @@ class InboundPropertyCastResolver implements InboundResolver
     public function resolve(ClassDescriptor $descriptor): void
     {
         $descriptor->getProperties()->each(
-            fn(PropertyDescriptor $property) => $this->castProperty($descriptor, $property)
+            fn (PropertyDescriptor $property) => $this->castProperty($descriptor, $property)
         );
     }
 

@@ -45,7 +45,7 @@ final class PropertyDescriptor
     public function getType(string $name): ?ReflectionNamedType
     {
         return $this->types->filter(
-            fn($type) => $type->getName() === $name || is_subclass_of($type->getName(), $name)
+            fn ($type) => $type->getName() === $name || is_subclass_of($type->getName(), $name)
         )->first();
     }
 
@@ -57,7 +57,7 @@ final class PropertyDescriptor
     public function getTypeNames(): Collection
     {
         return $this->types->map(
-            fn($type) => $type->getName()
+            fn ($type) => $type->getName()
         );
     }
 

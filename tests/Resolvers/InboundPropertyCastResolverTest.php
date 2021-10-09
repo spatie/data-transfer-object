@@ -16,7 +16,7 @@ class InboundPropertyCastResolverTest extends TestCase
         $descriptor = $this->getDescriptor(ArrayCastedDataTransferObject::class, [
             'array' => [
                 ['somevalue', 'someotherval'],
-                ['differentarray']
+                ['differentarray'],
             ],
             'personArray' => [
                 ['firstName' => 'Jay', 'lastName' => 'Gatsby'],
@@ -28,8 +28,8 @@ class InboundPropertyCastResolverTest extends TestCase
             ],
             'dates' => [
                 '1922-01-01',
-                '1924-04-10'
-            ]
+                '1924-04-10',
+            ],
         ]);
 
         $resolver = new InboundPropertyCastResolver();
