@@ -102,5 +102,4 @@ class MapFromTest extends TestCase
         $this->assertFalse($dto->isPublic);
         $this->assertEquals(42, $dto->randomInt);
     }
-
 }
