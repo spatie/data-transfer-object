@@ -37,7 +37,6 @@ class DataTransferObjectProperty
         $this->dataTransferObject = $dataTransferObject;
         $this->reflectionProperty = $reflectionProperty;
 
-        $this->default = $this->resolveDefaultValue();
         $this->name = $this->resolveMappedProperty();
 
         $this->caster = $this->resolveCaster();
@@ -49,7 +48,7 @@ class DataTransferObjectProperty
             $value = $this->caster->cast($value);
         }
 
-        $this->reflectionProperty->setValue($this->dataTransferObject, $value ?? $this->default);
+        $this->reflectionProperty->setValue($this->dataTransferObject, $value);
     }
 
     /**
@@ -71,6 +70,11 @@ class DataTransferObjectProperty
     public function getValue(): mixed
     {
         return $this->reflectionProperty->getValue($this->dataTransferObject);
+    }
+
+    public function getDefaultValue(): mixed
+    {
+        return $this->reflectionProperty->getDefaultValue();
     }
 
     private function resolveCaster(): ?Caster
@@ -182,14 +186,5 @@ class DataTransferObjectProperty
             'parent' => get_parent_class($this->dataTransferObject),
             default => $type->getName(),
         };
-    }
-
-    private function resolveDefaultValue(): mixed
-    {
-        if (!$this->reflectionProperty->hasDefaultValue()) {
-            return null;
-        }
-
-        return $this->reflectionProperty->getDefaultValue();
     }
 }
