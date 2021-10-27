@@ -186,7 +186,7 @@ class DataTransferObjectProperty
 
     private function resolveDefaultValue(): mixed
     {
-        if (!$this->reflectionProperty->hasDefaultValue()) {
+        if (! $this->reflectionProperty->hasDefaultValue()) {
             return null;
         }
 
