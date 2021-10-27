@@ -55,6 +55,10 @@ class ArrayCaster implements Caster
 
     private function castItem(mixed $data)
     {
+        if ($this->isSimpleType($this->itemType)) {
+            return $this->castSimpleType($data);
+        }
+
         if ($data instanceof $this->itemType) {
             return $data;
         }
@@ -67,4 +71,29 @@ class ArrayCaster implements Caster
             "Caster [ArrayCaster] each item must be an array or an instance of the specified item type [{$this->itemType}]."
         );
     }
+
+    private function castSimpleType(mixed $data) {
+
+        $dataType = gettype($data);
+
+        if ($this->isSimpleType($dataType)) {
+            settype($data, $this->itemType);
+            return $data;
+        }
+
+        throw new LogicException(
+            "Caster [ArrayCaster] given data type [{$dataType}] cannot be casted to [{$this->itemType}]"
+        );
+    }
+
+    private function isSimpleType(string $type) {
+        return in_array($type, [
+            'boolean', 'bool',
+            'integer', 'int',
+            'float', 'double',
+            'string',
+            'NULL'
+        ]);
+    }
+
 }
