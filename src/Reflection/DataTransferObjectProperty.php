@@ -21,9 +21,6 @@ class DataTransferObjectProperty
     #[Immutable]
     public string $name;
 
-    #[Immutable]
-    public mixed $default;
-
     private DataTransferObject $dataTransferObject;
 
     private ReflectionProperty $reflectionProperty;
