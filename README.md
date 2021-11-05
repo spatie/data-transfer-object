@@ -160,6 +160,22 @@ class ComplexObjectWithCast
 }
 ```
 
+### Caster methods
+
+Instead of creating a custom caster and using `CastWith`, you can create a cast method on the DTO, using the naming convention `cast<PropertyName>`.
+
+```php
+class MyDTO extends DataTransferObject
+{
+    public string $name;
+    
+    public function castName($value)
+    {
+        return strtoupper($value);
+    }
+}
+```
+
 ### Default casters
 
 It's possible to define default casters on a DTO class itself. These casters will be used whenever a property with a given type is encountered within the DTO class.
