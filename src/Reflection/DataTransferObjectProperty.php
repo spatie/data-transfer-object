@@ -5,6 +5,7 @@ namespace Spatie\DataTransferObject\Reflection;
 use JetBrains\PhpStorm\Immutable;
 use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionType;
@@ -45,7 +46,28 @@ class DataTransferObjectProperty
             $value = $this->caster->cast($value);
         }
 
+        if($this->dataTransferObjectHasCasterForProperty()) {
+            $value = $this->dataTransferObject->{$this->getCasterMethodName()}($value);
+        }
+
         $this->reflectionProperty->setValue($this->dataTransferObject, $value);
+    }
+
+    private function dataTransferObjectHasCasterForProperty(): bool
+    {
+        $methods = $this->reflectionProperty
+            ->getDeclaringClass()
+            ->getMethods(ReflectionMethod::IS_PUBLIC);
+
+        return collect($methods)
+            ->contains(fn (ReflectionMethod $method) => $method->getName() === $this->getCasterMethodName());
+    }
+
+    private function getCasterMethodName(): string
+    {
+        $sturdlyCasedPropertyName = ucwords(str_replace(['-', '_'], ' ', $this->reflectionProperty->getName()));
+
+        return 'cast'.$sturdlyCasedPropertyName;
     }
 
     /**
