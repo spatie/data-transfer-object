@@ -277,7 +277,7 @@ $dto = new UserDTO(['John', 'Doe']);
 
 Sometimes you also want to map them during the transformation to Array. 
 A typical usecase would be transformation from camel case to snake case. 
-For that you can use the `#[MapFrom]` attribute.
+For that you can use the `#[MapTo]` attribute.
 
 ```php
 class UserDTO extends DataTransferObject
