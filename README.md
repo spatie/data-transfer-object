@@ -372,7 +372,7 @@ Note that no data in `$original` is changed.
 
 ## Collections of DTOs
 
-This version removes the `DataTransferObjectCollection` class. Instead you can use simple casters and you own collection classes.
+This version removes the `DataTransferObjectCollection` class. Instead you can use simple casters and your own collection classes.
 
 Here's an example of casting a collection of DTOs to an array of DTOs:
 
