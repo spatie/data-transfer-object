@@ -29,17 +29,19 @@ abstract class DataTransferObjectCollection implements
         }
     }
 
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->iterator->current();
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->iterator[$offset] ?? null;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->iterator[] = $value;
@@ -53,16 +55,17 @@ abstract class DataTransferObjectCollection implements
         return $this->iterator->offsetExists($offset);
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->iterator[$offset]);
     }
 
-    public function next()
+    public function next(): void
     {
         $this->iterator->next();
     }
 
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->iterator->key();
@@ -73,7 +76,7 @@ abstract class DataTransferObjectCollection implements
         return $this->iterator->valid();
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         $this->iterator->rewind();
     }
