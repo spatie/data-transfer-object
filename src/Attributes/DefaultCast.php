@@ -4,6 +4,7 @@ namespace Spatie\DataTransferObject\Attributes;
 
 use Attribute;
 use JetBrains\PhpStorm\Immutable;
+use ReflectionIntersectionType;
 use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionUnionType;
@@ -24,26 +25,56 @@ class DefaultCast
     {
         $type = $property->getType();
 
-        /** @var \ReflectionNamedType[]|null $types */
-        $types = match ($type::class) {
-            ReflectionNamedType::class => [$type],
-            ReflectionUnionType::class => $type->getTypes(),
-            default => null,
-        };
-
-        if (! $types) {
+        if (is_null($type)) {
             return false;
         }
 
-        foreach ($types as $type) {
-            if ($type->getName() !== $this->targetClass) {
-                continue;
-            }
+        if ($type instanceof ReflectionNamedType) {
+            return $this->acceptsNamedType($type);
+        }
 
-            return true;
+        if ($type instanceof ReflectionUnionType) {
+            return $this->acceptsUnionType($type);
+        }
+
+        if ($type instanceof ReflectionIntersectionType) {
+            return $this->acceptsIntersectionType($type);
         }
 
         return false;
+    }
+
+    private function acceptsNamedType(ReflectionNamedType $named_type): bool
+    {
+        return $named_type->getName() === $this->targetClass;
+    }
+
+    private function acceptsUnionType(ReflectionUnionType $union_type): bool
+    {
+        foreach($union_type->getTypes() as $type) {
+            if ($type === $this->targetClass) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function acceptsIntersectionType(ReflectionIntersectionType $intersection_type): bool
+    {
+        $targetClasses = explode('&', $this->targetClass);
+
+        if (count($targetClasses) !== count($intersection_type->getTypes())) {
+            return false;
+        }
+
+        foreach ($intersection_type->getTypes() as $type) {
+            if (! in_array($type, $targetClasses)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function resolveCaster(): Caster

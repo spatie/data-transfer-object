@@ -23,7 +23,8 @@
   </coverage>
   <testsuites>
     <testsuite name="Spatie Test Suite">
-      <directory>tests</directory>
+      <directory suffix="Test.php">tests</directory>
+      <directory suffix="Test81.php" phpVersion="8.1" phpVersionOperator=">=">tests</directory>
     </testsuite>
   </testsuites>
   <logging>
