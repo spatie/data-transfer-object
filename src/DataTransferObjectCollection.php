@@ -24,16 +24,19 @@ abstract class DataTransferObjectCollection implements
         $this->collection = $collection;
     }
 
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->collection[$this->position];
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->collection[$offset] ?? null;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -43,31 +46,37 @@ abstract class DataTransferObjectCollection implements
         }
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset): bool
     {
         return array_key_exists($offset, $this->collection);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->collection[$offset]);
     }
 
+    #[\ReturnTypeWillChange]
     public function next()
     {
         $this->position++;
     }
 
+    #[\ReturnTypeWillChange]
     public function key(): int
     {
         return $this->position;
     }
 
+    #[\ReturnTypeWillChange]
     public function valid(): bool
     {
         return array_key_exists($this->position, $this->collection);
     }
 
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->position = 0;
