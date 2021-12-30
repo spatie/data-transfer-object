@@ -24,9 +24,6 @@
         "phpunit/phpunit": "^9.0",
         "jetbrains/phpstorm-attributes": "^1.0"
     },
-    "suggest": {
-        "phpstan/phpstan": "Take advantage of checkUninitializedProperties with \\Spatie\\DataTransferObject\\PHPstan\\PropertiesAreAlwaysInitializedExtension"
-    },
     "autoload": {
         "psr-4": {
             "Spatie\\DataTransferObject\\": "src"
