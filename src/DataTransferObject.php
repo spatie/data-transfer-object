@@ -86,6 +86,19 @@ abstract class DataTransferObject
         return $dataTransferObject;
     }
 
+    public function onlyFilled(): static
+    {
+        $dataTransferObject = clone $this;
+
+        foreach ($dataTransferObject->toArray() as $property => $value) {
+            if (isset($value)) {
+                $dataTransferObject->onlyKeys = [...$this->onlyKeys, $property];
+            }
+        }
+
+        return $dataTransferObject;
+    }
+
     public function clone(...$args): static
     {
         return new static(...array_merge($this->toArray(), $args));

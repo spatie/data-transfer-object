@@ -178,6 +178,19 @@ class DataTransferObjectTest extends TestCase
     }
 
     /** @test */
+    public function to_array_with_onlyFilled()
+    {
+        $array = [
+            'name' => 'Yusuf Onur SARI',
+            'other' => null,
+        ];
+
+        $dto = new ComplexDtoWithParent($array);
+
+        $this->assertEquals(['name' => 'Yusuf Onur SARI'], $dto->onlyFilled()->toArray());
+    }
+
+    /** @test */
     public function create_with_default_value()
     {
         $dto = new WithDefaultValueDto();
