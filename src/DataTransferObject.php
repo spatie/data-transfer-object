@@ -25,6 +25,19 @@ abstract class DataTransferObject
 
         $class = new DataTransferObjectClass($this);
 
+        $argsToForgetAfterTransformation = [];
+
+        foreach ($class->getDataTransformers() as $dataTransformer) {
+            $dataTransformer->transform($this, $args);
+
+            $argsToForgetAfterTransformation = [
+                ...$argsToForgetAfterTransformation,
+                ...$dataTransformer->argsToForget()
+            ];
+        }
+
+        $args = Arr::forget($args, $argsToForgetAfterTransformation);
+
         foreach ($class->getProperties() as $property) {
             $property->setValue(Arr::get($args, $property->name) ?? $this->{$property->name} ?? null);
 

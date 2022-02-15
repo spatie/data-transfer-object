@@ -2,10 +2,13 @@
 
 namespace Spatie\DataTransferObject\Reflection;
 
+use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
 use Spatie\DataTransferObject\Attributes\Strict;
+use Spatie\DataTransferObject\Attributes\TransformWith;
 use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\DataTransferObject\DataTransformer;
 use Spatie\DataTransferObject\Exceptions\ValidationException;
 
 class DataTransferObjectClass
@@ -39,6 +42,22 @@ class DataTransferObjectClass
             ),
             $publicProperties
         );
+    }
+
+    /**
+     * @return iterable<DataTransformer>
+     */
+    public function getDataTransformers(): iterable
+    {
+        /** @var array<ReflectionAttribute> $reflectionAttributes */
+        $reflectionAttributes = $this->reflectionClass->getAttributes(TransformWith::class);
+
+        foreach ($reflectionAttributes as $reflectionAttribute) {
+            /** @var TransformWith $attribute */
+            $attribute = $reflectionAttribute->newInstance();
+
+            yield new $attribute->dataTransformerClass();
+        }
     }
 
     public function validate(): void
