@@ -30,6 +30,7 @@ We highly appreciate you sending us a postcard from your hometown, mentioning wh
 The goal of this package is to make constructing objects from arrays of (serialized) data as easy as possible. Here's what a DTO looks like:
 
 ```php
+use Spatie\DataTransferObject\Attributes\MapFrom;
 use Spatie\DataTransferObject\DataTransferObject;
 
 class MyDTO extends DataTransferObject
