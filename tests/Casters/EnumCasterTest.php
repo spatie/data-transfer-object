@@ -25,7 +25,7 @@ class EnumCasterTest extends TestCase
         );
 
         new EnumCastedDataTransferObject([
-            'stringEnum' => $wrongValue
+            'stringEnum' => $wrongValue,
         ]);
     }
 
@@ -34,7 +34,7 @@ class EnumCasterTest extends TestCase
     {
         $dto = new EnumCastedDataTransferObject([
             'integerEnum' => 1,
-            'stringEnum' => 'test'
+            'stringEnum' => 'test',
         ]);
 
         $this->assertEquals(StringEnum::Test, $dto->stringEnum);
@@ -50,7 +50,7 @@ class EnumCasterTest extends TestCase
         );
 
         new EnumCastedDataTransferObject([
-            'simpleEnum' => 5
+            'simpleEnum' => 5,
         ]);
     }
 }
