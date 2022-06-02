@@ -26,7 +26,7 @@ abstract class DataTransferObject
         $class = new DataTransferObjectClass($this);
 
         foreach ($class->getProperties() as $property) {
-            $property->setValue(Arr::get($args, $property->name) ?? $this->{$property->name} ?? null);
+            $property->setValue(Arr::get($args, $property->name, $property->getDefaultValue()));
 
             $args = Arr::forget($args, $property->name);
         }

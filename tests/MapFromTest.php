@@ -76,4 +76,30 @@ class MapFromTest extends TestCase
         $this->assertEquals('2021-01-01', $dto->date);
         $this->assertEquals('News', $dto->categoryName);
     }
+
+    /** @test */
+    public function mapped_from_works_with_default_values()
+    {
+        $data = [
+            'title' => 'Hello world',
+        ];
+
+        $dto = new class ($data) extends DataTransferObject {
+            public string $title;
+
+            #[MapFrom('desc')]
+            public string $description = 'Test Text';
+
+            #[MapFrom('is_public')]
+            public bool $isPublic = false;
+
+            #[MapFrom('random_int')]
+            public int $randomInt = 42;
+        };
+
+        $this->assertEquals('Hello world', $dto->title);
+        $this->assertEquals('Test Text', $dto->description);
+        $this->assertFalse($dto->isPublic);
+        $this->assertEquals(42, $dto->randomInt);
+    }
 }

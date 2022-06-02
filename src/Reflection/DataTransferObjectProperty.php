@@ -69,6 +69,11 @@ class DataTransferObjectProperty
         return $this->reflectionProperty->getValue($this->dataTransferObject);
     }
 
+    public function getDefaultValue(): mixed
+    {
+        return $this->reflectionProperty->getDefaultValue();
+    }
+
     private function resolveCaster(): ?Caster
     {
         $attributes = $this->reflectionProperty->getAttributes(CastWith::class);
