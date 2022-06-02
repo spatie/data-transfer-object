@@ -2,6 +2,19 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 3.8.0 - 2022-06-02
+
+### What's Changed
+
+- Added enum caster by @Elnadrion in https://github.com/spatie/data-transfer-object/pull/277
+
+### New Contributors
+
+- @Raja-Omer-Mustafa made their first contribution in https://github.com/spatie/data-transfer-object/pull/271
+- @Elnadrion made their first contribution in https://github.com/spatie/data-transfer-object/pull/277
+
+**Full Changelog**: https://github.com/spatie/data-transfer-object/compare/3.7.3...3.8.0
+
 ## 3.7.3 - 2022-01-10
 
 ## What's Changed
