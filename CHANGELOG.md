@@ -2,6 +2,33 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 3.8.0 - 2022-06-02
+
+### What's Changed
+
+- Added enum caster by @Elnadrion in https://github.com/spatie/data-transfer-object/pull/277
+
+### New Contributors
+
+- @Raja-Omer-Mustafa made their first contribution in https://github.com/spatie/data-transfer-object/pull/271
+- @Elnadrion made their first contribution in https://github.com/spatie/data-transfer-object/pull/277
+
+**Full Changelog**: https://github.com/spatie/data-transfer-object/compare/3.7.3...3.8.0
+
+## 3.7.3 - 2022-01-10
+
+## What's Changed
+
+- Stop suggesting phpstan/phpstan by @ymilin in https://github.com/spatie/data-transfer-object/pull/264
+
+## New Contributors
+
+- @sergiy-petrov made their first contribution in https://github.com/spatie/data-transfer-object/pull/246
+- @damms005 made their first contribution in https://github.com/spatie/data-transfer-object/pull/255
+- @ymilin made their first contribution in https://github.com/spatie/data-transfer-object/pull/264
+
+**Full Changelog**: https://github.com/spatie/data-transfer-object/compare/3.7.2...3.7.3
+
 ## 3.7.2 - 2021-09-17
 
 - `#[Strict]` is passed down the inheritance chain so children are strict when parent is strict (#239)
@@ -40,7 +67,7 @@ All notable changes to `data-transfer-object` will be documented in this file
 
 - Expose DTO and validation error array in ValidationException (#213)
 
-## 3.2.0 - 2021-05-31 
+## 3.2.0 - 2021-05-31
 
 - Support generic casters (#199)
 - Add `ArrayCaster`
@@ -80,7 +107,7 @@ This package now focuses only on object creation by adding easy-to-use casting a
 - Require `php:^8.0`
 - Removed all runtime type checking functionality, you should use typed properties and a static analysis tool like Psalm or PhpStan
 - Removed `Spatie\DataTransferObject\DataTransferObjectCollection`
-- Removed `Spatie\DataTransferObject\FlexibleDataTransferObject`, all DTOs are now considered flexible 
+- Removed `Spatie\DataTransferObject\FlexibleDataTransferObject`, all DTOs are now considered flexible
 - Removed runtime immutable DTOs, you should use static analysis instead
 - Added `Spatie\DataTransferObject\Validator`
 - Added `Spatie\DataTransferObject\Validation\ValidationResult`
@@ -176,7 +203,7 @@ This might be a breaking change, but it was required for a bugfix
 
 ## 1.9.0 - 2019-08-30
 
-- Add DataTransferObjectCollection::items() 
+- Add DataTransferObjectCollection::items()
 
 ## 1.8.0 - 2019-03-18
 
