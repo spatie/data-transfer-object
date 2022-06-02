@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\DataTransferObject\Tests\ArrayCaster;
+namespace Spatie\DataTransferObject\Tests\Casters;
 
 use Exception;
 use Spatie\DataTransferObject\Attributes\CastWith;
