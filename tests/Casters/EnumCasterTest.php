@@ -17,13 +17,15 @@ class EnumCasterTest extends TestCase
     /** @test */
     public function test_it_cannot_cast_enum_with_wrong_value_type_given(): void
     {
+        $wrongValue = 5;
+
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
-            'Couldn\'t cast ' . StringEnum::class .' with value 5'
+            'Couldn\'t cast enum [' . StringEnum::class . '] with value [' . $wrongValue . ']'
         );
 
         new EnumCastedDataTransferObject([
-            'stringEnum' => 5
+            'stringEnum' => $wrongValue
         ]);
     }
 
@@ -44,7 +46,7 @@ class EnumCasterTest extends TestCase
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
-            SimpleEnum::class . ' must be backed enum!'
+            'Caster [EnumCaster] may only be used to cast backed enums. Received [' . SimpleEnum::class . '].'
         );
 
         new EnumCastedDataTransferObject([
