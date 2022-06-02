@@ -2,6 +2,14 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 3.8.1 - 2022-06-02
+
+### What's Changed
+
+- Fixed bug #249 by @gerpo in https://github.com/spatie/data-transfer-object/pull/251
+
+**Full Changelog**: https://github.com/spatie/data-transfer-object/compare/3.8.0...3.8.1
+
 ## 3.8.0 - 2022-06-02
 
 ### What's Changed
