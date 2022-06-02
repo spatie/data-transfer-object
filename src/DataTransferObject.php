@@ -17,11 +17,15 @@ abstract class DataTransferObject
 
     protected array $onlyKeys = [];
 
+    protected array $args = [];
+
     public function __construct(...$args)
     {
         if (is_array($args[0] ?? null)) {
             $args = $args[0];
         }
+
+        $this->args = $args;
 
         $class = new DataTransferObjectClass($this);
 
@@ -91,17 +95,24 @@ abstract class DataTransferObject
         return new static(...array_merge($this->toArray(), $args));
     }
 
+    public function filledOnly(): static
+    {
+        return $this->only(...array_keys($this->args));
+    }
+
     public function toArray(): array
     {
+        $array = $this->all();
+
         if (count($this->onlyKeys)) {
-            $array = Arr::only($this->all(), $this->onlyKeys);
-        } else {
-            $array = Arr::except($this->all(), $this->exceptKeys);
+            $array = Arr::only($array, $this->onlyKeys);
         }
 
-        $array = $this->parseArray($array);
+        if (count($this->exceptKeys)) {
+            $array = Arr::except($array, $this->exceptKeys);
+        }
 
-        return $array;
+        return $this->parseArray($array);
     }
 
     protected function parseArray(array $array): array

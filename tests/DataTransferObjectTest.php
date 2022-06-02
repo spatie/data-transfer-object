@@ -163,6 +163,38 @@ class DataTransferObjectTest extends TestCase
     }
 
     /** @test */
+    public function to_array_with_only_filled()
+    {
+        $array = [
+            'name' => 'a',
+        ];
+
+        $array2 = [
+            'name' => 'a',
+            'other' => null,
+        ];
+
+        $dto = new ComplexDtoWithNullableProperty($array);
+        $dto2 = new ComplexDtoWithNullableProperty($array2);
+
+        $this->assertEquals($array, $dto->filledOnly()->toArray());
+        $this->assertEquals($array2, $dto2->filledOnly()->toArray());
+    }
+
+    /** @test */
+    public function to_array_with_only_filled_and_except()
+    {
+        $array = [
+            'name' => 'a',
+            'other' => null,
+        ];
+
+        $dto = new ComplexDtoWithNullableProperty($array);
+
+        $this->assertEquals(['name' => 'a'], $dto->filledOnly()->except('other')->toArray());
+    }
+
+    /** @test */
     public function to_array_with_except()
     {
         $array = [
