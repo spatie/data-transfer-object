@@ -46,7 +46,7 @@ abstract class DataTransferObject
         );
     }
 
-    public function all(): array
+    public function all(bool $keepOriginalKeys = false): array
     {
         $data = [];
 
@@ -60,7 +60,7 @@ abstract class DataTransferObject
             }
 
             $mapToAttribute = $property->getAttributes(MapTo::class);
-            $name = count($mapToAttribute) ? $mapToAttribute[0]->newInstance()->name : $property->getName();
+            $name = count($mapToAttribute) && !$keepOriginalKeys ? $mapToAttribute[0]->newInstance()->name : $property->getName();
 
             $data[$name] = $property->getValue($this);
         }
@@ -88,15 +88,15 @@ abstract class DataTransferObject
 
     public function clone(...$args): static
     {
-        return new static(...array_merge($this->toArray(), $args));
+        return new static(...array_merge($this->toArray(keepOriginalKeys: true), $args));
     }
 
-    public function toArray(): array
+    public function toArray(bool $keepOriginalKeys = false): array
     {
         if (count($this->onlyKeys)) {
-            $array = Arr::only($this->all(), $this->onlyKeys);
+            $array = Arr::only($this->all($keepOriginalKeys), $this->onlyKeys);
         } else {
-            $array = Arr::except($this->all(), $this->exceptKeys);
+            $array = Arr::except($this->all($keepOriginalKeys), $this->exceptKeys);
         }
 
         $array = $this->parseArray($array);

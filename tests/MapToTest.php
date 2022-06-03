@@ -121,4 +121,21 @@ class MapToTest extends TestCase
         $this->assertEquals('Johnny Lawrence', $dtoArray['hero']);
         $this->assertFalse(Arr::exists($dtoArray, 'count'));
     }
+
+    /** @test */
+    public function mapped_property_is_cloned_properly(): void
+    {
+        $dto = new class (account: 1, villain: 'Johnny Lawrence') extends DataTransferObject {
+            public int $account;
+
+            #[MapTo('hero')]
+            public string $villain;
+        };
+
+        $clonedDto = $dto->clone(account: 2);
+        $clonedDtoArray = $clonedDto->toArray();
+
+        $this->assertEquals(2, $clonedDtoArray['account']);
+        $this->assertEquals('Johnny Lawrence', $clonedDtoArray['hero']);
+    }
 }
