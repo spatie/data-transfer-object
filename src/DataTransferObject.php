@@ -60,7 +60,7 @@ abstract class DataTransferObject
             }
 
             $mapToAttribute = $property->getAttributes(MapTo::class);
-            $name = count($mapToAttribute) && !$keepOriginalKeys ? $mapToAttribute[0]->newInstance()->name : $property->getName();
+            $name = count($mapToAttribute) && ! $keepOriginalKeys ? $mapToAttribute[0]->newInstance()->name : $property->getName();
 
             $data[$name] = $property->getValue($this);
         }
