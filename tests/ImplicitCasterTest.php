@@ -13,17 +13,49 @@ class ImplicitCasterTest extends TestCase
     /** @test */
     public function cast_implicit_on_null_value()
     {
-        $dto = new NullableValueDto(name: null);
+        $dto = new NullableStringDto(value: null);
 
-        $this->assertEquals('foo', $dto->name);
+        $this->assertEquals('foo', $dto->value);
     }
 
     /** @test */
     public function cast_implicit_on_populated_value()
     {
-        $dto = new NullableValueDto(name: 'bar');
+        $dto = new NullableStringDto(value: 'bar');
 
-        $this->assertEquals('bar', $dto->name);
+        $this->assertEquals('bar', $dto->value);
+    }
+
+    /** @test */
+    public function does_not_fallback_on_empty_string()
+    {
+        $dto = new NullableStringDto(value: '');
+
+        $this->assertEquals('', $dto->value);
+    }
+
+    /** @test */
+    public function does_not_fallback_on_zero()
+    {
+        $dto = new NullableIntDto(value: 0);
+
+        $this->assertEquals(0, $dto->value);
+    }
+
+    /** @test */
+    public function does_not_fallback_on_false()
+    {
+        $dto = new NullableBoolDto(value: false);
+
+        $this->assertEquals(false, $dto->value);
+    }
+
+    /** @test */
+    public function does_not_fallback_on_empty_array()
+    {
+        $dto = new NullableArrayDto(value: []);
+
+        $this->assertEquals([], $dto->value);
     }
 
     /** @test */
@@ -31,20 +63,38 @@ class ImplicitCasterTest extends TestCase
     {
         $this->expectException(TypeError::class);
 
-        new NotNullableValueDto(name: null);
+        new NotNullableValueDto(value: null);
     }
 }
 
-class NullableValueDto extends DataTransferObject
+class NullableStringDto extends DataTransferObject
 {
     #[CastWith(NullableCaster::class, default: 'foo')]
-    public string $name;
+    public string $value;
+}
+
+class NullableIntDto extends DataTransferObject
+{
+    #[CastWith(NullableCaster::class, default: 3)]
+    public int $value;
+}
+
+class NullableBoolDto extends DataTransferObject
+{
+    #[CastWith(NullableCaster::class, default: true)]
+    public bool $value;
+}
+
+class NullableArrayDto extends DataTransferObject
+{
+    #[CastWith(NullableCaster::class, default: ['foo'])]
+    public array $value;
 }
 
 class NotNullableValueDto extends DataTransferObject
 {
     #[CastWith(RegularNullableCaster::class, default: 'foo')]
-    public string $name;
+    public string $value;
 }
 
 class RegularNullableCaster implements Caster

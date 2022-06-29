@@ -14,6 +14,6 @@ class NullableCaster implements ImplicitCaster
 
     public function cast(mixed $value): mixed
     {
-        return $value ?: $this->default;
+        return is_null($value) ? $this->default : $value;
     }
 }
