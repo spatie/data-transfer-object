@@ -164,6 +164,30 @@ class ComplexObjectWithCast
 }
 ```
 
+### Nullable caster
+
+If you expect to receive a null value on your property and want to set a fallback, you can use the `NullableCaster` to set a default value.
+
+Take a look at the `FallbackDto`:
+
+```php
+use Spatie\DataTransferObject\Attributes\CastWith;
+use Spatie\DataTransferObject\Casters\NullableCaster;
+
+class FallbackDto
+{
+    #[CastWith(NullableCaster::class, default: 'foo')]
+    public string $name;
+}
+```
+
+Trying to create the DTO with `name` set to null, it will fallbacks to "foo".
+
+```php
+$dto = new FallbackDto(name: null);
+$dto->name; // foo
+```
+
 ### Default casters
 
 It's possible to define default casters on a DTO class itself. These casters will be used whenever a property with a given type is encountered within the DTO class.
@@ -201,6 +225,28 @@ For example:
 
 Note that the first argument passed to the caster constructor is always the array with type(s) of the value being casted.
 All other arguments will be the ones passed as extra arguments in the `CastWith` attribute.
+
+### Implicit casters
+
+By default casters are not ran if the input value is `null`. However, if you need to execute your custom Caster on null values too, you can extend `ImplicitCaster` instead of `Caster`. For example, take a look at `NullableCaster` shipped with this package:  
+
+```php
+use Spatie\DataTransferObject\ImplicitCaster;
+
+class NullableCaster implements ImplicitCaster
+{
+    public function __construct(
+        private array $types,
+        private mixed $default
+    ) {
+    }
+
+    public function cast(mixed $value): mixed
+    {
+        return $value ?: $this->default;
+    }
+}
+```
 
 ## Validation
 
