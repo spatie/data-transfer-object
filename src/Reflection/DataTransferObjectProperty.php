@@ -14,6 +14,7 @@ use Spatie\DataTransferObject\Attributes\DefaultCast;
 use Spatie\DataTransferObject\Attributes\MapFrom;
 use Spatie\DataTransferObject\Caster;
 use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\DataTransferObject\ImplicitCaster;
 use Spatie\DataTransferObject\Validator;
 
 class DataTransferObjectProperty
@@ -41,7 +42,7 @@ class DataTransferObjectProperty
 
     public function setValue(mixed $value): void
     {
-        if ($this->caster && $value !== null) {
+        if ($this->caster && ($this->caster instanceof ImplicitCaster || $value !== null)) {
             $value = $this->caster->cast($value);
         }
 
