@@ -102,4 +102,24 @@ class MapFromTest extends TestCase
         $this->assertFalse($dto->isPublic);
         $this->assertEquals(42, $dto->randomInt);
     }
+
+    /** @test */
+    public function mapped_from_works_with_default_values_if_json_value_is_null()
+    {
+        $data = [
+            'title' => 'Hello world',
+            'desc' => null,
+        ];
+
+        $dto = new class ($data) extends DataTransferObject {
+            public string $title;
+
+            #[MapFrom('desc')]
+            public string $description = 'Test Text';
+
+        };
+
+        $this->assertEquals('Hello world', $dto->title);
+        $this->assertEquals('Test Text', $dto->description);
+    }
 }
