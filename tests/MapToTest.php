@@ -121,4 +121,31 @@ class MapToTest extends TestCase
         $this->assertEquals('Johnny Lawrence', $dtoArray['hero']);
         $this->assertFalse(Arr::exists($dtoArray, 'count'));
     }
+
+    /** @test */
+    public function property_is_mapped_to_nested_array_if_splitted_by_a_dot()
+    {
+        $dto = new class (originalCount: 42, villain: 'Johnny Lawrence') extends DataTransferObject {
+            #[MapTo('count.testing')]
+            public int $originalCount;
+
+            #[MapTo('hero.villain')]
+            public string $villain;
+        };
+
+        $dtoArray = $dto->all();
+
+        $this->assertArrayNotHasKey('originalCount', $dtoArray);
+        $this->assertArrayNotHasKey('villain', $dtoArray);
+
+        $this->assertArrayHasKey('count', $dtoArray);
+        $this->assertIsArray($dtoArray['count']);
+        $this->assertArrayHasKey('testing', $dtoArray['count']);
+        $this->assertSame(42, $dtoArray['count']['testing']);
+
+        $this->assertArrayHasKey('hero', $dtoArray);
+        $this->assertIsArray($dtoArray['hero']);
+        $this->assertArrayHasKey('villain', $dtoArray['hero']);
+        $this->assertSame('Johnny Lawrence', $dtoArray['hero']['villain']);
+    }
 }
