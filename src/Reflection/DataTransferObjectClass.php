@@ -35,7 +35,8 @@ class DataTransferObjectClass
         return array_map(
             fn (ReflectionProperty $property) => new DataTransferObjectProperty(
                 $this->dataTransferObject,
-                $property
+                $property,
+                $this
             ),
             $publicProperties
         );

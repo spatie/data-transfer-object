@@ -25,14 +25,19 @@ class DataTransferObjectProperty
 
     private ReflectionProperty $reflectionProperty;
 
+    private DataTransferObjectClass $dataTransferObjectClass;
+
+
     private ?Caster $caster;
 
     public function __construct(
         DataTransferObject $dataTransferObject,
-        ReflectionProperty $reflectionProperty
+        ReflectionProperty $reflectionProperty,
+        DataTransferObjectClass $dataTransferObjectClass
     ) {
         $this->dataTransferObject = $dataTransferObject;
         $this->reflectionProperty = $reflectionProperty;
+        $this->dataTransferObjectClass = $dataTransferObjectClass;
 
         $this->name = $this->resolveMappedProperty();
 
@@ -43,6 +48,10 @@ class DataTransferObjectProperty
     {
         if ($this->caster && $value !== null) {
             $value = $this->caster->cast($value);
+        }
+
+        if($this->dataTransferObjectClass->isStrict()){
+            $this->validateExactTypeMatch($value);
         }
 
         $this->reflectionProperty->setValue($this->dataTransferObject, $value);
@@ -183,5 +192,24 @@ class DataTransferObjectProperty
             'parent' => get_parent_class($this->dataTransferObject),
             default => $type->getName(),
         };
+    }
+
+    private const typeMap = [
+        'integer' => 'int',
+        'double' => 'float',
+        'boolean' => 'bool'
+    ];
+
+    private function validateExactTypeMatch($value){
+        $expected_type = $this->reflectionProperty->getType();
+        $type = gettype($value);
+        $type = self::typeMap[$type] ?? $type;
+
+        // enforce all types match, except for float to int coercion
+        // https://www.php.net/manual/en/language.types.declarations.php#:~:text=float%20type%20declaration
+        if($expected_type->isBuiltin() && $type != $expected_type->getName() && !($expected_type == 'float' && $type == 'int')){
+            $argument_name = $this->reflectionProperty->getName();
+            throw new \TypeError("Argument $argument_name of " . $this->reflectionProperty->getDeclaringClass()->getName() . ' must be of type ' . $expected_type->getName() . ", $type given");
+        }
     }
 }

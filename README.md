@@ -335,6 +335,12 @@ new StrictDto(
 );
 ```
 
+### Type Coercion
+
+This package utilizes reflection to [set property values](https://www.php.net/manual/en/reflectionproperty.setvalue.php).
+Unfortunately, this means the any [strict_types declarations](https://www.php.net/manual/en/language.types.declarations.php#:~:text=of%20PHP%208.0.0.-,Strict%20typing%20%C2%B6,-By%20default%2C%20PHP) are ignored. As an alternative, Setting the Strict attribute will enforce strict type checks and prevent any coercion from occurring. 
+
+
 ## Helper functions
 
 There are also some helper functions provided for working with multiple properties at once.
