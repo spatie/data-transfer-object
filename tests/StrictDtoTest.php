@@ -20,6 +20,19 @@ class StrictDtoTest extends TestCase
     }
 
     /** @test */
+    public function non_strict_knows_unknown_properties()
+    {
+        $dto = new NonStrictDto(
+            name: 'name',
+            more: 23,
+            unknown: 'unknown'
+        );
+
+        $this->assertEqualsCanonicalizing(['more', 'unknown'], $dto->allUnknown());
+    }
+
+
+    /** @test */
     public function strict_test()
     {
         $this->expectException(UnknownProperties::class);

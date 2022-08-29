@@ -17,6 +17,8 @@ abstract class DataTransferObject
 
     protected array $onlyKeys = [];
 
+    protected array $unknownProperties = [];
+
     public function __construct(...$args)
     {
         if (is_array($args[0] ?? null)) {
@@ -31,8 +33,12 @@ abstract class DataTransferObject
             $args = Arr::forget($args, $property->name);
         }
 
-        if ($class->isStrict() && count($args)) {
-            throw UnknownProperties::new(static::class, array_keys($args));
+        if (count($args)) {
+            if ($class->isStrict()) {
+                throw UnknownProperties::new(static::class, array_keys($args));
+            } else {
+                $this->unknownProperties = array_keys($args);
+            }
         }
 
         $class->validate();
@@ -44,6 +50,11 @@ abstract class DataTransferObject
             fn (mixed $parameters) => new static($parameters),
             $arrayOfParameters
         );
+    }
+
+    public function allUnknown(): array
+    {
+        return $this->unknownProperties;
     }
 
     public function all(): array
