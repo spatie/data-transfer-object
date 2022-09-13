@@ -26,6 +26,10 @@ abstract class DataTransferObject
         $class = new DataTransferObjectClass($this);
 
         foreach ($class->getProperties() as $property) {
+            if ($class->isOnlyInitialized() && !Arr::exists($args, $property->name)) {
+                continue;
+            }
+
             $property->setValue(Arr::get($args, $property->name, $property->getDefaultValue()));
 
             $args = Arr::forget($args, $property->name);
@@ -55,7 +59,7 @@ abstract class DataTransferObject
         $properties = $class->getProperties(ReflectionProperty::IS_PUBLIC);
 
         foreach ($properties as $property) {
-            if ($property->isStatic()) {
+            if ($property->isStatic() || !$property->isInitialized($this)) {
                 continue;
             }
 

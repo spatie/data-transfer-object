@@ -4,6 +4,7 @@ namespace Spatie\DataTransferObject\Reflection;
 
 use ReflectionClass;
 use ReflectionProperty;
+use Spatie\DataTransferObject\Attributes\OnlyInitialized;
 use Spatie\DataTransferObject\Attributes\Strict;
 use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\Exceptions\ValidationException;
@@ -15,6 +16,8 @@ class DataTransferObjectClass
     private DataTransferObject $dataTransferObject;
 
     private bool $isStrict;
+
+    private bool $isOnlyInitialized;
 
     public function __construct(DataTransferObject $dataTransferObject)
     {
@@ -80,5 +83,23 @@ class DataTransferObjectClass
         }
 
         return $this->isStrict;
+    }
+
+    public function isOnlyInitialized(): bool
+    {
+        if (! isset($this->isOnlyInitialized)) {
+            $attribute = null;
+
+            $reflectionClass = $this->reflectionClass;
+            while ($attribute === null && $reflectionClass !== false) {
+                $attribute = $reflectionClass->getAttributes(OnlyInitialized::class)[0] ?? null;
+
+                $reflectionClass = $reflectionClass->getParentClass();
+            }
+
+            $this->isOnlyInitialized = $attribute !== null;
+        }
+
+        return $this->isOnlyInitialized;
     }
 }
