@@ -58,8 +58,10 @@ abstract class DataTransferObject
 
         $properties = $class->getProperties(ReflectionProperty::IS_PUBLIC);
 
+        $isOnlyInitialized = (new DataTransferObjectClass($this))->isOnlyInitialized();
+
         foreach ($properties as $property) {
-            if ($property->isStatic() || !$property->isInitialized($this)) {
+            if ($property->isStatic() || (!$property->isInitialized($this) && $isOnlyInitialized)) {
                 continue;
             }
 
