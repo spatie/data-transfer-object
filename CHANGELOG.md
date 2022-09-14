@@ -2,6 +2,18 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 3.9.0 - 2022-09-14
+
+### What's Changed
+
+- allow enum casting not only enum value casting by @regnerisch in https://github.com/spatie/data-transfer-object/pull/301
+
+### New Contributors
+
+- @regnerisch made their first contribution in https://github.com/spatie/data-transfer-object/pull/301
+
+**Full Changelog**: https://github.com/spatie/data-transfer-object/compare/3.8.1...3.9.0
+
 ## 3.8.1 - 2022-06-02
 
 ### What's Changed
