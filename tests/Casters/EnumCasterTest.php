@@ -42,6 +42,18 @@ class EnumCasterTest extends TestCase
     }
 
     /** @test */
+    public function test_it_can_cast_enums_which_are_already_enums(): void
+    {
+        $dto = new EnumCastedDataTransferObject([
+            'integerEnum' => IntegerEnum::Test,
+            'stringEnum' => StringEnum::Test,
+        ]);
+
+        $this->assertEquals(StringEnum::Test, $dto->stringEnum);
+        $this->assertEquals(IntegerEnum::Test, $dto->integerEnum);
+    }
+
+    /** @test */
     public function test_it_cannot_cast_simple_enums(): void
     {
         $this->expectException(LogicException::class);
