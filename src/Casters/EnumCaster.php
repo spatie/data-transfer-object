@@ -15,6 +15,10 @@ class EnumCaster implements Caster
 
     public function cast(mixed $value): mixed
     {
+        if ($value instanceof $this->enumType) {
+            return $value;
+        }
+
         if (! is_subclass_of($this->enumType, 'BackedEnum')) {
             throw new LogicException("Caster [EnumCaster] may only be used to cast backed enums. Received [$this->enumType].");
         }
