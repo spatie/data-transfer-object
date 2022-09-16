@@ -136,7 +136,8 @@ class MapFromTest extends TestCase
     }
 }
 
-class DTOInner extends DataTransferObject {
+class DTOInner extends DataTransferObject
+{
     public string $title;
 
     #[MapFrom('0')]
