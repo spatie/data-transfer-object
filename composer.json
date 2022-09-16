@@ -1,37 +1,37 @@
 {
-    "name": "spatie/data-transfer-object",
+    "name": "nemozar/data-transfer-object",
     "description": "Data transfer objects with batteries included",
     "keywords": [
-        "spatie",
+        "nemozar",
         "data-transfer-object"
     ],
-    "homepage": "https://github.com/spatie/data-transfer-object",
+    "homepage": "https://github.com/nemozar/data-transfer-object",
     "license": "MIT",
     "authors": [
         {
-            "name": "Brent Roose",
-            "email": "brent@spatie.be",
-            "homepage": "https://spatie.be",
-            "role": "Developer"
+            "name": "",
+            "email": "",
+            "homepage": "",
+            "role": ""
         }
     ],
     "require": {
-        "php": "^7.4|^8.0"
+        "php": "^7.2|^8.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0"
     },
     "suggest": {
-        "phpstan/phpstan": "Take advantage of checkUninitializedProperties with \\Spatie\\DataTransferObject\\PHPstan\\PropertiesAreAlwaysInitializedExtension"
+        "phpstan/phpstan": "Take advantage of checkUninitializedProperties with \\Nemozar\\DataTransferObject\\PHPstan\\PropertiesAreAlwaysInitializedExtension"
     },
     "autoload": {
         "psr-4": {
-            "Spatie\\DataTransferObject\\": "src"
+            "Nemozar\\DataTransferObject\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Spatie\\DataTransferObject\\Tests\\": "tests"
+            "Nemozar\\DataTransferObject\\Tests\\": "tests"
         }
     },
     "scripts": {
