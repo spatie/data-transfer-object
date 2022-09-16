@@ -2,6 +2,19 @@
 
 All notable changes to `data-transfer-object` will be documented in this file
 
+## 3.9.1 - 2022-09-16
+
+### What's Changed
+
+- Add test for "Cannot use positional argument after named argument during unpacking" error by @Kehet in https://github.com/spatie/data-transfer-object/pull/302
+- Fix positional after named by @aidan-casey in https://github.com/spatie/data-transfer-object/pull/304
+
+### New Contributors
+
+- @Kehet made their first contribution in https://github.com/spatie/data-transfer-object/pull/302
+
+**Full Changelog**: https://github.com/spatie/data-transfer-object/compare/3.9.0...3.9.1
+
 ## 3.9.0 - 2022-09-14
 
 ### What's Changed
