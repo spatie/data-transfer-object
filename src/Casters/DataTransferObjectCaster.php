@@ -20,6 +20,6 @@ class DataTransferObjectCaster implements Caster
             }
         }
 
-        return new $this->classNames[0](...$value);
+        return new $this->classNames[0]($value);
     }
 }
