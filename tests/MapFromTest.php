@@ -102,4 +102,44 @@ class MapFromTest extends TestCase
         $this->assertFalse($dto->isPublic);
         $this->assertEquals(42, $dto->randomInt);
     }
+
+    /** @test */
+    public function dto_can_have_numeric_keys()
+    {
+        $data = [
+            'title' => 'Hello world',
+            '0' => 10,
+        ];
+
+        $dto = new DTOInner($data);
+
+        $this->assertEquals('Hello world', $dto->title);
+        $this->assertEquals(10, $dto->zero);
+    }
+
+    /** @test */
+    public function dto_can_have_numeric_keys_in_nested_dto()
+    {
+        $data = [
+            'innerDTO' => [
+                'title' => 'Hello world',
+                '0' => 10,
+            ],
+        ];
+
+        $dtoOuter = new class ($data) extends DataTransferObject {
+            public DTOInner $innerDTO;
+        };
+
+        $this->assertEquals('Hello world', $dtoOuter->innerDTO->title);
+        $this->assertEquals(10, $dtoOuter->innerDTO->zero);
+    }
+}
+
+class DTOInner extends DataTransferObject
+{
+    public string $title;
+
+    #[MapFrom('0')]
+    public int $zero;
 }
