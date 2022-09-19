@@ -5,6 +5,7 @@ namespace Spatie\DataTransferObject\Reflection;
 use JetBrains\PhpStorm\Immutable;
 use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionIntersectionType;
 use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionType;
@@ -172,7 +173,7 @@ class DataTransferObjectProperty
 
         return match ($type::class) {
             ReflectionNamedType::class => [$type],
-            ReflectionUnionType::class => $type->getTypes(),
+            ReflectionUnionType::class, ReflectionIntersectionType::class => $type->getTypes(),
         };
     }
 
