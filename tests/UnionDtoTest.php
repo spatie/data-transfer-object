@@ -5,79 +5,72 @@ namespace Spatie\DataTransferObject\Tests;
 use Spatie\DataTransferObject\Attributes\CastWith;
 use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\Tests\Dummy\RoundingCaster;
+use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertInstanceOf;
+use function PHPUnit\Framework\assertIsInt;
 
-class UnionDtoTest extends TestCase
-{
-    /** @test */
-    public function union_types_are_allowed()
+beforeAll(function () {
+    class UnionDto extends DataTransferObject
     {
-        $dto = new UnionDto(foo: 1);
-
-        $this->assertEquals(1, $dto->foo);
+        public string | int $foo;
     }
 
-    /** @test */
-    public function union_types_rounding_float()
+    class UnionDtoWithCast extends DataTransferObject
     {
-        $dto = new UnionDtoWithCast(bar: 123.456);
-
-        $this->assertEquals(123.46, $dto->bar);
+        #[CastWith(RoundingCaster::class)]
+        public float | int $bar;
     }
 
-    /** @test */
-    public function union_types_rounding_integer()
+    class ComplexUnionDto extends DataTransferObject
     {
-        $dto = new UnionDtoWithCast(bar: 123);
-
-        $this->assertIsInt($dto->bar);
-        $this->assertEquals(123, $dto->bar);
+        public Dto1 | Dto2 $baz;
     }
 
-    /** @test */
-    public function complex_union_types_fallback()
+    class Dto1 extends DataTransferObject
     {
-        $dto = new ComplexUnionDto([
-            'baz' => ['value' => 3],
-        ]);
-
-        $this->assertInstanceOf(Dto1::class, $dto->baz);
-        $this->assertEquals(3, $dto->baz->value);
+        public int $value = 1;
     }
 
-    /** @test */
-    public function complex_union_types_force()
+    class Dto2 extends DataTransferObject
     {
-        $dto = new ComplexUnionDto(
-            baz: new Dto2(value: 3),
-        );
-
-        $this->assertInstanceOf(Dto2::class, $dto->baz);
-        $this->assertEquals(3, $dto->baz->value);
+        public int $value = 2;
     }
-}
 
-class UnionDto extends DataTransferObject
-{
-    public string | int $foo;
-}
+});
 
-class UnionDtoWithCast extends DataTransferObject
-{
-    #[CastWith(RoundingCaster::class)]
-    public float | int $bar;
-}
+test('union types are allowed', function () {
+    $dto = new UnionDto(foo: 1);
 
-class ComplexUnionDto extends DataTransferObject
-{
-    public Dto1 | Dto2 $baz;
-}
+    assertEquals(1, $dto->foo);
+});
 
-class Dto1 extends DataTransferObject
-{
-    public int $value = 1;
-}
+test('union types rounding float', function () {
+    $dto = new UnionDtoWithCast(bar: 123.456);
 
-class Dto2 extends DataTransferObject
-{
-    public int $value = 2;
-}
+    assertEquals(123.46, $dto->bar);
+});
+
+test('union types rounding integer', function () {
+    $dto = new UnionDtoWithCast(bar: 123);
+
+    assertIsInt($dto->bar);
+    assertEquals(123, $dto->bar);
+});
+
+test('complex union types fallback', function () {
+    $dto = new ComplexUnionDto([
+        'baz' => ['value' => 3],
+    ]);
+
+    assertInstanceOf(Dto1::class, $dto->baz);
+    assertEquals(3, $dto->baz->value);
+});
+
+test('complex union types force', function () {
+    $dto = new ComplexUnionDto(
+        baz: new Dto2(value: 3),
+    );
+
+    assertInstanceOf(Dto2::class, $dto->baz);
+    assertEquals(3, $dto->baz->value);
+});
