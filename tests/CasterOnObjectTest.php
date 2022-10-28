@@ -4,16 +4,12 @@ namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexObjectWithCaster;
+use function PHPUnit\Framework\assertEquals;
 
-class CasterOnObjectTest extends TestCase
-{
-    /** @test */
-    public function property_is_casted()
-    {
-        $dto = new class (complexObject: [ 'name' => 'test' ]) extends DataTransferObject {
-            public ComplexObjectWithCaster $complexObject;
-        };
+test('property is casted', function () {
+    $dto = new class (complexObject: [ 'name' => 'test' ]) extends DataTransferObject {
+        public ComplexObjectWithCaster $complexObject;
+    };
 
-        $this->assertEquals('test', $dto->complexObject->name);
-    }
-}
+    assertEquals('test', $dto->complexObject->name);
+});
