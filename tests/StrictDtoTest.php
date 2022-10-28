@@ -6,54 +6,44 @@ use Spatie\DataTransferObject\Attributes\Strict;
 use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\Exceptions\UnknownProperties;
 
-class StrictDtoTest extends TestCase
-{
-    /** @test */
-    public function non_strict_test()
+beforeAll(function () {
+    #[Strict]
+    class StrictDto extends DataTransferObject
     {
-        $dto = new NonStrictDto(
-            name: 'name',
-            unknown: 'unknown'
-        );
-
-        $this->markTestSucceeded();
+        public string $name;
     }
 
-    /** @test */
-    public function strict_test()
+    final class ChildStrictDto extends StrictDto
     {
-        $this->expectException(UnknownProperties::class);
-
-        $dto = new StrictDto(
-            name:    'name',
-            unknown: 'unknown'
-        );
     }
 
-    /** @test */
-    public function strict_child_test()
+
+    class NonStrictDto extends DataTransferObject
     {
-        $this->expectException(UnknownProperties::class);
-
-        $dto = new ChildStrictDto(
-            name: 'name',
-            unknown: 'unknown'
-        );
+        public string $name;
     }
-}
 
-#[Strict]
-class StrictDto extends DataTransferObject
-{
-    public string $name;
-}
+});
 
-final class ChildStrictDto extends StrictDto
-{
-}
+test('non strict test', function () {
+    $dto = new NonStrictDto(
+        name: 'name',
+        unknown: 'unknown'
+    );
 
+    $this->markTestSucceeded();
+});
 
-class NonStrictDto extends DataTransferObject
-{
-    public string $name;
-}
+test('strict test', function () {
+    $dto = new StrictDto(
+        name:    'name',
+        unknown: 'unknown'
+    );
+})->throws(UnknownProperties::class);
+
+test('strict child test', function () {
+    $dto = new ChildStrictDto(
+        name: 'name',
+        unknown: 'unknown'
+    );
+})->throws(UnknownProperties::class);
