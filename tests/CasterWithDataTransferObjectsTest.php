@@ -3,35 +3,33 @@
 namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\DataTransferObject;
+use function PHPUnit\Framework\assertEquals;
 
-class CasterWithDataTransferObjectsTest extends TestCase
-{
-    /** @test */
-    public function test_with_nested_dtos()
+beforeAll(function () {
+    class DtoA extends DataTransferObject
     {
-        $dtoA = new DtoA([
-            'dtoB' => [
-                'dtoC' => [
-                    'name' => 'test',
-                ],
-            ],
-        ]);
-
-        $this->assertEquals('test', $dtoA->dtoB->dtoC->name);
+        public DtoB $dtoB;
     }
-}
 
-class DtoA extends DataTransferObject
-{
-    public DtoB $dtoB;
-}
+    class DtoB extends DataTransferObject
+    {
+        public DtoC $dtoC;
+    }
 
-class DtoB extends DataTransferObject
-{
-    public DtoC $dtoC;
-}
+    class DtoC extends DataTransferObject
+    {
+        public string $name;
+    }
+});
 
-class DtoC extends DataTransferObject
-{
-    public string $name;
-}
+test('with nested dtos', function () {
+    $dtoA = new DtoA([
+        'dtoB' => [
+            'dtoC' => [
+                'name' => 'test',
+            ],
+        ],
+    ]);
+
+    assertEquals('test', $dtoA->dtoB->dtoC->name);
+});
