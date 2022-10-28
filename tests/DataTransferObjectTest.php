@@ -10,234 +10,202 @@ use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithParent;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexDtoWithSelf;
 use Spatie\DataTransferObject\Tests\Dummy\ComplexStrictDto;
 use Spatie\DataTransferObject\Tests\Dummy\WithDefaultValueDto;
+use function PHPUnit\Framework\assertCount;
+use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertNull;
 
-class DataTransferObjectTest extends TestCase
-{
-    /** @test */
-    public function array_of()
-    {
-        $list = BasicDto::arrayOf([
-            ['name' => 'a'],
-            ['name' => 'b'],
-        ]);
+test('array of', function () {
+    $list = BasicDto::arrayOf([
+        ['name' => 'a'],
+        ['name' => 'b'],
+    ]);
 
-        $this->assertCount(2, $list);
+    assertCount(2, $list);
 
-        $this->assertEquals('a', $list[0]->name);
-        $this->assertEquals('b', $list[1]->name);
-    }
+    assertEquals('a', $list[0]->name);
+    assertEquals('b', $list[1]->name);
+});
 
-    /** @test */
-    public function create_with_nested_dto()
-    {
-        $dto = new ComplexDto([
-            'name' => 'a',
-            'other' => [
-                'name' => 'b',
+test('create with nested dto', function () {
+    $dto = new ComplexDto([
+        'name' => 'a',
+        'other' => [
+            'name' => 'b',
+        ],
+    ]);
+
+    assertEquals('a', $dto->name);
+    assertEquals('b', $dto->other->name);
+});
+
+test('create with nested dto already casted', function () {
+    $dto = new ComplexDto([
+        'name' => 'a',
+        'other' => new BasicDto([
+            'name' => 'b',
+        ]),
+    ]);
+
+    assertEquals('a', $dto->name);
+    assertEquals('b', $dto->other->name);
+});
+
+test('create strict with nested dto', function () {
+    $dto = new ComplexStrictDto([
+        'name' => 'a',
+        'other' => [
+            'name' => 'b',
+        ],
+    ]);
+
+    assertEquals('a', $dto->name);
+    assertEquals('b', $dto->other->name);
+});
+
+test('create strict with nested dto already casted', function () {
+    $dto = new ComplexStrictDto([
+        'name' => 'a',
+        'other' => new BasicDto([
+            'name' => 'b',
+        ]),
+    ]);
+
+    assertEquals('a', $dto->name);
+    assertEquals('b', $dto->other->name);
+});
+
+test('create with null nullable nested dto', function () {
+    $dto = new ComplexDtoWithNullableProperty([
+        'name' => 'a',
+        'other' => null,
+    ]);
+
+    assertEquals('a', $dto->name);
+    assertNull($dto->other);
+});
+
+test('create with nested dto having cast', function () {
+    $dto = new ComplexDtoWithCastedAttributeHavingCast([
+        'name' => 'a',
+        'other' => [
+            'name' => 'b',
+            'object' => [
+                'name' => 'c',
             ],
-        ]);
+        ],
+    ]);
 
-        $this->assertEquals('a', $dto->name);
-        $this->assertEquals('b', $dto->other->name);
-    }
+    assertEquals('a', $dto->name);
+    assertEquals('b', $dto->other->name);
+    assertEquals('c', $dto->other->object->name);
+});
 
-    /** @test */
-    public function create_with_nested_dto_already_casted()
-    {
-        $dto = new ComplexDto([
-            'name' => 'a',
-            'other' => new BasicDto([
-                'name' => 'b',
-            ]),
-        ]);
+test('all with nested dto', function () {
+    $array = [
+        'name' => 'a',
+        'other' => [
+            'name' => 'b',
+        ],
+    ];
 
-        $this->assertEquals('a', $dto->name);
-        $this->assertEquals('b', $dto->other->name);
-    }
+    $dto = new ComplexDto($array);
 
-    /** @test */
-    public function create_strict_with_nested_dto()
-    {
-        $dto = new ComplexStrictDto([
-            'name' => 'a',
-            'other' => [
-                'name' => 'b',
-            ],
-        ]);
+    $all = $dto->all();
 
-        $this->assertEquals('a', $dto->name);
-        $this->assertEquals('b', $dto->other->name);
-    }
+    assertCount(2, $all);
+    assertEquals('a', $all['name']);
+    assertEquals('b', $all['other']->name);
+});
 
-    /** @test */
-    public function create_strict_with_nested_dto_already_casted()
-    {
-        $dto = new ComplexStrictDto([
-            'name' => 'a',
-            'other' => new BasicDto([
-                'name' => 'b',
-            ]),
-        ]);
+test('to array with nested dto', function () {
+    $array = [
+        'name' => 'a',
+        'other' => [
+            'name' => 'b',
+        ],
+    ];
 
-        $this->assertEquals('a', $dto->name);
-        $this->assertEquals('b', $dto->other->name);
-    }
+    $dto = new ComplexDto($array);
 
-    /** @test */
-    public function create_with_null_nullable_nested_dto()
-    {
-        $dto = new ComplexDtoWithNullableProperty([
-            'name' => 'a',
-            'other' => null,
-        ]);
+    assertEquals($array, $dto->toArray());
+});
 
-        $this->assertEquals('a', $dto->name);
-        $this->assertNull($dto->other);
-    }
+test('to array with only', function () {
+    $array = [
+        'name' => 'a',
+        'other' => [
+            'name' => 'b',
+        ],
+    ];
 
-    /** @test */
-    public function create_with_nested_dto_having_cast()
-    {
-        $dto = new ComplexDtoWithCastedAttributeHavingCast([
-            'name' => 'a',
-            'other' => [
-                'name' => 'b',
-                'object' => [
-                    'name' => 'c',
-                ],
-            ],
-        ]);
+    $dto = new ComplexDto($array);
 
-        $this->assertEquals('a', $dto->name);
-        $this->assertEquals('b', $dto->other->name);
-        $this->assertEquals('c', $dto->other->object->name);
-    }
+    assertEquals(['name' => 'a'], $dto->only('name')->toArray());
+});
 
-    /** @test */
-    public function all_with_nested_dto()
-    {
-        $array = [
-            'name' => 'a',
-            'other' => [
-                'name' => 'b',
-            ],
-        ];
+test('to array with except', function () {
+    $array = [
+        'name' => 'a',
+        'other' => [
+            'name' => 'b',
+        ],
+    ];
 
-        $dto = new ComplexDto($array);
+    $dto = new ComplexDto($array);
 
-        $all = $dto->all();
+    assertEquals(['other' => ['name' => 'b']], $dto->except('name')->toArray());
+});
 
-        $this->assertCount(2, $all);
-        $this->assertEquals('a', $all['name']);
-        $this->assertEquals('b', $all['other']->name);
-    }
+test('create with default value', function () {
+    $dto = new WithDefaultValueDto();
 
-    /** @test */
-    public function to_array_with_nested_dto()
-    {
-        $array = [
-            'name' => 'a',
-            'other' => [
-                'name' => 'b',
-            ],
-        ];
+    assertEquals(['name' => 'John'], $dto->toArray());
+});
 
-        $dto = new ComplexDto($array);
+test('create with overriden default value', function () {
+    $dto = new WithDefaultValueDto(name: 'Doe');
 
-        $this->assertEquals($array, $dto->toArray());
-    }
+    assertEquals(['name' => 'Doe'], $dto->toArray());
+});
 
-    /** @test */
-    public function to_array_with_only()
-    {
-        $array = [
-            'name' => 'a',
-            'other' => [
-                'name' => 'b',
-            ],
-        ];
+test('clone', function () {
+    $array = [
+        'name' => 'a',
+        'other' => [
+            'name' => 'b',
+        ],
+    ];
 
-        $dto = new ComplexDto($array);
+    $dto = new ComplexDto($array);
 
-        $this->assertEquals(['name' => 'a'], $dto->only('name')->toArray());
-    }
+    $clone = $dto->clone(other: ['name' => 'a']);
 
-    /** @test */
-    public function to_array_with_except()
-    {
-        $array = [
-            'name' => 'a',
-            'other' => [
-                'name' => 'b',
-            ],
-        ];
+    assertEquals('a', $clone->name);
+    assertEquals('a', $clone->other->name);
+});
 
-        $dto = new ComplexDto($array);
+test('create with nested self', function () {
+    $dto = new ComplexDtoWithSelf([
+        'name' => 'a',
+        'other' => [
+            'name' => 'b',
+        ],
+    ]);
 
-        $this->assertEquals(['other' => ['name' => 'b']], $dto->except('name')->toArray());
-    }
+    assertEquals('a', $dto->name);
+    assertEquals('b', $dto->other->name);
+    assertNull($dto->other->other);
+});
 
-    /** @test */
-    public function create_with_default_value()
-    {
-        $dto = new WithDefaultValueDto();
+test('create with nested parent', function () {
+    $dto = new ComplexDtoWithParent([
+        'name' => 'a',
+        'other' => [
+            'name' => 'b',
+        ],
+    ]);
 
-        $this->assertEquals(['name' => 'John'], $dto->toArray());
-    }
-
-    /** @test */
-    public function create_with_overriden_default_value()
-    {
-        $dto = new WithDefaultValueDto(name: 'Doe');
-
-        $this->assertEquals(['name' => 'Doe'], $dto->toArray());
-    }
-
-    /** @test */
-    public function test_clone()
-    {
-        $array = [
-            'name' => 'a',
-            'other' => [
-                'name' => 'b',
-            ],
-        ];
-
-        $dto = new ComplexDto($array);
-
-        $clone = $dto->clone(other: ['name' => 'a']);
-
-        $this->assertEquals('a', $clone->name);
-        $this->assertEquals('a', $clone->other->name);
-    }
-
-    /** @test */
-    public function create_with_nested_self()
-    {
-        $dto = new ComplexDtoWithSelf([
-            'name' => 'a',
-            'other' => [
-                'name' => 'b',
-            ],
-        ]);
-
-        $this->assertEquals('a', $dto->name);
-        $this->assertEquals('b', $dto->other->name);
-        $this->assertNull($dto->other->other);
-    }
-
-    /** @test */
-    public function create_with_nested_parent()
-    {
-        $dto = new ComplexDtoWithParent([
-            'name' => 'a',
-            'other' => [
-                'name' => 'b',
-            ],
-        ]);
-
-        $this->assertEquals('a', $dto->name);
-        $this->assertEquals('b', $dto->other->name);
-        $this->assertNull($dto->other->other);
-    }
-}
+    assertEquals('a', $dto->name);
+    assertEquals('b', $dto->other->name);
+    assertNull($dto->other->other);
+});
