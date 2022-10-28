@@ -6,7 +6,6 @@ use Exception;
 use Spatie\DataTransferObject\Attributes\CastWith;
 use Spatie\DataTransferObject\Caster;
 use Spatie\DataTransferObject\DataTransferObject;
-use Spatie\DataTransferObject\Tests\TestCase;
 use function PHPUnit\Framework\assertCount;
 
 beforeAll(function () {

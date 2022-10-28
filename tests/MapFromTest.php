@@ -4,142 +4,129 @@ namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\Attributes\MapFrom;
 use Spatie\DataTransferObject\DataTransferObject;
+use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertFalse;
 
-class MapFromTest extends TestCase
-{
-    /** @test */
-    public function property_is_mapped_from_attribute_name()
+beforeAll(function () {
+    class DTOInner extends DataTransferObject
     {
-        $dto = new class (count: 42) extends DataTransferObject {
-            #[MapFrom('count')]
-            public int $originalCount;
-        };
+        public string $title;
 
-        $this->assertEquals(42, $dto->originalCount);
+        #[MapFrom('0')]
+        public int $zero;
     }
+});
 
-    /** @test */
-    public function property_is_mapped_from_index()
-    {
-        $dto = new class (['John', 'Doe']) extends DataTransferObject {
-            #[MapFrom(1)]
-            public string $lastName;
-        };
+test('property is mapped from attribute name', function () {
+    $dto = new class (count: 42) extends DataTransferObject {
+        #[MapFrom('count')]
+        public int $originalCount;
+    };
 
-        $this->assertEquals('Doe', $dto->lastName);
-    }
+    assertEquals(42, $dto->originalCount);
+});
 
-    /** @test */
-    public function property_is_mapped_from_dot_notation()
-    {
-        $dto = new class (['address' => ['city' => 'London']]) extends DataTransferObject {
-            #[MapFrom('address.city')]
-            public string $city;
-        };
+test('property is mapped from index', function () {
+    $dto = new class (['John', 'Doe']) extends DataTransferObject {
+        #[MapFrom(1)]
+        public string $lastName;
+    };
 
-        $this->assertEquals('London', $dto->city);
-    }
+    assertEquals('Doe', $dto->lastName);
+});
 
-    /** @test */
-    public function dto_can_have_mapped_and_regular_properties()
-    {
-        $data = [
-            'title' => 'Hello world',
-            'user' => [
-                'name' => 'John Doe',
-                'email' => 'john.doe@example.com',
-            ],
-            'date' => '2021-01-01',
-            'category' => [
-                'name' => 'News',
-            ],
-        ];
+test('property is mapped from dot notation', function () {
+    $dto = new class (['address' => ['city' => 'London']]) extends DataTransferObject {
+        #[MapFrom('address.city')]
+        public string $city;
+    };
 
-        $dto = new class ($data) extends DataTransferObject {
-            public string $title;
+    assertEquals('London', $dto->city);
+});
 
-            #[MapFrom('user.name')]
-            public string $username;
+test('dto can have mapped and regular properties', function () {
+    $data = [
+        'title' => 'Hello world',
+        'user' => [
+            'name' => 'John Doe',
+            'email' => 'john.doe@example.com',
+        ],
+        'date' => '2021-01-01',
+        'category' => [
+            'name' => 'News',
+        ],
+    ];
 
-            #[MapFrom('user.email')]
-            public string $email;
+    $dto = new class ($data) extends DataTransferObject {
+        public string $title;
 
-            public string $date;
+        #[MapFrom('user.name')]
+        public string $username;
 
-            #[MapFrom('category.name')]
-            public string $categoryName;
-        };
+        #[MapFrom('user.email')]
+        public string $email;
 
-        $this->assertEquals('Hello world', $dto->title);
-        $this->assertEquals('John Doe', $dto->username);
-        $this->assertEquals('john.doe@example.com', $dto->email);
-        $this->assertEquals('2021-01-01', $dto->date);
-        $this->assertEquals('News', $dto->categoryName);
-    }
+        public string $date;
 
-    /** @test */
-    public function mapped_from_works_with_default_values()
-    {
-        $data = [
-            'title' => 'Hello world',
-        ];
+        #[MapFrom('category.name')]
+        public string $categoryName;
+    };
 
-        $dto = new class ($data) extends DataTransferObject {
-            public string $title;
+    assertEquals('Hello world', $dto->title);
+    assertEquals('John Doe', $dto->username);
+    assertEquals('john.doe@example.com', $dto->email);
+    assertEquals('2021-01-01', $dto->date);
+    assertEquals('News', $dto->categoryName);
+});
 
-            #[MapFrom('desc')]
-            public string $description = 'Test Text';
+test('mapped from works with default values', function () {
+    $data = [
+        'title' => 'Hello world',
+    ];
 
-            #[MapFrom('is_public')]
-            public bool $isPublic = false;
+    $dto = new class ($data) extends DataTransferObject {
+        public string $title;
 
-            #[MapFrom('random_int')]
-            public int $randomInt = 42;
-        };
+        #[MapFrom('desc')]
+        public string $description = 'Test Text';
 
-        $this->assertEquals('Hello world', $dto->title);
-        $this->assertEquals('Test Text', $dto->description);
-        $this->assertFalse($dto->isPublic);
-        $this->assertEquals(42, $dto->randomInt);
-    }
+        #[MapFrom('is_public')]
+        public bool $isPublic = false;
 
-    /** @test */
-    public function dto_can_have_numeric_keys()
-    {
-        $data = [
+        #[MapFrom('random_int')]
+        public int $randomInt = 42;
+    };
+
+    assertEquals('Hello world', $dto->title);
+    assertEquals('Test Text', $dto->description);
+    assertFalse($dto->isPublic);
+    assertEquals(42, $dto->randomInt);
+});
+
+test('dto can have numeric keys', function () {
+    $data = [
+        'title' => 'Hello world',
+        '0' => 10,
+    ];
+
+    $dto = new DTOInner($data);
+
+    assertEquals('Hello world', $dto->title);
+    assertEquals(10, $dto->zero);
+});
+
+test('dto can have numeric keys in nested dto', function () {
+    $data = [
+        'innerDTO' => [
             'title' => 'Hello world',
             '0' => 10,
-        ];
+        ],
+    ];
 
-        $dto = new DTOInner($data);
+    $dtoOuter = new class ($data) extends DataTransferObject {
+        public DTOInner $innerDTO;
+    };
 
-        $this->assertEquals('Hello world', $dto->title);
-        $this->assertEquals(10, $dto->zero);
-    }
-
-    /** @test */
-    public function dto_can_have_numeric_keys_in_nested_dto()
-    {
-        $data = [
-            'innerDTO' => [
-                'title' => 'Hello world',
-                '0' => 10,
-            ],
-        ];
-
-        $dtoOuter = new class ($data) extends DataTransferObject {
-            public DTOInner $innerDTO;
-        };
-
-        $this->assertEquals('Hello world', $dtoOuter->innerDTO->title);
-        $this->assertEquals(10, $dtoOuter->innerDTO->zero);
-    }
-}
-
-class DTOInner extends DataTransferObject
-{
-    public string $title;
-
-    #[MapFrom('0')]
-    public int $zero;
-}
+    assertEquals('Hello world', $dtoOuter->innerDTO->title);
+    assertEquals(10, $dtoOuter->innerDTO->zero);
+});
