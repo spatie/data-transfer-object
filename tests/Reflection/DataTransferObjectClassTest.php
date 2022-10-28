@@ -4,26 +4,22 @@ namespace Spatie\DataTransferObject\Tests\Reflection;
 
 use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\Reflection\DataTransferObjectClass;
-use Spatie\DataTransferObject\Tests\TestCase;
+use function PHPUnit\Framework\assertCount;
+use function PHPUnit\Framework\assertEquals;
 
-class DataTransferObjectClassTest extends TestCase
-{
-    /** @test */
-    public function test_public_properties()
-    {
-        $dto = new class () extends DataTransferObject {
-            public $foo;
+test('public properties', function () {
+    $dto = new class () extends DataTransferObject {
+        public $foo;
 
-            public static $bar;
+        public static $bar;
 
-            private $baz;
+        private $baz;
 
-            protected $boo;
-        };
+        protected $boo;
+    };
 
-        $class = new DataTransferObjectClass($dto);
+    $class = new DataTransferObjectClass($dto);
 
-        $this->assertCount(1, $class->getProperties());
-        $this->assertEquals('foo', $class->getProperties()[0]->name);
-    }
-}
+    assertCount(1, $class->getProperties());
+    assertEquals('foo', $class->getProperties()[0]->name);
+});
