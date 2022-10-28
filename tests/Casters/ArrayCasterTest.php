@@ -7,6 +7,7 @@ use Spatie\DataTransferObject\Attributes\CastWith;
 use Spatie\DataTransferObject\Caster;
 use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\Tests\TestCase;
+use function PHPUnit\Framework\assertCount;
 
 beforeAll(function () {
     class Bar extends DataTransferObject
@@ -46,5 +47,5 @@ test('collection caster', function () {
         ],
     ]);
 
-    $this->assertCount(3, $bar->collectionOfFoo);
+    assertCount(3, $bar->collectionOfFoo);
 });
