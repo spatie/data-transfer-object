@@ -12,6 +12,12 @@ use LogicException;
 use Spatie\DataTransferObject\Attributes\CastWith;
 use Spatie\DataTransferObject\Casters\ArrayCaster;
 use Spatie\DataTransferObject\DataTransferObject;
+use function PHPUnit\Framework\assertArrayHasKey;
+use function PHPUnit\Framework\assertContainsOnlyInstancesOf;
+use function PHPUnit\Framework\assertCount;
+use function PHPUnit\Framework\assertEmpty;
+use function PHPUnit\Framework\assertInstanceOf;
+use function PHPUnit\Framework\assertIsArray;
 
 beforeAll(function () {
     class Bar extends DataTransferObject
@@ -185,19 +191,16 @@ test('generic array caster on array type', function () {
         ]
     );
 
-    $this->assertIsArray($bar->collectionOfFoo);
-    $this->assertCount(3, $bar->collectionOfFoo);
-    $this->assertContainsOnlyInstancesOf(Foo::class, $bar->collectionOfFoo);
+    assertIsArray($bar->collectionOfFoo);
+    assertCount(3, $bar->collectionOfFoo);
+    assertContainsOnlyInstancesOf(Foo::class, $bar->collectionOfFoo);
 
-    $this->assertIsArray($bar->collectionOfBaz);
-    $this->assertCount(3, $bar->collectionOfBaz);
-    $this->assertContainsOnlyInstancesOf(Baz::class, $bar->collectionOfBaz);
+    assertIsArray($bar->collectionOfBaz);
+    assertCount(3, $bar->collectionOfBaz);
+    assertContainsOnlyInstancesOf(Baz::class, $bar->collectionOfBaz);
 });
 
 test('generic array caster on invalid type', function () {
-    $this->expectException(LogicException::class);
-    $this->expectExceptionMessage('Caster [ArrayCaster] may only be used to cast arrays or objects that implement ArrayAccess.');
-
     new BarIllogical(
         [
             'collectionOfFoo' => [
@@ -212,7 +215,7 @@ test('generic array caster on invalid type', function () {
             ],
         ]
     );
-});
+})->throws(LogicException::class, 'Caster [ArrayCaster] may only be used to cast arrays or objects that implement ArrayAccess.');
 
 /**
  * @see https://github.com/spatie/data-transfer-object/issues/216
@@ -223,17 +226,14 @@ test('casting an empty array object will not add ghost value', function () {
         'collectionOfBaz' => new Collection(),
     ]);
 
-    $this->assertInstanceOf(Collection::class, $object->collectionOfFoo);
-    $this->assertEmpty($object->collectionOfFoo);
+    assertInstanceOf(Collection::class, $object->collectionOfFoo);
+    assertEmpty($object->collectionOfFoo);
 
-    $this->assertInstanceOf(Collection::class, $object->collectionOfBaz);
-    $this->assertEmpty($object->collectionOfBaz);
+    assertInstanceOf(Collection::class, $object->collectionOfBaz);
+    assertEmpty($object->collectionOfBaz);
 });
 
 test('it cannot cast array access without traversable', function () {
-    $this->expectException(LogicException::class);
-    $this->expectExceptionMessage('Caster [ArrayCaster] may only be used to cast ArrayAccess objects that are traversable.');
-
     new DTOWithArrayAccessImplementation(
         [
             'collectionOfFoo' => [
@@ -248,7 +248,7 @@ test('it cannot cast array access without traversable', function () {
             ],
         ]
     );
-});
+})->throws(LogicException::class, 'Caster [ArrayCaster] may only be used to cast ArrayAccess objects that are traversable.');
 
 test('it can cast iterator aggregate', function () {
     $object = new DTOWithArrayAccessIteratorAggregate(
@@ -267,13 +267,13 @@ test('it can cast iterator aggregate', function () {
         ]
     );
 
-    $this->assertInstanceOf(ArrayAccessIteratorAggregate::class, $object->collectionOfFoo);
-    $this->assertContainsOnlyInstancesOf(Foo::class, $object->collectionOfFoo);
-    $this->assertCount(3, $object->collectionOfFoo);
+    assertInstanceOf(ArrayAccessIteratorAggregate::class, $object->collectionOfFoo);
+    assertContainsOnlyInstancesOf(Foo::class, $object->collectionOfFoo);
+    assertCount(3, $object->collectionOfFoo);
 
-    $this->assertInstanceOf(ArrayAccessIteratorAggregate::class, $object->collectionOfBaz);
-    $this->assertContainsOnlyInstancesOf(Baz::class, $object->collectionOfBaz);
-    $this->assertCount(4, $object->collectionOfBaz);
+    assertInstanceOf(ArrayAccessIteratorAggregate::class, $object->collectionOfBaz);
+    assertContainsOnlyInstancesOf(Baz::class, $object->collectionOfBaz);
+    assertCount(4, $object->collectionOfBaz);
 });
 
 test('it can cast array object', function () {
@@ -293,13 +293,13 @@ test('it can cast array object', function () {
         ]
     );
 
-    $this->assertInstanceOf(ArrayObject::class, $object->collectionOfFoo);
-    $this->assertContainsOnlyInstancesOf(Foo::class, $object->collectionOfFoo);
-    $this->assertCount(3, $object->collectionOfFoo);
+    assertInstanceOf(ArrayObject::class, $object->collectionOfFoo);
+    assertContainsOnlyInstancesOf(Foo::class, $object->collectionOfFoo);
+    assertCount(3, $object->collectionOfFoo);
 
-    $this->assertInstanceOf(ArrayObject::class, $object->collectionOfBaz);
-    $this->assertContainsOnlyInstancesOf(Baz::class, $object->collectionOfBaz);
-    $this->assertCount(4, $object->collectionOfBaz);
+    assertInstanceOf(ArrayObject::class, $object->collectionOfBaz);
+    assertContainsOnlyInstancesOf(Baz::class, $object->collectionOfBaz);
+    assertCount(4, $object->collectionOfBaz);
 });
 
 test('it throws exception when casting non array', function () {
@@ -337,12 +337,12 @@ test('that array keys get cast', function () {
         ]
     );
 
-    $this->assertArrayHasKey('one', $object->collectionOfFoo);
-    $this->assertArrayHasKey('two', $object->collectionOfFoo);
-    $this->assertArrayHasKey('three', $object->collectionOfFoo);
-    $this->assertInstanceOf(Foo::class, $object->collectionOfFoo['one']);
-    $this->assertInstanceOf(Foo::class, $object->collectionOfFoo['two']);
-    $this->assertInstanceOf(Foo::class, $object->collectionOfFoo['three']);
+    assertArrayHasKey('one', $object->collectionOfFoo);
+    assertArrayHasKey('two', $object->collectionOfFoo);
+    assertArrayHasKey('three', $object->collectionOfFoo);
+    assertInstanceOf(Foo::class, $object->collectionOfFoo['one']);
+    assertInstanceOf(Foo::class, $object->collectionOfFoo['two']);
+    assertInstanceOf(Foo::class, $object->collectionOfFoo['three']);
 });
 
 test('that array object keys get cast', function () {
@@ -362,10 +362,10 @@ test('that array object keys get cast', function () {
         ]
     );
 
-    $this->assertArrayHasKey('one', $object->collectionOfFoo);
-    $this->assertArrayHasKey('two', $object->collectionOfFoo);
-    $this->assertArrayHasKey('three', $object->collectionOfFoo);
-    $this->assertInstanceOf(Foo::class, $object->collectionOfFoo['one']);
-    $this->assertInstanceOf(Foo::class, $object->collectionOfFoo['two']);
-    $this->assertInstanceOf(Foo::class, $object->collectionOfFoo['three']);
+    assertArrayHasKey('one', $object->collectionOfFoo);
+    assertArrayHasKey('two', $object->collectionOfFoo);
+    assertArrayHasKey('three', $object->collectionOfFoo);
+    assertInstanceOf(Foo::class, $object->collectionOfFoo['one']);
+    assertInstanceOf(Foo::class, $object->collectionOfFoo['two']);
+    assertInstanceOf(Foo::class, $object->collectionOfFoo['three']);
 });
