@@ -3,6 +3,7 @@
 namespace Spatie\DataTransferObject\Tests;
 
 use Spatie\DataTransferObject\DataTransferObject;
+use function PHPUnit\Framework\assertEquals;
 
 beforeAll(function () {
     class ScalarPropertyDto extends DataTransferObject
@@ -14,5 +15,5 @@ beforeAll(function () {
 test('scalar property can be set', function () {
     $dto = new ScalarPropertyDto(foo: 1);
 
-    $this->assertEquals(1, $dto->foo);
+    assertEquals(1, $dto->foo);
 });

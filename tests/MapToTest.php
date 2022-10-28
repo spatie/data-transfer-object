@@ -77,11 +77,11 @@ test('dto can have mapped from and to and regular properties', function () {
     };
 
     $dtoArray = $dto->toArray();
-    $this->assertEquals('Hello world', $dtoArray['title']);
-    $this->assertEquals('John Doe', $dtoArray['author']);
-    $this->assertEquals('john.doe@example.com', $dtoArray['email']);
-    $this->assertEquals('2021-01-01', $dtoArray['date']);
-    $this->assertEquals('News', $dtoArray['categoryName']);
+    assertEquals('Hello world', $dtoArray['title']);
+    assertEquals('John Doe', $dtoArray['author']);
+    assertEquals('john.doe@example.com', $dtoArray['email']);
+    assertEquals('2021-01-01', $dtoArray['date']);
+    assertEquals('News', $dtoArray['categoryName']);
 });
 
 test('mapped property can be except', function () {
