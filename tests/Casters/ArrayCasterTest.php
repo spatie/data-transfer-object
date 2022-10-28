@@ -8,46 +8,43 @@ use Spatie\DataTransferObject\Caster;
 use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\DataTransferObject\Tests\TestCase;
 
-class ArrayCasterTest extends TestCase
-{
-    /** @test */
-    public function test_collection_caster()
+beforeAll(function () {
+    class Bar extends DataTransferObject
     {
-        $bar = new Bar([
-            'collectionOfFoo' => [
-                ['name' => 'a'],
-                ['name' => 'b'],
-                ['name' => 'c'],
-            ],
-        ]);
-
-        $this->assertCount(3, $bar->collectionOfFoo);
+        /** @var \Spatie\DataTransferObject\Tests\Foo[] */
+        #[CastWith(FooArrayCaster::class)]
+        public array $collectionOfFoo;
     }
-}
 
-class Bar extends DataTransferObject
-{
-    /** @var \Spatie\DataTransferObject\Tests\Foo[] */
-    #[CastWith(FooArrayCaster::class)]
-    public array $collectionOfFoo;
-}
-
-class Foo extends DataTransferObject
-{
-    public string $name;
-}
-
-class FooArrayCaster implements Caster
-{
-    public function cast(mixed $value): array
+    class Foo extends DataTransferObject
     {
-        if (! is_array($value)) {
-            throw new Exception("Can only cast arrays to Foo");
+        public string $name;
+    }
+
+    class FooArrayCaster implements Caster
+    {
+        public function cast(mixed $value): array
+        {
+            if (! is_array($value)) {
+                throw new Exception("Can only cast arrays to Foo");
+            }
+
+            return array_map(
+                fn (array $data) => new Foo(...$value),
+                $value
+            );
         }
-
-        return array_map(
-            fn (array $data) => new Foo(...$value),
-            $value
-        );
     }
-}
+});
+
+test('collection caster', function () {
+    $bar = new Bar([
+        'collectionOfFoo' => [
+            ['name' => 'a'],
+            ['name' => 'b'],
+            ['name' => 'c'],
+        ],
+    ]);
+
+    $this->assertCount(3, $bar->collectionOfFoo);
+});
