@@ -1,5 +1,6 @@
 > **Warning**
-> We [have decided](https://stitcher.io/blog/deprecating-spatie-dto) to stop maintaining this package. 
+> We [have decided](https://stitcher.io/blog/deprecating-spatie-dto) to stop maintaining this package.
+> 
 > Consider migrating to [spatie/laravel-data](https://spatie.be/docs/laravel-data) or [cuyz/valinor](https://github.com/cuyz/valinor)
 > Feel free to fork our code and adapt it to your needs.
 
