@@ -1,5 +1,7 @@
 > **Warning**
-> This package is not maintained anymore. Consider migrating to [spatie/laravel-data](https://spatie.be/docs/laravel-data) or [cuyz/valinor](https://github.com/cuyz/valinor)
+> We [have decided](https://stitcher.io/blog/deprecating-spatie-dto) to stop maintaining this package. 
+> Consider migrating to [spatie/laravel-data](https://spatie.be/docs/laravel-data) or [cuyz/valinor](https://github.com/cuyz/valinor)
+> Feel free to fork our code and adapt it to your needs.
 
 # Data transfer objects with batteries included
 
