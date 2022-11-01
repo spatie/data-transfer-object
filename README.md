@@ -1,5 +1,5 @@
-**Warning**
-This package is not maintained anymore. Consider migrating to [spatie/laravel-data](https://spatie.be/docs/laravel-data) or [cuyz/valinor](https://github.com/cuyz/valinor)
+> **Warning**
+> This package is not maintained anymore. Consider migrating to [spatie/laravel-data](https://spatie.be/docs/laravel-data) or [cuyz/valinor](https://github.com/cuyz/valinor)
 
 # Data transfer objects with batteries included
 
